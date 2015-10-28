@@ -3,10 +3,30 @@ package insynctive.controller;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.Thread.State;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.JSONArray;
@@ -27,69 +47,107 @@ import insynctive.model.TargetProcessItem;
 public class AppController {
 	
 	private final String targetProcessURL = "https://insynctive.tpondemand.com";
+	private final String tokenParam = "token=ODE6MjcyNUFBMzZBQkRGNkE0N0FGRDAyMzI2MDUyMTY1MzA=";
 	
 	@RequestMapping(value = "/view/to/{state}" ,method = RequestMethod.POST)
 	public ModelAndView toState(@PathVariable("state") String state, @RequestBody ListOfItems items) throws JSONException, IOException{
-		String response = changeStates(items.getItems());
+		String response = "";
+		for(TargetProcessItem item : items.getItems()){
+			response += changeStates(item, Status.getID(state))+"\n\n\n";
+		}
 		ModelAndView model = new ModelAndView();
 		model.setViewName("to_state");
-		model.addObject("response",response);
+		model.addObject("response", response);
 		
 		return model;
 	}
 
 	@RequestMapping(value = "/to/{state}" ,method = RequestMethod.POST)
 	@ResponseBody
-	public String restToState(@PathVariable("state") String state, @RequestBody List<TargetProcessItem> items) throws JSONException, IOException{
-		String response = changeStates(items);
-		ModelAndView model = new ModelAndView();
-		model.setViewName("to_state");
-		model.addObject(response);
-		
+	public String restToState(@PathVariable("state") String state, @RequestBody ListOfItems items) throws JSONException, IOException{
+		for(TargetProcessItem item : items.getItems()){
+			changeStates(item, Status.getID(state));
+		}
 		return "{\"status\" : 200}";
 	}
 	
-	@SuppressWarnings("unchecked")
-	public String changeStates(List<TargetProcessItem> items) throws IOException, JSONException {
-		URL u = new URL(targetProcessURL+"/Targetprocess/api/v1/Projects?resultFormat=json&resultInclude=[Id,CustomFields]");
+	@RequestMapping(value = "/get/{type}" ,method = RequestMethod.GET)
+	@ResponseBody
+	public String restToState(@PathVariable("type") String type) throws JSONException, IOException, URISyntaxException{
+		return getAll(type);
+	}
+	
+	private String getAll(String type) throws IOException, URISyntaxException {
+		URL changeStateUrl = new URL(targetProcessURL+"/api/v1/"+type+"?"+tokenParam+"&include=[ID]&format=json");
+		System.out.println(changeStateUrl);
 		
-		HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-		
-		JSONArray jsonItems = new JSONArray();
-		for(TargetProcessItem item : items){
-			JSONObject jsonItem = new JSONObject();
+		return getUriContentsAsString(changeStateUrl.toString());
+	}
 
-			//ID of Item
-			jsonItem.put("Id",item.getId());
-			
-			//Custom Fields to change.
-			JSONObject customField = new JSONObject();
-			customField.put("Name", "State");
-			customField.put("Value", "Resolved");
-			
-			JSONArray customFields = new JSONArray();
-			//Add Custom Field to Item
-			customFields.add(customField);
-			jsonItem.put("CustomFields", customFields);
-			
-			//Add Iem to Array
-			jsonItems.add(jsonItem);
+	public String changeStates(TargetProcessItem item, Integer state) throws IOException, JSONException {
+		String changeStateUrl = targetProcessURL+"/api/v1/Bugs?"+tokenParam+"&resultFormat=json&resultInclude=[Id]";
+		System.out.println(changeStateUrl);
+		
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpPost post = new HttpPost(changeStateUrl);
+
+		JSONObject jsonItem = new JSONObject();
+		
+		//ID of Item
+		jsonItem.put("Id",item.getId());
+
+		//EBRURT STATE 55 = Resolved 
+		JSONObject jsonEntityState = new JSONObject();
+		jsonEntityState.put("Id", 55);
+		jsonItem.put("EntityState",jsonEntityState);
+
+		StringEntity params = new StringEntity(jsonItem.toString());
+		post.addHeader("content-type", "application/json;charset=UTF-8");
+		post.setEntity(params);
+	    
+        HttpResponse response = client.execute(post);
+		return EntityUtils.toString(response.getEntity());
+	}
+	
+	static String getUriContentsAsString(String uri) throws IOException {
+		  HttpClient client = new DefaultHttpClient();
+		  HttpResponse response = client.execute(new HttpGet(uri));
+		  return EntityUtils.toString(response.getEntity());
+	}
+	
+	public enum Status {
+	    OPEN(53, "Open"),
+	    CANT_NOT_REPRODUCE(220, "Can Not Reproduce"),
+	    NEED_DISCUSSION(223, "Need Discussion"),
+	    FIXING_IN_PROGRESS(98, "Fixing In Progress"),
+	    RESOLVED(55, "Resolved"),
+	    TESTING_IN_PROGRESS(99, "Testing In Progress"),
+	    RE_OPEN(82, "Re-Open"),
+	    TRACKED_BY_QA(134, "Tracked by QA"),
+	    READY_FOR_DEPLOYMENT(127, "Ready for Deployment"),
+	    OBSOLETE(221, "Obsolete"),
+	    DONE(56, "Done");
+		
+		private final Integer id;
+		private final String value;
+		
+		private Status(Integer id, String value){
+			this.id = id;
+			this.value = value;
 		}
 		
-		conn.setRequestMethod("POST");
-		conn.setConnectTimeout(5000);
-		conn.setUseCaches(false);
-		conn.setDoInput(true);
-		conn.setDoOutput(true);
+		public String getValue(){
+			return this.value;
+		}
 		
-		
-		DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-		wr.writeBytes(jsonItems.toString());
-		wr.flush();
-        wr.close();
-        
-		InputStream is = conn.getInputStream();
-		System.out.println(is);
-		return is.toString();
+		public static Integer getID(String value){
+			for(Status status : Status.values()){
+				if(status.getValue().equals(value)){
+					return status.id;
+				}
+			}
+			return null;
+		}
+	    
 	}
 }

@@ -11,6 +11,6 @@ public class ListOfItems {
 	}
 
 	public void setItems(List<TargetProcessItem> items) {
-		items = items;
+		this.items = items;
 	}
 }
