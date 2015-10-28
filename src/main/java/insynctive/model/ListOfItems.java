@@ -4,13 +4,13 @@ import java.util.List;
 
 public class ListOfItems {
 	 
-	private List<TargetProcessItem> items;
+	private List<TargetProcessItem> Items;
 
 	public List<TargetProcessItem> getItems() {
-		return items;
+		return Items;
 	}
 
 	public void setItems(List<TargetProcessItem> items) {
-		this.items = items;
+		this.Items = items;
 	}
 }

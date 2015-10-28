@@ -98,7 +98,7 @@ public class AppController {
 
 		//EBRURT STATE 55 = Resolved 
 		JSONObject jsonEntityState = new JSONObject();
-		jsonEntityState.put("Id", 55);
+		jsonEntityState.put("Id", state);
 		jsonItem.put("EntityState",jsonEntityState);
 
 		StringEntity params = new StringEntity(jsonItem.toString());
