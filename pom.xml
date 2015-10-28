@@ -1,0 +1,285 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>Insynctive</groupId>
+	<artifactId>Insynctive-support</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>Insynctive Support</name>
+
+	<properties>
+		<javaasist>3.12.1.GA</javaasist>
+		<org.apache.httpcomponents>4.3.2</org.apache.httpcomponents>
+		<jstl>1.2</jstl>
+		<javax.servlet-api>3.0.1</javax.servlet-api>
+		<javax.servlet>1.2</javax.servlet>
+		<org.slf4j>1.7.5</org.slf4j>
+		<log4j>1.2.16</log4j>
+		<hibernate.version>4.1.5.Final</hibernate.version>
+		<hibernate-validator>4.2.0.Final</hibernate-validator>
+		<handlebars-version>2.2.1</handlebars-version>
+		<dbcp.version>1.4</dbcp.version>
+		<mysql.connector.version>5.1.32</mysql.connector.version>
+		<cglib>2.2.2</cglib>
+
+		<spring-version>4.0.3.RELEASE</spring-version>
+
+		<junit-Version>4.11</junit-Version>
+		<junit-dep>4.10</junit-dep>
+
+		<mustache-version>1.0</mustache-version>
+		<jstl-version>1.2</jstl-version>
+		<spring-boot-version>1.2.5.RELEASE</spring-boot-version>
+		<javax-mail-version>1.4</javax-mail-version>
+		<mustache-spring-view-version>1.0</mustache-spring-view-version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>${cglib}</version>
+		</dependency>
+
+		<!-- lof4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${org.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${org.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j}</version> <!-- 1.2.16 -->
+		</dependency>
+
+		<!-- HASTA ACA -->
+		<!-- Use Apache HttpClient as HTTP Client -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${org.apache.httpcomponents}</version>
+		</dependency>
+
+		<!-- JUNIT -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-Version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit-dep</artifactId>
+			<version>${junit-dep}</version>
+		</dependency>
+
+		<!-- JAVA MAIL -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${javax-mail-version}</version>
+		</dependency>
+
+		<!-- JSON READER -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20141113</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<!-- Spring MVC support -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring-version}</version>
+		</dependency>
+
+		<!-- JACKSON -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.4.1.1</version>
+		</dependency>
+
+		<!-- JSTL -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl-version}</version>
+		</dependency>
+
+		<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator}</version>
+		</dependency>
+
+		<!-- Template ENGINES -->
+		<dependency>
+			<groupId>com.github.sps.mustache</groupId>
+			<artifactId>mustache-spring-view</artifactId>
+			<version>${mustache-spring-view-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.jknack</groupId>
+			<artifactId>handlebars</artifactId>
+			<version>${handlebars-version}</version>
+		</dependency>
+
+		<!-- DataBase Pool -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>${dbcp.version}</version>
+		</dependency>
+
+		<!-- MySql Driver -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.connector.version}</version>
+		</dependency>
+
+		<!-- Servlet API, JSTL -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet-api}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${javax.servlet}</version>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- ECLIPSE MAVEN PLUGINS -->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-war-plugin</artifactId>
+			    <version>2.6</version>
+		    </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<encoding>UTF-8</encoding>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.github.jsimone</groupId>
+									<artifactId>webapp-runner</artifactId>
+									<version>7.0.57.2</version>
+									<destFileName>webapp-runner.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

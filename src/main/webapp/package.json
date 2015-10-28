@@ -1,0 +1,26 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "description": "Registro de Caja",
+  "main": "program.html",
+  "dependencies": {
+    "angular-animate": "^1.4.1",
+    "bootstrap": "^3.3.5",
+    "jquery": "^2.1.4",
+    "underscore": "^1.8.3",
+    "angular": "^1.4.1",
+    "bootbox": "^4.4.0",
+    "angular-loading-bar": "^0.8.0",
+    "angular-cookies" : "^1.4.1",
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "angularjs",
+    "cookies"
+  ],
+  "author": "",
+  "license": "ISC"
+}
