@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import insynctive.model.ListOfItems;
 import insynctive.model.TargetProcessItem;
 
 @Controller
@@ -28,8 +29,8 @@ public class AppController {
 	private final String targetProcessURL = "https://insynctive.tpondemand.com";
 	
 	@RequestMapping(value = "/view/to/{state}" ,method = RequestMethod.POST)
-	public ModelAndView toState(@PathVariable("state") String state, @RequestBody List<TargetProcessItem> items) throws JSONException, IOException{
-		String response = changeStates(items);
+	public ModelAndView toState(@PathVariable("state") String state, @RequestBody ListOfItems items) throws JSONException, IOException{
+		String response = changeStates(items.getItems());
 		ModelAndView model = new ModelAndView();
 		model.setViewName("to_state");
 		model.addObject("response",response);

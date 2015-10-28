@@ -2,14 +2,14 @@ package insynctive.model;
 
 public class TargetProcessItem {
 
-	private String ResourceType;
+	private String resourceType;
 	private Integer id;
 	
 	public String getResourceType() {
-		return ResourceType;
+		return resourceType;
 	}
 	public void setResourceType(String resourceType) {
-		ResourceType = resourceType;
+		this.resourceType = resourceType;
 	}
 	
 	public Integer getId() {
