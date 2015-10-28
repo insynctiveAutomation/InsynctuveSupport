@@ -27,7 +27,7 @@ public class AppController {
 	
 	private final String targetProcessURL = "https://insynctive.tpondemand.com";
 	
-	@RequestMapping(value = "/view/to/{state}" ,method = RequestMethod.GET)
+	@RequestMapping(value = "/view/to/{state}" ,method = RequestMethod.POST)
 	public ModelAndView toState(@PathVariable("state") String state, @RequestBody List<TargetProcessItem> items) throws JSONException, IOException{
 		String response = changeStates(items);
 		ModelAndView model = new ModelAndView();
@@ -37,7 +37,7 @@ public class AppController {
 		return model;
 	}
 
-	@RequestMapping(value = "/to/{state}" ,method = RequestMethod.GET)
+	@RequestMapping(value = "/to/{state}" ,method = RequestMethod.POST)
 	@ResponseBody
 	public String restToState(@PathVariable("state") String state, @RequestBody List<TargetProcessItem> items) throws JSONException, IOException{
 		String response = changeStates(items);
