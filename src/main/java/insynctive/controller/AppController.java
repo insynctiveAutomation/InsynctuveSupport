@@ -66,8 +66,10 @@ public class AppController {
 			customField.put("Name", "State");
 			customField.put("Value", "Resolved");
 			
+			JSONArray customFields = new JSONArray();
 			//Add Custom Field to Item
-			jsonItem.put("CustomFields",customField);
+			customFields.add(customField);
+			jsonItem.put("CustomFields", customFields);
 			
 			//Add Iem to Array
 			jsonItems.add(jsonItem);
