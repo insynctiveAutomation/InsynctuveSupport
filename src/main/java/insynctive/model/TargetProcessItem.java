@@ -1,22 +1,27 @@
 package insynctive.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TargetProcessItem {
 
-	private String ResourceType;
-	private Integer Id;
+	@JsonProperty("ResourceType")
+	private String resourceType;
+	
+	@JsonProperty("Id")
+	private Integer id;
 	
 	public String getResourceType() {
-		return ResourceType;
+		return resourceType;
 	}
 	public void setResourceType(String resourceType) {
-		this.ResourceType = resourceType;
+		this.resourceType = resourceType;
 	}
 	
 	public Integer getId() {
-		return Id;
+		return id;
 	}
 	public void setId(Integer id) {
-		this.Id = id;
+		this.id = id;
 	} 
 	
 }

@@ -2,15 +2,18 @@ package insynctive.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ListOfItems {
 	 
-	private List<TargetProcessItem> Items;
+	@JsonProperty("Items")
+	private List<TargetProcessItem> items;
 
 	public List<TargetProcessItem> getItems() {
-		return Items;
+		return items;
 	}
 
 	public void setItems(List<TargetProcessItem> items) {
-		this.Items = items;
+		this.items = items;
 	}
 }
