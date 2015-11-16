@@ -13,6 +13,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import insynctive.dao.RunIDDao;
 import insynctive.model.ListOfItems;
 import insynctive.model.TargetProcessItem;
 
@@ -48,6 +51,13 @@ public class AppController {
 	
 	private final String targetProcessURL = "https://insynctive.tpondemand.com";
 	private final String tokenParam = "token=ODE6MjcyNUFBMzZBQkRGNkE0N0FGRDAyMzI2MDUyMTY1MzA=";
+	
+	private final RunIDDao runIDDao;
+	
+	@Inject
+	public AppController(RunIDDao runIDDao) {
+		this.runIDDao = runIDDao;
+	}
 	
 	@RequestMapping(value = "/view/to/{state}" ,method = RequestMethod.POST)
 	public ModelAndView toState(@PathVariable("state") String state, @RequestBody ListOfItems items) throws JSONException, IOException{
@@ -76,6 +86,15 @@ public class AppController {
 	public String restToState(@PathVariable("type") String type) throws JSONException, IOException, URISyntaxException{
 		return getAll(type);
 	}
+	
+	@RequestMapping(value = "/runID" ,method = RequestMethod.GET)
+	@ResponseBody
+	public String getRunID() throws JSONException, IOException, URISyntaxException{
+		Integer newRunID = runIDDao.getNextRunID();
+		return "{\"status\" : 200, \"runID\" : "+newRunID+"}";
+		
+	}
+	
 	
 	private String getAll(String type) throws IOException, URISyntaxException {
 		URL changeStateUrl = new URL(targetProcessURL+"/api/v1/"+type+"?"+tokenParam+"&include=[ID]&format=json");

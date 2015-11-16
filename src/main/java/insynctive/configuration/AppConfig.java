@@ -14,7 +14,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 @Configuration
 @PropertySource("classpath:application.properties")
@@ -37,17 +36,16 @@ public class AppConfig {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
 		/*HEROKU*/
-//		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//		dataSource.setUrl("jdbc:mysql://us-cdbr-iron-east-03.cleardb.net:3306/heroku_fa8eb9422d1df16");
-//		dataSource.setUsername("bc629656bad916");
-//		dataSource.setPassword("5748788a");
-		
-		/*LOCAL*/
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl("jdbc:mysql://localhost:3306/insynctiveFirstStep");
+		dataSource.setUrl("jdbc:mysql://localhost:3306/insynctiveSupport");
 		dataSource.setUsername("root");
 		dataSource.setPassword("");
-
+		
+//		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+//		dataSource.setUrl("jdbc:mysql://us-cdbr-iron-east-03.cleardb.net/heroku_71adb2241d1d2a5");
+//		dataSource.setUsername("beacfac291b2f1");
+//		dataSource.setPassword("90063b5a");
+		
 		return dataSource;
 	}
 
@@ -69,7 +67,7 @@ public class AppConfig {
 
 	private Properties hibProperties() {
 		Properties properties = new Properties();
-		properties.put("hibernate.hbm2ddl.auto", "validate");
+		properties.put("hibernate.hbm2ddl.auto", "create");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		properties.put("hibernate.show_sql", true);
 		return properties;
