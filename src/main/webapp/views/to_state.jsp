@@ -10,7 +10,7 @@
 <head>
 	<!-- JQUERY -->
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/node_modules/jquery/dist/jquery.min.js"></script>
-	
+	 
 	<!-- BOOTSTRAP -->
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -22,4 +22,4 @@
 	<h1>RESPONSE</h1>
 	${response}
 </body>
-</html>
+</html>  

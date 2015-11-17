@@ -25,11 +25,11 @@ private final SessionFactory sessionFactory;
 	}
 	
 	public Integer getNextRunID(){
-		RunID runID = (RunID) openSession().createQuery("from run_id order by run_id DESC LIMIT 1").list().get(0);
-		runID.setId(null);
-		runID.setRunID(runID.getRunID()+1);
-		openSession().save(runID);
-		return runID.getRunID();
+		RunID runID = (RunID) openSession().createQuery("from RunID order by runID DESC").setMaxResults(1).list().get(0);
+		RunID newRunID = new RunID();
+		newRunID.setRunID(runID.getRunID()+1);
+		openSession().save(newRunID);
+		return newRunID.getRunID();
 	}
 	
 }

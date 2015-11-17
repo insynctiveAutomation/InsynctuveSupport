@@ -36,15 +36,15 @@ public class AppConfig {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
 		/*HEROKU*/
-		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl("jdbc:mysql://localhost:3306/insynctiveSupport");
-		dataSource.setUsername("root");
-		dataSource.setPassword("");
-		
 //		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//		dataSource.setUrl("jdbc:mysql://us-cdbr-iron-east-03.cleardb.net/heroku_71adb2241d1d2a5");
-//		dataSource.setUsername("beacfac291b2f1");
-//		dataSource.setPassword("90063b5a");
+//		dataSource.setUrl("jdbc:mysql://localhost:3306/insynctiveSupport");
+//		dataSource.setUsername("root");
+//		dataSource.setPassword("");
+		
+		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+		dataSource.setUrl("jdbc:mysql://us-cdbr-iron-east-03.cleardb.net/heroku_71adb2241d1d2a5");
+		dataSource.setUsername("beacfac291b2f1");
+		dataSource.setPassword("90063b5a");
 		
 		return dataSource;
 	}
@@ -53,7 +53,7 @@ public class AppConfig {
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
 		sessionFactoryBean.setDataSource(dataSource());
-		sessionFactoryBean.setPackagesToScan("insinctive.model");
+		sessionFactoryBean.setPackagesToScan("insynctive.model");
 		sessionFactoryBean.setHibernateProperties(hibProperties());
 		return sessionFactoryBean;
 	}
@@ -67,7 +67,7 @@ public class AppConfig {
 
 	private Properties hibProperties() {
 		Properties properties = new Properties();
-		properties.put("hibernate.hbm2ddl.auto", "create");
+		properties.put("hibernate.hbm2ddl.auto", "update");
 		properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		properties.put("hibernate.show_sql", true);
 		return properties;
