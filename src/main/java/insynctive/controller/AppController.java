@@ -1,37 +1,21 @@
 package insynctive.controller;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.Thread.State;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,13 +34,21 @@ import insynctive.model.TargetProcessItem;
 public class AppController {
 	
 	private final String targetProcessURL = "https://insynctive.tpondemand.com";
-	private final String tokenParam = "token=ODE6MjcyNUFBMzZBQkRGNkE0N0FGRDAyMzI2MDUyMTY1MzA=";
+	private final String tokenParamTargetProcess = "token=ODE6MjcyNUFBMzZBQkRGNkE0N0FGRDAyMzI2MDUyMTY1MzA=";
 	
 	private final RunIDDao runIDDao;
 	
 	@Inject
 	public AppController(RunIDDao runIDDao) {
 		this.runIDDao = runIDDao;
+	}
+	
+	@RequestMapping(value = "/runID" ,method = RequestMethod.GET)
+	@ResponseBody
+	public String getRunID() throws JSONException, IOException, URISyntaxException{
+		Integer newRunID = runIDDao.getNextRunID();
+		return "{\"status\" : 200, \"runID\" : "+newRunID+"}";
+		
 	}
 	
 	@RequestMapping(value = "/view/to/{state}" ,method = RequestMethod.POST)
@@ -87,24 +79,16 @@ public class AppController {
 		return getAll(type);
 	}
 	
-	@RequestMapping(value = "/runID" ,method = RequestMethod.GET)
-	@ResponseBody
-	public String getRunID() throws JSONException, IOException, URISyntaxException{
-		Integer newRunID = runIDDao.getNextRunID();
-		return "{\"status\" : 200, \"runID\" : "+newRunID+"}";
-		
-	}
-	
-	
 	private String getAll(String type) throws IOException, URISyntaxException {
-		URL changeStateUrl = new URL(targetProcessURL+"/api/v1/"+type+"?"+tokenParam+"&include=[ID]&format=json");
+		URL changeStateUrl = new URL(targetProcessURL+"/api/v1/"+type+"?"+tokenParamTargetProcess+"&include=[ID]&format=json");
 		System.out.println(changeStateUrl);
 		
 		return getUriContentsAsString(changeStateUrl.toString());
 	}
 
+	//TargetProcess
 	public String changeStates(TargetProcessItem item, Integer state) throws IOException, JSONException {
-		String changeStateUrl = targetProcessURL+"/api/v1/Bugs?"+tokenParam+"&resultFormat=json&resultInclude=[Id]";
+		String changeStateUrl = targetProcessURL+"/api/v1/Bugs?"+tokenParamTargetProcess+"&resultFormat=json&resultInclude=[Id]";
 		System.out.println(changeStateUrl);
 		
 		HttpClient client = HttpClientBuilder.create().build();

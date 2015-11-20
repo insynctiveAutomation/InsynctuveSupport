@@ -34,7 +34,21 @@
 		<mustache-spring-view-version>1.0</mustache-spring-view-version>
 	</properties>
 
+	<repositories>
+	  <repository>
+	    <id>jcenter</id>
+	    <url>http://jcenter.bintray.com</url>
+	  </repository>
+	</repositories>
+
 	<dependencies>
+		
+		<dependency>
+		  <groupId>io.intercom</groupId>
+		  <artifactId>intercom-java</artifactId>
+		  <version>1.3.0</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
