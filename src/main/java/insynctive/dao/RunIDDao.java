@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ private final SessionFactory sessionFactory;
 		return sessionFactory.getCurrentSession();
 	}
 	
-	public Integer getNextRunID(){
+	public synchronized Integer getNextRunID(){
 		RunID runID = (RunID) openSession().createQuery("from RunID order by runID DESC").setMaxResults(1).list().get(0);
 		RunID newRunID = new RunID();
 		newRunID.setRunID(runID.getRunID()+1);
