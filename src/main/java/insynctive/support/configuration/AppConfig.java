@@ -1,4 +1,4 @@
-package insynctive.configuration;
+package insynctive.support.configuration;
 
 import java.util.Properties;
 
@@ -53,7 +53,7 @@ public class AppConfig {
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
 		sessionFactoryBean.setDataSource(dataSource());
-		sessionFactoryBean.setPackagesToScan("insynctive.model");
+		sessionFactoryBean.setPackagesToScan("insynctive.support.model");
 		sessionFactoryBean.setHibernateProperties(hibProperties());
 		return sessionFactoryBean;
 	}

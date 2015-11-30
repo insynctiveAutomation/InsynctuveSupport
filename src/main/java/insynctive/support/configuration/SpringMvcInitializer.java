@@ -1,4 +1,4 @@
-package insynctive.configuration;
+package insynctive.support.configuration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 

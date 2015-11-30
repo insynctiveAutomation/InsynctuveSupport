@@ -1,4 +1,4 @@
-package insynctive.dao;
+package insynctive.support.dao;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import insynctive.model.TargetProcessIntercomEntity;
+import insynctive.support.model.TargetProcessIntercomEntity;
 
 @Repository
 @Transactional

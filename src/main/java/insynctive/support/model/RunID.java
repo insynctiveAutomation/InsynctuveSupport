@@ -1,4 +1,4 @@
-package insynctive.model;
+package insynctive.support.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
