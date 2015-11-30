@@ -1,4 +1,4 @@
-package insynctive.dao;
+package insynctive.support.dao;
 
 import javax.inject.Inject;
 
@@ -8,7 +8,7 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import insynctive.model.RunID;
+import insynctive.support.model.RunID;
 
 @Repository
 @Transactional

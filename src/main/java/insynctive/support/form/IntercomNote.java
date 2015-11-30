@@ -1,4 +1,4 @@
-package insynctive.form;
+package insynctive.support.form;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -7,6 +7,7 @@ public class IntercomNote {
 
 	private String body;
 	private String entityID;
+	private String userEmail;
 
 	public String getBody() {
 		return body;
@@ -22,6 +23,14 @@ public class IntercomNote {
 
 	public void setEntityID(String entityID) {
 		this.entityID = entityID;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	

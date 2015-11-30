@@ -1,4 +1,4 @@
-package insynctive.configuration;
+package insynctive.support.configuration;
 
 import java.util.Properties;
 

@@ -1,4 +1,4 @@
-package insynctive.model;
+package insynctive.support.model;
 
 public enum Status {
     OPEN(53, "Open"),

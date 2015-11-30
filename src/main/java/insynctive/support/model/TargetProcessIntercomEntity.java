@@ -1,4 +1,4 @@
-package insynctive.model;
+package insynctive.support.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import insynctive.form.TargetProcessRequest;
+import insynctive.support.form.TargetProcessRequest;
 
 @Entity
 @Table(name = "TargetProcessIntercomEntity")

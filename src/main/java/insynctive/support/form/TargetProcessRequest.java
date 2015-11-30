@@ -1,4 +1,4 @@
-package insynctive.form;
+package insynctive.support.form;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
