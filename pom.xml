@@ -5,7 +5,9 @@
 	<artifactId>Insynctive-support</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+	
 	<name>Insynctive Support</name>
+	<description>Insynctive Support</description>
 
 	<properties>
 		<javaasist>3.12.1.GA</javaasist>

@@ -38,7 +38,7 @@ public class IntercomController {
 		entity.addValuesFromTPRequest(form);
 		tpDao.save(entity);
 		
-		IntercomUtil.makeACommentInConversationIntercom("You request was submitted to QA for Triage under the number: "+form.getEntityID(), form.getIntercomID());
+		IntercomUtil.makeACommentInConversationIntercom("Your request was submitted to QA for Triage under the number: "+form.getEntityID(), form.getIntercomID());
 		IntercomUtil.makeANoteInIntercom("A request was created in TP.  https://insynctive.tpondemand.com/entity/"+form.getEntityID(), form.getIntercomID(), null);
 		
 		return "{\"status\" : 200}";
