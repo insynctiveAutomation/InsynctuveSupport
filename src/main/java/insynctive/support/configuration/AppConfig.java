@@ -35,12 +35,12 @@ public class AppConfig {
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-		/*HEROKU*/
 //		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-//		dataSource.setUrl("jdbc:mysql://localhost:3306/insynctiveSupport");
+//		dataSource.setUrl("jdbc:mysql://localhost:3306/insynctive-support");
 //		dataSource.setUsername("root");
 //		dataSource.setPassword("");
 		
+		/*HEROKU*/
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		dataSource.setUrl("jdbc:mysql://us-cdbr-iron-east-03.cleardb.net/heroku_71adb2241d1d2a5");
 		dataSource.setUsername("beacfac291b2f1");

@@ -1,5 +1,7 @@
 package insynctive.support.dao;
 
+import java.math.BigDecimal;
+
 import javax.inject.Inject;
 
 import org.hibernate.Session;
@@ -25,12 +27,14 @@ private final SessionFactory sessionFactory;
 		return sessionFactory.getCurrentSession();
 	}
 	
+	private Integer save(RunID runID){
+		return (Integer) openSession().save(runID);
+	}
+	
 	public synchronized Integer getNextRunID(){
-		RunID runID = (RunID) openSession().createQuery("from RunID order by runID DESC").setMaxResults(1).list().get(0);
-		RunID newRunID = new RunID();
-		newRunID.setRunID(runID.getRunID()+1);
-		openSession().save(newRunID);
-		return newRunID.getRunID();
+		Integer id = save(new RunID());
+		double runID = ((double) id-2)/10;
+		return (int) runID;
 	}
 	
 }
