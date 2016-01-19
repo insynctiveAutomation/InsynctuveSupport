@@ -20,7 +20,7 @@ import insynctive.support.model.TargetProcessItem;
 public class TargetProcessUtil {
 	
 	public static final String targetProcessURL = "https://insynctive.tpondemand.com";
-	public static final String tokenParamTargetProcess = "token=ODE6MjcyNUFBMzZBQkRGNkE0N0FGRDAyMzI2MDUyMTY1MzA=";
+	public static final String tokenParamTargetProcess = "token=MTU6NTg0ODUxOTk3RDIzMzEyRDExRDEzREFGQTk5RTc4MzU=";
 	
 	public static String getAll(String type) throws IOException, URISyntaxException {
 		URL url = new URL(targetProcessURL+"/api/v1/"+type+"?"+tokenParamTargetProcess+"&include=[ID]&format=json");
@@ -28,7 +28,7 @@ public class TargetProcessUtil {
 		
 		return getUriContentsAsString(url.toString());
 	}
-
+	
 	//TargetProcess
 	public static String changeStates(TargetProcessItem item, Integer state) throws IOException, JSONException {
 		String changeStateUrl = targetProcessURL+"/api/v1/Bugs?"+tokenParamTargetProcess+"&resultFormat=json&resultInclude=[Id]";
