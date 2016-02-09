@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.dao.TargetProcessAndIntercomDao;
-import insynctive.support.form.IntercomNote;
-import insynctive.support.form.TargetProcessRequest;
+import insynctive.support.form.intercom.IntercomNoteForm;
+import insynctive.support.form.tp.TargetProcessForm;
 import insynctive.support.model.TargetProcessIntercomEntity;
 import insynctive.support.utils.IntercomUtil;
 import io.intercom.api.AdminCollection;
@@ -32,7 +32,7 @@ public class IntercomController {
 	
 	@RequestMapping(value = "/newRequest" ,method = RequestMethod.POST)
 	@ResponseBody
-	public String newRequest(@RequestBody TargetProcessRequest form) throws JSONException, IOException{
+	public String newRequest(@RequestBody TargetProcessForm form) throws JSONException, IOException{
 		TargetProcessIntercomEntity entity = new TargetProcessIntercomEntity();
 		
 		entity.addValuesFromTPRequest(form);
@@ -46,7 +46,7 @@ public class IntercomController {
 	
 	@RequestMapping(value = "/createNote" ,method = RequestMethod.POST)
 	@ResponseBody
-	public String createNote(@RequestBody IntercomNote form) throws JSONException, IOException{
+	public String createNote(@RequestBody IntercomNoteForm form) throws JSONException, IOException{
 		TargetProcessIntercomEntity entity = tpDao.getByEntityID(form.getEntityID());
 		
 		if(entity != null){
@@ -59,7 +59,7 @@ public class IntercomController {
 	
 	@RequestMapping(value = "/changeStatus" ,method = RequestMethod.POST)
 	@ResponseBody
-	public String changeStatus(@RequestBody TargetProcessRequest form) throws JSONException, IOException{
+	public String changeStatus(@RequestBody TargetProcessForm form) throws JSONException, IOException{
 		TargetProcessIntercomEntity entity = tpDao.getByEntityID(form.getEntityID());
 		
 		boolean isEntityInDB = entity != null;

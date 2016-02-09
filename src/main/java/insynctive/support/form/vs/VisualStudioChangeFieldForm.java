@@ -54,5 +54,15 @@ public class VisualStudioChangeFieldForm {
 	public boolean wasInProgress(){
 		return state != null && state.getOldValue().toLowerCase().equals("in progress");
 	}
+
+	@JsonIgnore
+	public boolean isTodo() {
+		return state != null && state.getNewValue().toLowerCase().equals("to do");
+	}
+
+	@JsonIgnore
+	public boolean wasTodo() {
+		return state != null && state.getOldValue().toLowerCase().equals("to do");
+	}
 	
 }

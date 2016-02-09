@@ -10,6 +10,7 @@
 	<description>Insynctive Support</description>
 
 	<properties>
+     	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<javaasist>3.12.1.GA</javaasist>
 		<org.apache.httpcomponents>4.3.2</org.apache.httpcomponents>
 		<jstl>1.2</jstl>

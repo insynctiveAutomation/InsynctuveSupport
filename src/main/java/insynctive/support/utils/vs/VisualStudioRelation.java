@@ -1,10 +1,18 @@
 package insynctive.support.utils.vs;
 
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class VisualStudioRelation {
 	
 	private String op;
 	private String path;
 	private VisualStudioRelationObject value;
+	
+	@JsonIgnore
+	private static final ObjectMapper mapper = new ObjectMapper();
 	
 	public VisualStudioRelation(String op, String path, VisualStudioRelationObject value) {
 		this.op = op;
@@ -37,6 +45,14 @@ public class VisualStudioRelation {
 	}
 	public void setValue(VisualStudioRelationObject value) {
 		this.value = value;
+	}
+	
+	public JSONObject asJson() {
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("op", op);
+		jsonObj.put("path", path);
+		jsonObj.put("value", value.asJson());
+		return jsonObj;
 	}
 	
 }

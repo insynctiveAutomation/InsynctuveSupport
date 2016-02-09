@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import insynctive.support.form.TargetProcessRequest;
+import insynctive.support.form.tp.TargetProcessForm;
 
 @Entity
 @Table(name = "TargetProcessIntercomEntity")
@@ -47,7 +47,7 @@ public class TargetProcessIntercomEntity {
 	public void setEntityID(String entityID) {
 		this.entityID = entityID;
 	}
-	public void addValuesFromTPRequest(TargetProcessRequest form) {
+	public void addValuesFromTPRequest(TargetProcessForm form) {
 		this.status = form.getStatus();
 		this.intercomID = form.getIntercomID();
 		this.entityID = form.getEntityID();

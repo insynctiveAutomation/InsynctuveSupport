@@ -5,10 +5,25 @@ import java.util.List;
 
 public class VisualStudioWorkItem {
 
-	List<VisualStudioField> fields = new ArrayList<>();
-	List<VisualStudioRelation> relations = new ArrayList<>();
-	private VisualStudioWorkItem self;
+	private List<VisualStudioField> fields = new ArrayList<>();
+	private List<VisualStudioRelation> relations = new ArrayList<>();
 	
+	public List<VisualStudioField> getFields() {
+		return fields;
+	}
+
+	public void setFields(List<VisualStudioField> fields) {
+		this.fields = fields;
+	}
+
+	public List<VisualStudioRelation> getRelations() {
+		return relations;
+	}
+
+	public void setRelations(List<VisualStudioRelation> relations) {
+		this.relations = relations;
+	}
+
 	public void addVisualStudioField(VisualStudioField vsField){
 		fields.add(vsField);
 	}

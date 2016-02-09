@@ -1,9 +1,9 @@
-package insynctive.support.form;
+package insynctive.support.form.intercom;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IntercomNote {
+public class IntercomNoteForm {
 
 	private String body;
 	private String entityID;

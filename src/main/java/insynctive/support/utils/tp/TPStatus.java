@@ -1,6 +1,6 @@
-package insynctive.support.model;
+package insynctive.support.utils.tp;
 
-public enum Status {
+public enum TPStatus {
     OPEN(53, "Open"),
     CANT_NOT_REPRODUCE(220, "Can Not Reproduce"),
     NEED_DISCUSSION(223, "Need Discussion"),
@@ -16,7 +16,7 @@ public enum Status {
 	private final Integer id;
 	private final String value;
 	
-	private Status(Integer id, String value){
+	private TPStatus(Integer id, String value){
 		this.id = id;
 		this.value = value;
 	}
@@ -26,7 +26,7 @@ public enum Status {
 	}
 	
 	public static Integer getID(String value){
-		for(Status status : Status.values()){
+		for(TPStatus status : TPStatus.values()){
 			if(status.getValue().equals(value)){
 				return status.id;
 			}

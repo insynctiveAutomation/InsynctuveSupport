@@ -1,9 +1,5 @@
-package insynctive.support.model;
+package insynctive.support.utils.tp;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TargetProcessItem {

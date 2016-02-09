@@ -4,13 +4,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.json.JSONObject;
 import org.json.simple.JSONArray;
 
-import insynctive.support.utils.Notify;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 
 public class SlackUtil {

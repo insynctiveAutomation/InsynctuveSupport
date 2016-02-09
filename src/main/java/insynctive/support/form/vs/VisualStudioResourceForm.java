@@ -1,8 +1,6 @@
 package insynctive.support.form.vs;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -69,9 +67,9 @@ public class VisualStudioResourceForm {
 	}
 	
 	@JsonIgnore
-	public boolean isTestBug(){
+	public boolean isTestFix(){
 		if(revision != null) {
-			return revision.isTestBug();
+			return revision.isTestFix();
 		}
 		return false;
 	}
@@ -99,6 +97,50 @@ public class VisualStudioResourceForm {
 		if(revision != null && revision.getFields() != null){
 			return revision.getAssignedToEmail();
 		}
-		throw new Exception("getAssignedToEmail");
+		throw new Exception("VisualStudioResourceForm.getAssignedToEmail()");
+	}
+	
+	@JsonIgnore
+	public String getProject() throws Exception {
+		if(revision != null){
+			return revision.getProject();
+		}
+		throw new Exception("VisualStudioResourceForm.getProject()");
+	}
+	
+	@JsonIgnore
+	public String getNameOfOwner() throws Exception {
+		if(revision != null){
+			return revision.getNameOfOwner();
+		}
+		throw new Exception("VisualStudioResourceForm.getProject()");
+	}
+	
+	@JsonIgnore
+	public String getIteration() throws Exception {
+		if(revision != null){
+			return revision.getIteration();
+		}
+		throw new Exception("VisualStudioResourceForm.getIteration()");
+	}
+
+	@JsonIgnore
+	public boolean wasChangeToApproved() {
+		return getFields() != null && getFields().isApproved() && !getFields().wasApproved();
+	}
+	
+	@JsonIgnore
+	public boolean wasChangeToDone() {
+		return getFields() != null && getFields().isDone() && !getFields().wasDone();
+	}
+	
+	@JsonIgnore
+	public boolean wasChangeToInProgress() {
+		return getFields() != null && getFields().isInProgress() && !getFields().wasInProgress();
+	}
+
+	@JsonIgnore
+	public boolean wasChangeFromDoneToTodo() {
+		return getFields() != null && getFields().isTodo() && getFields().wasDone();
 	}
 }

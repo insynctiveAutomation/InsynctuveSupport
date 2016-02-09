@@ -15,7 +15,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import insynctive.support.model.TargetProcessItem;
+import insynctive.support.utils.tp.TargetProcessItem;
 
 public class TargetProcessUtil {
 	

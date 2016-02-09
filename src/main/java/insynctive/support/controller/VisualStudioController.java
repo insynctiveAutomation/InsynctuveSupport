@@ -1,121 +1,179 @@
 package insynctive.support.controller;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
-import org.json.JSONException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import insynctive.support.form.vs.VisualStudioChangeFieldForm;
-import insynctive.support.form.vs.VisualStudioChangeValue;
-import insynctive.support.form.vs.VisualStudioFieldForm;
+import insynctive.support.dao.WorkItemDao;
 import insynctive.support.form.vs.VisualStudioForm;
-import insynctive.support.form.vs.VisualStudioRelationsForm;
-import insynctive.support.form.vs.VisualStudioResourceForm;
 import insynctive.support.form.vs.VisualStudioRevisionForm;
+import insynctive.support.utils.VisualStudioUtil;
 import insynctive.support.utils.slack.SlackMessage;
 import insynctive.support.utils.slack.SlackUtil;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
-import insynctive.support.utils.vs.VisualStudioField;
-import insynctive.support.utils.vs.VisualStudioUtil;
+import insynctive.support.utils.vs.VisualStudioTaskState;
+import insynctive.support.utils.vs.VisualStudioWorkItem;
+import insynctive.support.utils.vs.VisualStudioWorkItemState;
+import insynctive.support.utils.vs.builder.VisualStudioWorkItemBuilder;
 
 @Controller
 @RequestMapping(value = "/vs")
 public class VisualStudioController {
 
+	private final WorkItemDao workItemDao;
 	
-	@RequestMapping(value = "/updateWorkItem" ,method = RequestMethod.POST)
+	@Inject
+	public VisualStudioController(WorkItemDao workItemDao) {
+		this.workItemDao = workItemDao;
+	}
+	
+	
+	@RequestMapping(value = "/updateWorkItem/{account}" ,method = RequestMethod.POST)
 	@ResponseBody
-	public String restToState(@RequestBody VisualStudioForm vsForm) throws Exception{
+	public String restToState(@RequestBody VisualStudioForm workItemUpdated, @PathVariable String account) throws Exception{
 
-		String returnMessage = "Is Task: "+vsForm.isATask();
-		returnMessage += "- Is Bug: "+vsForm.isABug();
-		returnMessage += "- Is Test Bug: "+vsForm.isTestBug();
-		returnMessage += "- Is Develop Fix: "+vsForm.isDevelopFix();
-		returnMessage += "- Was Change to approved: "+vsForm.wasChangeToApprooved();
-		returnMessage += "- Was Change to In Progress: "+vsForm.wasChangeToInProgress();
-		returnMessage += "- Was Change to Done: "+vsForm.wasChangeToDone();
+		//Default return message
+		String returnMessage = "Is Task: "+workItemUpdated.isATask();
+		returnMessage += "- Is Bug: "+workItemUpdated.isABug();
+		returnMessage += "- Is Test Bug: "+workItemUpdated.isTestFix();
+		returnMessage += "- Is Develop Fix: "+workItemUpdated.isDevelopFix();
+		returnMessage += "- Was Change to approved: "+workItemUpdated.wasChangeToApprooved();
+		returnMessage += "- Was Change to In Progress: "+workItemUpdated.wasChangeToInProgress();
+		returnMessage += "- Was Change to Done: "+workItemUpdated.wasChangeToDone();
 		
-		if(vsForm.isABug() && vsForm.wasChangeToApprooved()){
-			// Create 3 Tasks (Develop Fix - Test Bug - Merge to Master)
+		if(workItemUpdated.isABug() && workItemUpdated.wasChangeToApprooved()){
+			returnMessage = "Create 3 Tasks (Develop Fix - Test Fix - Merge to Master)";
 			
-		} else if(vsForm.isATask() && vsForm.isDevelopFix() && vsForm.wasChangeToInProgress()){
-			//Change Bug status to COMMITED.
+			VisualStudioWorkItem developFixField = new VisualStudioWorkItemBuilder()
+					.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
+					.addTitle("Develop Fix")
+					.addStatus(VisualStudioTaskState.TO_DO)
+					.addIteration(workItemUpdated.getIteration())
+					.build();
 			
-		} else if(vsForm.isATask() && vsForm.isDevelopFix() && vsForm.wasChangeToDone()){
-			//"Slack QA for testing.
+			VisualStudioWorkItem testFixField = new VisualStudioWorkItemBuilder()
+					.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
+					.addTitle("Test Fix")
+					.addStatus(VisualStudioTaskState.TO_DO)
+					.addIteration(workItemUpdated.getIteration())
+					.build();
+			
+			VisualStudioWorkItem mergeToMasterField = new VisualStudioWorkItemBuilder()
+					.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
+					.addTitle("Merge to Master")
+					.addStatus(VisualStudioTaskState.TO_DO)
+					.addIteration(workItemUpdated.getIteration())
+					.build();
+			
+			//Check if the task were not assigend to the bug in the past.
+			
+			if(workItemDao.getByEntityID(workItemUpdated.getWorkItemID().toString(10)) == null){
+				
+				//Create 3 Tasks If not exists (TODO This will be change to DB track WorkItems creation)
+				VisualStudioUtil.createNewTask(developFixField, workItemUpdated.getProject(), account); 
+				VisualStudioUtil.createNewTask(testFixField, workItemUpdated.getProject(), account);
+				VisualStudioUtil.createNewTask(mergeToMasterField, workItemUpdated.getProject(), account);
+
+				//Save in DB the ID of bug.
+				workItemDao.save(String.valueOf(workItemUpdated.getWorkItemID()));
+			}
+			
+		} 
+		
+		else if(workItemUpdated.isATask() && workItemUpdated.isDevelopFix() && workItemUpdated.wasChangeToInProgress()){
+			returnMessage = "Change Bug status to COMMITED.";
+
+			//Get Bug Relation.
+			VisualStudioRevisionForm bugRelation = workItemUpdated.getFirstRelationFullObject(account);
+			if(!bugRelation.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
+			
+			//Modified State
+			VisualStudioWorkItem bugWorkItem = new VisualStudioWorkItemBuilder()
+					.modifiedStatus(VisualStudioWorkItemState.COMMITTED)
+					.build();
+			
+			//Update
+			VisualStudioUtil.updateWorkItem(bugWorkItem, String.valueOf(bugRelation.getId()), workItemUpdated.getProject(), account);
+		} 
+		
+		else if(workItemUpdated.isATask() && workItemUpdated.isDevelopFix() && workItemUpdated.wasChangeToDone()){
 			returnMessage = "Slack QA for testing.";
-			VisualStudioRevisionForm bugWorkItem = vsForm.getFirstRelationFullObject();
-			VisualStudioRevisionForm testBugWorkItem = VisualStudioUtil.getWorkItem(bugWorkItem.findIDOfTestBugTask());
 			
+			//Get Bug Relation.
+			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+			if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
+			
+			//Get Task named: 'Test Fix'
+			VisualStudioRevisionForm testBugWorkItem = bugWorkItem.findTestFixTask(account);
+			
+			//Slack QA fort testing..
 			SlackMessage message = new SlackMessageBuilder()
-					.setIconEmoji(":trollface:")
+					.setIconEmoji(":bug:")
 					.setUsername("Visual Studio Support")
 					.setChannel(SlackUtil.getSlackAccountMentionByEmail(testBugWorkItem.getAssignedToEmail()))
-					.setText("Please Test this <"+vsForm.getFirstRelation().getEditURL()+"| Bug (#"+vsForm.getFirstRelation().getRelationID()+")> - "+vsForm.getNameOfOwner()+" finish the fix.")
+					.setText("<"+workItemUpdated.getFirstRelation().getEditURL()+"| Bug #"+workItemUpdated.getFirstRelation().getRelationID()+"> - Has been fixed and is ready for you to test it.")
 					.build();
 			SlackUtil.sendMessage(message);
+		} 
+		
+		else if(workItemUpdated.isATask() && workItemUpdated.isDevelopFix() && workItemUpdated.wasChangeFromDoneToToDo()){
+			returnMessage = "Slack Developer for Re-Open";
 			
-		} else if(vsForm.isATask() && vsForm.isTestBug() && vsForm.wasChangeToDone()){
-			// Assign 'Merge to Master' to Developer.
-			// Slack Developer.
+			//Get Bug Relation.
+			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+			if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 			
+			//Get Task named: 'Develop Fix'
+			VisualStudioRevisionForm developBugWorkItem = bugWorkItem.findDevelopFixTask(account);
+			
+			//Slack QA fort testing..
+			SlackMessage message = new SlackMessageBuilder()
+					.setIconEmoji(":hammer_and_wrench:")
+					.setUsername("Visual Studio Support")
+					.setChannel(SlackUtil.getSlackAccountMentionByEmail(developBugWorkItem.getAssignedToEmail()))
+					.setText("<"+workItemUpdated.getFirstRelation().getEditURL()+"| Bug #"+workItemUpdated.getFirstRelation().getRelationID()+"> - Has been reopened, please take a look at it for more details.")
+					.build();
+			SlackUtil.sendMessage(message);
+		} 
+		
+		else if(workItemUpdated.isATask() && workItemUpdated.isTestFix() && workItemUpdated.wasChangeToDone()){
+			returnMessage = "Assign 'Merge to Master' to Developer";
+			returnMessage +=  " and Slack Developer.";
+			
+			//Get Bug Relation.
+			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+			if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
+			
+			//Get Task named: 'Develop Fix'
+			VisualStudioRevisionForm developFix = bugWorkItem.findDevelopFixTask(account);
+			
+			//Get Task named: 'Merge to Master'
+			String mergeToMasterID = bugWorkItem.findIDOfMergeToMasterTask(account);
+			
+			//Modified State
+			VisualStudioWorkItem mergeToMasterTask= new VisualStudioWorkItemBuilder()
+					.addAssignTo(developFix.getFields().getNameOfOwner())
+					.build();
+			
+			//Update
+			VisualStudioUtil.updateWorkItem(mergeToMasterTask, mergeToMasterID, workItemUpdated.getProject(), account);
+			
+			//Slack Developer fort Merge to master..
+			SlackMessage message = new SlackMessageBuilder()
+					.setIconEmoji(":bulb:")
+					.setUsername("Visual Studio Support")
+					.setChannel(SlackUtil.getSlackAccountMentionByEmail(developFix.getAssignedToEmail()))
+					.setText("<"+workItemUpdated.getFirstRelation().getEditURL()+"| Bug #"+workItemUpdated.getFirstRelation().getRelationID()+"> - Has been tested and is ready for you to merge it to master.")
+					.build();
+			SlackUtil.sendMessage(message);
 		}
+		
 		
 		return "{\"status\" : 200, \"message\": \""+returnMessage+"\"}";
 	}
-	
-	public static void main(String[] args) throws Exception {
-		VisualStudioChangeValue changeValuestate = new VisualStudioChangeValue();
-		changeValuestate.setNewValue("Done");
-		changeValuestate.setOldValue("In Progress");
-		
-		VisualStudioChangeFieldForm fieldform = new VisualStudioChangeFieldForm();
-		fieldform.setState(changeValuestate);
-		
-		VisualStudioFieldForm ff = new VisualStudioFieldForm();
-		ff.setAssignedTo("Eugenio Valeiras <evaleiras@insynctive.com>");
-		ff.setIteration("Insynctive\\February 2016\\FEB3-2016");
-		ff.setState("Done");
-		ff.setTitle("Develop Fix");
-		ff.setType("Task");
-		
-		VisualStudioRelationsForm vsRelatioNForm1 = new VisualStudioRelationsForm();
-		vsRelatioNForm1.setRel("System.LinkTypes.Hierarchy-Reverse");
-		vsRelatioNForm1.setUrl("https://insynctive.visualstudio.com/DefaultCollection/_apis/wit/workItems/345");
-		List<VisualStudioRelationsForm> list = new ArrayList<>();
-		list.add(vsRelatioNForm1);
-		
-		VisualStudioRevisionForm revisionForm = new VisualStudioRevisionForm();
-		revisionForm.setFields(ff);
-		revisionForm.setRelations(list);
-		
-		VisualStudioResourceForm resource = new VisualStudioResourceForm();
-		resource.setWorkItemId(BigInteger.valueOf(788));
-		resource.setUrl("https://insynctive.visualstudio.com/DefaultCollection/_apis/wit/workItems/788/updates/8");
-		resource.setFields(fieldform);
-		resource.setRevision(revisionForm);
-		
-		VisualStudioForm form = new VisualStudioForm();
-		form.setResource(resource);
-		
-		VisualStudioController controller = new VisualStudioController();
-		System.out.println(controller.restToState(form));
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

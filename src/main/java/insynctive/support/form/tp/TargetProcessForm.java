@@ -1,9 +1,9 @@
-package insynctive.support.form;
+package insynctive.support.form.tp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TargetProcessRequest {
+public class TargetProcessForm {
 
 	private String entityID;
 	private String intercomID;

@@ -3,13 +3,15 @@ package insynctive.support.form.vs;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioFieldForm {
 
 	@JsonProperty("System.Title")
 	private String title;
+	
+	@JsonProperty("System.TeamProject")
+	private String project;
 	
 	@JsonProperty("System.State")
 	private String state;
@@ -63,6 +65,14 @@ public class VisualStudioFieldForm {
 		this.assignedTo = assignedTo;
 	}
 
+	public String getProject() {
+		return project;
+	}
+
+	public void setProject(String project) {
+		this.project = project;
+	}
+
 	//Methods
 	@JsonIgnore
 	public boolean isBug(){
@@ -86,7 +96,7 @@ public class VisualStudioFieldForm {
 	@JsonIgnore
 	public String getNameOfOwner() {
 		if(assignedTo != null){
-			return assignedTo.split("<")[0];
+			return assignedTo.split(" <")[0];
 		} else {
 			return "";
 		}

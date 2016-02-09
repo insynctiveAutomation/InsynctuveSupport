@@ -1,7 +1,6 @@
 package insynctive.support.utils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.intercom.api.Admin;
@@ -10,7 +9,6 @@ import io.intercom.api.AdminReply;
 import io.intercom.api.Conversation;
 import io.intercom.api.Intercom;
 import io.intercom.api.User;
-import io.intercom.api.UserReply;
 
 public class IntercomUtil {
 

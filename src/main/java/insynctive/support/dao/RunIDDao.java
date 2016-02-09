@@ -1,12 +1,9 @@
 package insynctive.support.dao;
 
-import java.math.BigDecimal;
-
 import javax.inject.Inject;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +13,7 @@ import insynctive.support.model.RunID;
 @Transactional
 public class RunIDDao {
 
-private final SessionFactory sessionFactory;
+	private final SessionFactory sessionFactory;
 	
 	@Inject
 	public RunIDDao(SessionFactory sessionFactory) {

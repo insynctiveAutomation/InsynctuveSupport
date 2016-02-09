@@ -1,5 +1,9 @@
 package insynctive.support.utils.vs;
 
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class VisualStudioField {
 
 	private String op;
@@ -31,5 +35,14 @@ public class VisualStudioField {
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	@JsonIgnore
+	public JSONObject asJson(){
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("op", op);
+		jsonObj.put("path", path);
+		jsonObj.put("value", value);
+		return jsonObj;
 	}
 }

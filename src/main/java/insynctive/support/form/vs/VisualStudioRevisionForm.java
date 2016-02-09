@@ -5,14 +5,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-import insynctive.support.utils.vs.VisualStudioUtil;
+import insynctive.support.utils.VisualStudioUtil;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioRevisionForm {
 
-	@JsonProperty("fields")
 	private VisualStudioFieldForm fields;
 	private List<VisualStudioRelationsForm> relations = new ArrayList<>();
 	private Integer id;
@@ -90,7 +88,7 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore
-	public boolean isTestBug(){
+	public boolean isTestFix(){
 		String title = getTitle();
 		return (title != null) ? title.toLowerCase().equals("test fix") || title.toLowerCase().equals("testfix")  : false;
 	}
@@ -112,30 +110,84 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore	
-	public String findIDOfTestBugTask() throws Exception {
+	public VisualStudioRevisionForm findTestFixTask(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID());
-			if(workItem.isTestBug()) return relation.getRelationID();
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isTestFix()) return workItem;
 		}
-		throw new Exception("VisualStudioRevisionForm.findIDOfTestBugTask");
+		return null;
 	}
 	
 	@JsonIgnore	
-	public String findIDOfDevelopFixTask() throws Exception {
+	public String findIDOfTestFixTask(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID());
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isTestFix()) return relation.getRelationID();
+		}
+		return null;
+	}
+	
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findDevelopFixTask(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isDevelopFix()) return workItem;
+		}
+		return null;
+	}
+
+	@JsonIgnore	
+	public String findIDOfDevelopFixTask(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
 			if(workItem.isDevelopFix()) return relation.getRelationID();
 		}
-		throw new Exception("VisualStudioRevisionForm.findIDOfDevelopFixTask");
+		return null;
+	}
+	
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findMergeToMasterTask(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isMergeToMaster()) return workItem;
+		}
+		return null;
 	}
 	
 	@JsonIgnore	
-	public String findIDOfMergeToMasterTask() throws Exception {
+	public String findIDOfMergeToMasterTask(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID());
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
 			if(workItem.isMergeToMaster()) return relation.getRelationID();
 		}
-		throw new Exception("VisualStudioRevisionForm.findIDOfMergeToMasterTask");
+		return null;
+	}
+	
+	@JsonIgnore	
+	public void changeState(String value) throws Exception {
+		if(fields != null){
+			fields.setState(value);
+		} else{
+			throw new Exception("fields not assigned.");
+		}
+	}
+
+	@JsonIgnore	
+	public String getProject() throws Exception {
+		if(fields != null){
+			return fields.getProject();
+		}
+			throw new Exception("VisualStudioRevisionForm.getProject()");
+	}
+	
+	@JsonIgnore	
+	public String getIteration() throws Exception {
+		if(fields != null){
+			return fields.getIteration();
+		}
+			throw new Exception("VisualStudioRevisionForm.getIteration()");
 	}
 	
 }

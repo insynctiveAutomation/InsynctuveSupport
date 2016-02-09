@@ -1,13 +1,11 @@
 package insynctive.support.form.vs;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import insynctive.support.utils.vs.VisualStudioField;
-import insynctive.support.utils.vs.VisualStudioUtil;
+import insynctive.support.utils.VisualStudioUtil;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioForm {
@@ -62,17 +60,22 @@ public class VisualStudioForm {
 	
 	@JsonIgnore
 	public boolean wasChangeToApprooved(){
-		return resource != null && resource.getFields().isApproved() && !resource.getFields().wasApproved(); 
+		return resource != null && resource.wasChangeToApproved(); 
 	}
 	
 	@JsonIgnore
 	public boolean wasChangeToDone(){
-		return resource != null && resource.getFields().isDone() && !resource.getFields().wasDone(); 
+		return resource != null && resource.wasChangeToDone();
 	}
 	
 	@JsonIgnore	
 	public boolean wasChangeToInProgress(){
-		return resource != null && resource.getFields().isInProgress() && !resource.getFields().wasInProgress(); 
+		return resource != null && resource.wasChangeToInProgress();
+	}
+
+	@JsonIgnore	
+	public boolean wasChangeFromDoneToToDo() {
+		return resource != null && resource.wasChangeFromDoneToTodo();
 	}
 	
 	@JsonIgnore	
@@ -81,8 +84,8 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore	
-	public boolean isTestBug(){
-		return resource.isTestBug();
+	public boolean isTestFix(){
+		return resource.isTestFix();
 	}
 	
 	@JsonIgnore	
@@ -101,16 +104,28 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore	
+	public String getProject() throws Exception{
+		return resource.getProject();
+	}
+	
+	@JsonIgnore	
 	public String getNameOfOwner() throws Exception{
-		if(resource.getRevision() != null){
-			return resource.getRevision().getNameOfOwner();
+		if(resource != null){
+			return resource.getNameOfOwner();
 		}
 		throw new Exception("VisualStudioForm.getNameOfOwner");
 	}
 	
 	@JsonIgnore	
-	public VisualStudioRevisionForm getFirstRelationFullObject() throws Exception {
-		return VisualStudioUtil.getWorkItem(getFirstRelation().getRelationID());
+	public VisualStudioRevisionForm getFirstRelationFullObject(String account) throws Exception {
+		return VisualStudioUtil.getWorkItem(getFirstRelation().getRelationID(), account);
 	}
-	
+
+	@JsonIgnore	
+	public String getIteration() throws Exception {
+		if(resource != null){
+			return resource.getIteration();
+		}
+		throw new Exception("VisualStudioForm.getIteration");
+	}
 }
