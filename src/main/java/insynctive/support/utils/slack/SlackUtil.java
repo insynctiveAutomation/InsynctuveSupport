@@ -9,6 +9,7 @@ import java.net.URL;
 import org.json.JSONObject;
 import org.json.simple.JSONArray;
 
+import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 
 public class SlackUtil {
@@ -61,70 +62,22 @@ public class SlackUtil {
 	
 	public static String getSlackAccountMentionByEmail(String email) throws IOException{
 		
-		switch (email) {
-			case "evaleiras@insynctive.com":
-				return "@eugeniovaleiras";
-			
-			case "rgonzalez@insynctive.com":
-				return "@rgonzalez";
-				
-			case "bpetrovski@insynctive.com":
-				return "@bpetrovski";
-			
-			case "mjaneva@insynctive.com":
-				return "@mjaneva";
+		UserDetails userDetailFindByEmail = UserDetails.findByEmail(email);
 		
-			case "atodorovski@insynctive.com":
-				return "@atanast";
+		if(userDetailFindByEmail != null){
+			return userDetailFindByEmail.slackMention;
+		} 
 		
-			case "cpettibone@insynctive.com":
-				return "@cpettibone";
-		
-			case "cbota@insynctive.com":
-				return "@cristibota";
-		
-			case "mdjonov@insynctive.com":
-				return "@djonov";
-		
-			case "dtravieso@insynctive.com":
-				return "@dtravieso";
-		
-			case "ekish@insynctive.com":
-				return "@erickish";
-			
-			case "ignaciof6@gmail.com":
-				return "@ignacio";
-			
-			case "lsulev@insynctive.com":
-				return "@ljupco.sulev";
-		
-			case "roland.andrei@gmail.com":
-				return "@roland";
-		
-			case "slytvyn@insynctive.com":
-				return "@serhii";
-		
-			case "svaz@insynctive.com":
-				return "@simon";
-		
-			case "tstojkovski@insynctive.com":
-				return "@tstojkovski";
-		
-			case "vlatko_n3@hotmail.com":
-				return "@vlatko_n3";
-			
-			case "vojches@gmail.com":
-				return "@vojche";
+		if(email != null || !email.equals("")){
+			notifyIfNotExist(email);
 		}
-		
-		notifyIfNotExist(email);
 		return null;
 	}
 
 	private static void notifyIfNotExist(String email) throws IOException {
 		if(email != null && !email.equals("")){
 			SlackMessage message = new SlackMessageBuilder()
-					.setText("@eugeniovaleiras please set "+email+" to match the right user in Slack")
+					.setText(UserDetails.EUGENIO_VALEIRAS.slackMention+" please set "+email+" to match the right user in Slack")
 					.setChannel(":heavy_plus_sign:")
 					.setUsername("Bot Notify")
 					.setChannel("@eugeniovaleiras")

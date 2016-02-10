@@ -45,7 +45,7 @@ public class VisualStudioUtil {
 		return ObjectResponse;
 	}
 	
-	public static void createNewTask(VisualStudioWorkItem workItem, String project, String account) throws IOException, URISyntaxException{
+	public static Boolean createNewTask(VisualStudioWorkItem workItem, String project, String account) throws IOException, URISyntaxException{
 		String urlString = getCreateWorkItemUrl(project, "Task", account);
 
 		JSONArray fields = new JSONArray();
@@ -56,10 +56,10 @@ public class VisualStudioUtil {
 			fields.add(relation.asJson());
 		}
 		
-		sendPatch(urlString, fields);
+		return sendPatch(urlString, fields);
 	}
 
-	public static void updateWorkItem(VisualStudioWorkItem workItem, String id, String project, String account) throws IOException, URISyntaxException{
+	public static Boolean updateWorkItem(VisualStudioWorkItem workItem, String id, String project, String account) throws IOException, URISyntaxException{
 		String urlString = getModifiedWorkItemUrl(project, id, account);
 
 		JSONArray fields = new JSONArray();
@@ -70,10 +70,10 @@ public class VisualStudioUtil {
 			fields.add(relation.asJson());	
 		} 
 		
-		sendPatch(urlString, fields);
+		return sendPatch(urlString, fields);
 	}
 
-	private static void sendPatch(String urlString, JSONArray fields) throws IOException, ClientProtocolException, URISyntaxException {
+	private static Boolean sendPatch(String urlString, JSONArray fields) throws IOException, ClientProtocolException, URISyntaxException {
 		//Create Data JSON
 		StringEntity entity = new StringEntity(fields.toJSONString(), "UTF-8");
 		entity.setContentType("application/json");
@@ -94,6 +94,8 @@ public class VisualStudioUtil {
 		
 		System.out.println("Status: \n"+response.getStatusLine().getStatusCode());
 		System.out.println("Response: \n"+response);
+		
+		return response.getStatusLine().getStatusCode() == 200;
 	}
 	
 	private static String getModifiedWorkItemUrl(String project, String id, String account){

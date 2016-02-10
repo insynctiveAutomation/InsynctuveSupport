@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import insynctive.support.utils.VisualStudioUtil;
+import insynctive.support.utils.vs.VisualStudioTaskName;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioForm {
@@ -43,12 +44,18 @@ public class VisualStudioForm {
 		return resource != null ? resource.getUrl() : "";
 	}
 	
+	@JsonIgnore
 	public VisualStudioRelationsForm getFirstRelation(){
 		if(resource != null){
-			VisualStudioRevisionForm revision = resource.getRevision();
-			if(revision != null){
-				return revision.getFirstRelation();
-			}
+			return resource.getFirstRelation();
+		}
+		return null;
+	}
+
+	@JsonIgnore
+	public String getCreatedBy() throws Exception {
+		if(resource != null){
+			return resource.getCreatedBy();
 		}
 		return null;
 	}
@@ -78,21 +85,53 @@ public class VisualStudioForm {
 		return resource != null && resource.wasChangeFromDoneToTodo();
 	}
 	
-	@JsonIgnore	
+	//TASK Manage
+	@JsonIgnore
 	public boolean isDevelopFix(){
 		return resource.isDevelopFix();
 	}
 	
-	@JsonIgnore	
-	public boolean isTestFix(){
-		return resource.isTestFix();
-	}
-	
-	@JsonIgnore	
+	@JsonIgnore
 	public boolean isMergeToMaster(){
 		return resource.isMergeToMaster();
 	}
 	
+	@JsonIgnore
+	public boolean isTestStrategy() {
+		return resource.isTestStrategy();
+	}
+	
+	@JsonIgnore
+	public boolean isCreateANewBranch() {
+		return resource.isCreateANewBranch();
+	}
+	
+	@JsonIgnore
+	public boolean isReproduceWithAutomatedTest() {
+		return resource.isReproduceWithAutomatedTest();
+	}
+	
+	@JsonIgnore
+	public boolean isGetCodeReview() {
+		return resource.isGetCodeReview();
+	}
+	
+	@JsonIgnore
+	public boolean isFunctionalTest() {
+		return resource.isFunctionalTest();
+	}
+	
+	@JsonIgnore
+	public boolean isRebaseIntegrationToMaster() {
+		return resource.isRebaseIntegrationToMaster();
+	}
+	
+	@JsonIgnore
+	public boolean isTestOnMaster() {
+		return resource.isTestOnMaster();
+	}
+	
+	//Work Item Manage
 	@JsonIgnore	
 	public boolean isABug(){
 		return resource.isABug();
@@ -119,6 +158,11 @@ public class VisualStudioForm {
 	@JsonIgnore	
 	public VisualStudioRevisionForm getFirstRelationFullObject(String account) throws Exception {
 		return VisualStudioUtil.getWorkItem(getFirstRelation().getRelationID(), account);
+	}
+
+	@JsonIgnore	
+	public boolean noHaveParent() {
+		return getFirstRelation() == null;
 	}
 
 	@JsonIgnore	

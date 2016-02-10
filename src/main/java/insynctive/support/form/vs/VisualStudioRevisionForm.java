@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import insynctive.support.utils.VisualStudioUtil;
+import insynctive.support.utils.vs.VisualStudioTaskName;
+import insynctive.support.utils.vs.VisualStudioTaskState;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioRevisionForm {
@@ -84,19 +86,55 @@ public class VisualStudioRevisionForm {
 	@JsonIgnore
 	public boolean isDevelopFix(){
 		String title = getTitle();
-		return (title != null) ? title.toLowerCase().equals("develop fix") || title.toLowerCase().equals("developfix")  : false;
-	}
-	
-	@JsonIgnore
-	public boolean isTestFix(){
-		String title = getTitle();
-		return (title != null) ? title.toLowerCase().equals("test fix") || title.toLowerCase().equals("testfix")  : false;
+		return (title != null) ? title.equals(VisualStudioTaskName.DEVELOP_FIX.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isMergeToMaster(){
 		String title = getTitle();
-		return (title != null) ? title.toLowerCase().equals("merge to master") || title.toLowerCase().equals("mergetomaster")  : false;
+		return (title != null) ? title.equals(VisualStudioTaskName.MERGE_TO_MASTER.value) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isTestStrategy() {
+		String title = getTitle();
+		return (title != null) ? title.equals(VisualStudioTaskName.TEST_STRATEGY.value) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isCreateANewBranch() {
+		String title = getTitle();
+		return (title != null) ? title.equals(VisualStudioTaskName.CREATE_A_NEW_BRANCH.value) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isReproduceWithAutomatedTest() {
+		String title = getTitle();
+		return (title != null) ? title.equals(VisualStudioTaskName.REPRODUCE_WITH_AUTOMATED_TESTS.value) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isGetCodeReview() {
+		String title = getTitle();
+		return (title != null) ? title.equals(VisualStudioTaskName.GET_CODE_REVIEW.value) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isFunctionalTest() {
+		String title = getTitle();
+		return (title != null) ? title.equals(VisualStudioTaskName.FUNCTIONAL_TEST.value) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isRebaseIntegrationToMaster() {
+		String title = getTitle();
+		return (title != null) ? title.equals(VisualStudioTaskName.REABASE_INTEGRATION_TO_MASTER.value) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isTestOnMaster() {
+		String title = getTitle();
+		return (title != null) ? title.equals(VisualStudioTaskName.TEST_ON_MASTER.value) : false;
 	}
 	
 	@JsonIgnore
@@ -110,38 +148,10 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore	
-	public VisualStudioRevisionForm findTestFixTask(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isTestFix()) return workItem;
-		}
-		return null;
-	}
-	
-	@JsonIgnore	
-	public String findIDOfTestFixTask(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isTestFix()) return relation.getRelationID();
-		}
-		return null;
-	}
-	
-	
-	@JsonIgnore	
 	public VisualStudioRevisionForm findDevelopFixTask(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
 			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
 			if(workItem.isDevelopFix()) return workItem;
-		}
-		return null;
-	}
-
-	@JsonIgnore	
-	public String findIDOfDevelopFixTask(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isDevelopFix()) return relation.getRelationID();
 		}
 		return null;
 	}
@@ -157,10 +167,82 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore	
-	public String findIDOfMergeToMasterTask(String account) throws Exception {
+	public VisualStudioRevisionForm findCreateNewBranch(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
 			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isMergeToMaster()) return relation.getRelationID();
+			if(workItem.isCreateANewBranch()) return workItem;
+		}
+		return null;
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findTestStrategy(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isTestStrategy()) return workItem;
+		}
+		return null;
+	}
+
+	@JsonIgnore	
+	public VisualStudioRevisionForm findReproduceWithAutomatedTest(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isReproduceWithAutomatedTest()) return workItem;
+		}
+		return null;
+	}
+
+	@JsonIgnore	
+	public VisualStudioRevisionForm findDevelopFix(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isDevelopFix()) return workItem;
+		}
+		return null;
+	}
+
+	@JsonIgnore	
+	public VisualStudioRevisionForm findGetCodeReview(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isGetCodeReview()) return workItem;
+		}
+		return null;
+	}
+
+	@JsonIgnore	
+	public VisualStudioRevisionForm findFunctionalTest(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isFunctionalTest()) return workItem;
+		}
+		return null;
+	}
+
+	@JsonIgnore	
+	public VisualStudioRevisionForm findMergeToMaster(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isMergeToMaster()) return workItem;
+		}
+		return null;
+	}
+
+	@JsonIgnore	
+	public VisualStudioRevisionForm findRebaseIntegrationToMaster(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isRebaseIntegrationToMaster()) return workItem;
+		}
+		return null;
+	}
+
+	@JsonIgnore	
+	public VisualStudioRevisionForm findDoneDoneTest(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isTestOnMaster()) return workItem;
 		}
 		return null;
 	}
@@ -190,4 +272,36 @@ public class VisualStudioRevisionForm {
 			throw new Exception("VisualStudioRevisionForm.getIteration()");
 	}
 	
+	@JsonIgnore	
+	public String getCreatedBy() throws Exception {
+		if(fields != null){
+			return fields.getCreatedBy();
+		}
+			throw new Exception("VisualStudioRevisionForm.getCreatedBy()");
+	}
+
+	@JsonIgnore	
+	public String getState() {
+		return fields.getState();
+	}
+
+	@JsonIgnore	
+	public boolean isState(VisualStudioTaskState state) {
+		return fields.getState().equals(state.value);
+	}
+	
+	@JsonIgnore	
+	public boolean isStateToDo() {
+		return fields.getState().equals(VisualStudioTaskState.TO_DO.value);
+	}
+	
+	@JsonIgnore	
+	public boolean isStateInProgress() {
+		return fields.getState().equals(VisualStudioTaskState.IN_PROGRESS.value);
+	}
+	
+	@JsonIgnore	
+	public boolean isStateDone() {
+		return fields.getState().equals(VisualStudioTaskState.DONE.value);
+	}
 }

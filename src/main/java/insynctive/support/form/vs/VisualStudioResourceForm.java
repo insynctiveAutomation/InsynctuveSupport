@@ -67,17 +67,65 @@ public class VisualStudioResourceForm {
 	}
 	
 	@JsonIgnore
-	public boolean isTestFix(){
+	public boolean isMergeToMaster(){
 		if(revision != null) {
-			return revision.isTestFix();
+			return revision.isMergeToMaster();
 		}
 		return false;
 	}
 	
 	@JsonIgnore
-	public boolean isMergeToMaster(){
+	public boolean isTestStrategy() {
 		if(revision != null) {
-			return revision.isMergeToMaster();
+			return revision.isTestStrategy();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isCreateANewBranch() {
+		if(revision != null) {
+			return revision.isCreateANewBranch();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isReproduceWithAutomatedTest() {
+		if(revision != null) {
+			return revision.isReproduceWithAutomatedTest();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isGetCodeReview() {
+		if(revision != null) {
+			return revision.isGetCodeReview();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isFunctionalTest() {
+		if(revision != null) {
+			return revision.isFunctionalTest();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isRebaseIntegrationToMaster() {
+		if(revision != null) {
+			return revision.isRebaseIntegrationToMaster();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isTestOnMaster() {
+		if(revision != null) {
+			return revision.isTestOnMaster();
 		}
 		return false;
 	}
@@ -122,6 +170,22 @@ public class VisualStudioResourceForm {
 			return revision.getIteration();
 		}
 		throw new Exception("VisualStudioResourceForm.getIteration()");
+	}
+
+	@JsonIgnore
+	public VisualStudioRelationsForm getFirstRelation() {
+		if(revision != null){
+			return revision.getFirstRelation();
+		}
+		return null;
+	}
+
+	@JsonIgnore
+	public String getCreatedBy() throws Exception {
+		if(revision != null){
+			return revision.getCreatedBy(); 
+		}
+		return null;
 	}
 
 	@JsonIgnore
