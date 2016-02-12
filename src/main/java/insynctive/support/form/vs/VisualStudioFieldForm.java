@@ -25,7 +25,6 @@ public class VisualStudioFieldForm {
 	@JsonProperty("System.AssignedTo")
 	private String assignedTo;
 	
-	
 	@JsonProperty("System.CreatedBy")
 	private String createdBy;
 
@@ -97,20 +96,42 @@ public class VisualStudioFieldForm {
 	}
 
 	@JsonIgnore
-	public String getAssignedToEmail() {
-		if(assignedTo != null){
-			return assignedTo.split("<")[1].split(">")[0];
+	private String getEmail(String str) {
+		if(str != null){
+			return str.split("<")[1].split(">")[0];
 		} else {
 			return "";
 		}
 	}
 	
 	@JsonIgnore
-	public String getNameOfOwner() {
-		if(assignedTo != null){
-			return assignedTo.split(" <")[0];
+	private String getName(String str) {
+		if(str != null){
+			return str.split(" <")[0];
 		} else {
 			return "";
 		}
 	}
+
+	@JsonIgnore
+	public String getAssignedToEmail() {
+		return getEmail(assignedTo);
+	}
+	
+	@JsonIgnore
+	public String getAssignedToName() {
+		return getName(assignedTo);
+	}
+
+	@JsonIgnore
+	public String getCreatedByEmail() {
+		return getEmail(createdBy);
+	}
+	
+	@JsonIgnore
+	public String getCreatedByName() {
+		return getName(createdBy);
+	}
+	
+	
 }

@@ -76,11 +76,27 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore
-	public String getNameOfOwner() throws Exception {
+	public String getAssignedToName() throws Exception {
 		if(fields != null){
-			return fields.getNameOfOwner();
+			return fields.getAssignedToName();
 		} 
-		throw new Exception("VisualStudioRevisionForm.getNameOfOwner");
+		throw new Exception("VisualStudioRevisionForm.getAssignToName");
+	}
+	
+	@JsonIgnore
+	public String getCreatedByEmail() throws Exception {
+		if(fields != null){
+			return fields.getCreatedByEmail();
+		} 
+		throw new Exception("VisualStudioRevisionForm.getCreatedByEmail");
+	}
+
+	@JsonIgnore
+	public String getCreatedByName() throws Exception {
+		if(fields != null){
+			return fields.getCreatedByName();
+		} 
+		throw new Exception("VisualStudioRevisionForm.getCreatedByName");
 	}
 	
 	@JsonIgnore
@@ -303,5 +319,8 @@ public class VisualStudioRevisionForm {
 	@JsonIgnore	
 	public boolean isStateDone() {
 		return fields.getState().equals(VisualStudioTaskState.DONE.value);
+	}
+	public String getType() {
+		return fields.getType();
 	}
 }

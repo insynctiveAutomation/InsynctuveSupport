@@ -109,4 +109,9 @@ public class VisualStudioUtil {
 	private static String getWorkItemUrl(String id, String account){
 		return "https://"+account+".visualstudio.com/DefaultCollection/_apis/wit/workitems/"+id+"?api-version=1.0&$expand=relations";
 	}
+	
+	public static String getVisualWorkItemUrl(String id, String project, String account) {
+		// Engineering%20in%20Productivity%20Team/_workitems?_a=edit&id=189
+		return "https://"+(account)+".visualstudio.com/DefaultCollection/"+(project)+"/_workitems?_a=edit&id="+id;
+	}
 }

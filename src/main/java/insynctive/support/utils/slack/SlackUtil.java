@@ -68,7 +68,7 @@ public class SlackUtil {
 			return userDetailFindByEmail.slackMention;
 		} 
 		
-		if(email != null || !email.equals("")){
+		if(email != null && !email.equals("")){
 			notifyIfNotExist(email);
 		}
 		return null;

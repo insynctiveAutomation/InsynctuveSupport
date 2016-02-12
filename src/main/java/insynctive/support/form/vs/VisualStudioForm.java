@@ -64,6 +64,11 @@ public class VisualStudioForm {
 	public BigInteger getWorkItemID(){
 		return resource.getWorkItemId();
 	}
+
+	@JsonIgnore
+	public boolean wasChangeAssignation() {
+		return resource != null && resource.wasChangeAssignation(); 
+	}
 	
 	@JsonIgnore
 	public boolean wasChangeToApprooved(){
@@ -86,6 +91,21 @@ public class VisualStudioForm {
 	}
 	
 	//TASK Manage
+	@JsonIgnore
+	public String getOldAssigned(){
+		return resource.getOldAssigned();
+	}
+	
+	@JsonIgnore
+	public String getOldAssignedName(){
+		return resource.getOldAssignedName();
+	}
+	
+	@JsonIgnore
+	public String getOldAssignedEmail(){
+		return resource.getOldAssignedEmail();
+	}
+	
 	@JsonIgnore
 	public boolean isDevelopFix(){
 		return resource.isDevelopFix();
@@ -148,11 +168,35 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore	
-	public String getNameOfOwner() throws Exception{
+	public String getAssignedToName() throws Exception{
 		if(resource != null){
-			return resource.getNameOfOwner();
+			return resource.getAssignedToName();
 		}
-		throw new Exception("VisualStudioForm.getNameOfOwner");
+		throw new Exception("VisualStudioForm.getAssignedToName()");
+	}
+	
+	@JsonIgnore	
+	public String getAssignedToEmail() throws Exception{
+		if(resource != null){
+			return resource.getAssignedToEmail();
+		}
+		throw new Exception("VisualStudioForm.getAssignToEmail()");
+	}
+	
+	@JsonIgnore	
+	public String getCreatedByEmail() throws Exception{
+		if(resource != null){
+			return resource.getCreatedByEmail();
+		}
+		throw new Exception("VisualStudioForm.getCreatedByEmail()");
+	}
+	
+	@JsonIgnore	
+	public String getCreatedByName() throws Exception{
+		if(resource != null){
+			return resource.getCreatedByName();
+		}
+		throw new Exception("VisualStudioForm.getCreatedByName()");
 	}
 	
 	@JsonIgnore	
@@ -171,5 +215,13 @@ public class VisualStudioForm {
 			return resource.getIteration();
 		}
 		throw new Exception("VisualStudioForm.getIteration");
+	}
+	
+	@JsonIgnore	
+	public String getType() throws Exception{
+		if(resource != null){
+			return resource.getType();
+		}
+		throw new Exception("VisualStudioForm.getType()");
 	}
 }

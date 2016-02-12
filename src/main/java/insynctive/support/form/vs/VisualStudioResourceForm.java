@@ -59,6 +59,11 @@ public class VisualStudioResourceForm {
 	}
 	
 	@JsonIgnore
+	public String getType() {
+		return revision != null ? revision.getType() : null;
+	}
+	
+	@JsonIgnore
 	public boolean isDevelopFix(){
 		if(revision != null) {
 			return revision.isDevelopFix();
@@ -139,14 +144,6 @@ public class VisualStudioResourceForm {
 	public boolean isATask(){
 		return revision != null && revision.getFields().isTask();
 	}
-
-	@JsonIgnore
-	public String getAssignedToEmail() throws Exception {
-		if(revision != null && revision.getFields() != null){
-			return revision.getAssignedToEmail();
-		}
-		throw new Exception("VisualStudioResourceForm.getAssignedToEmail()");
-	}
 	
 	@JsonIgnore
 	public String getProject() throws Exception {
@@ -157,11 +154,35 @@ public class VisualStudioResourceForm {
 	}
 	
 	@JsonIgnore
-	public String getNameOfOwner() throws Exception {
+	public String getAssignedToName() throws Exception {
 		if(revision != null){
-			return revision.getNameOfOwner();
+			return revision.getAssignedToName();
 		}
-		throw new Exception("VisualStudioResourceForm.getProject()");
+		throw new Exception("VisualStudioResourceForm.getAssignToName()");
+	}
+
+	@JsonIgnore
+	public String getAssignedToEmail() throws Exception {
+		if(revision != null && revision.getFields() != null){
+			return revision.getAssignedToEmail();
+		}
+		throw new Exception("VisualStudioResourceForm.getAssignedToEmail()");
+	}
+	
+	@JsonIgnore
+	public String getCreatedByEmail() throws Exception {
+		if(revision != null){
+			return revision.getCreatedByEmail();
+		}
+		throw new Exception("VisualStudioResourceForm.getCreatedByEmail()");
+	}
+
+	@JsonIgnore
+	public String getCreatedByName() throws Exception {
+		if(revision != null && revision.getFields() != null){
+			return revision.getCreatedByName();
+		}
+		throw new Exception("VisualStudioResourceForm.getCreatedByName()");
 	}
 	
 	@JsonIgnore
@@ -206,5 +227,25 @@ public class VisualStudioResourceForm {
 	@JsonIgnore
 	public boolean wasChangeFromDoneToTodo() {
 		return getFields() != null && getFields().isTodo() && getFields().wasDone();
+	}
+	
+	@JsonIgnore
+	public boolean wasChangeAssignation() {
+		return getFields() != null && getFields().wasChangeAssignation();
+	}
+	
+	@JsonIgnore
+	public String getOldAssigned() {
+		return getFields() != null ? getFields().getOldAssigned() : null;
+	}
+	
+	@JsonIgnore
+	public String getOldAssignedName() {
+		return getFields() != null ? getFields().getOldAssignedName() : null;
+	}
+	
+	@JsonIgnore
+	public String getOldAssignedEmail() {
+		return getFields() != null ? getFields().getOldAssignedEmail() : null;
 	}
 }
