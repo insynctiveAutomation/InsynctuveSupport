@@ -1,98 +1,54 @@
 package insynctive.support.utils.slack;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import insynctive.support.utils.vs.VisualStudioTaskName;
 
-import insynctive.support.utils.slack.builder.SlackAttachmentBuilder;
-import insynctive.support.utils.slack.builder.SlackFieldBuilder;
-import insynctive.support.utils.slack.builder.SlackMessageBuilder;
-
-public class SlackMessage {
-
-	private String url = "https://hooks.slack.com/services/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";
-	private String iconEmoji = ":ghost:";
-	private String username = "";
-	private String text;
-	private String channel;
-	private List<SlackAttachment> attachments = new ArrayList<>();
+public enum SlackMessage {
 	
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
-	}
-	public String getIconEmoji() {
-		return iconEmoji;
-	}
-	public void setIconEmoji(String iconEmoji) {
-		this.iconEmoji = iconEmoji;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	public String getChannel() {
-		return channel;
-	}
-	public void setChannel(String channel) {
-		this.channel = channel;
-	}
-	public List<SlackAttachment> getAttachments() {
-		return attachments;
-	}
-	public void setAttachments(List<SlackAttachment> attachments) {
-		this.attachments = attachments;
-	}
+	//Visual Studio Work Item Updated Messages
+	BUG_APPROVED(
+			":bug:", 
+			"Visual Studio Support", 
+			"<%s | Bug #%d> - Bug has been approved and is ready for \""+VisualStudioTaskName.TEST_STRATEGY.value+"\"."),
 	
-	public void addAttachment(SlackAttachment attachment){
-		attachments.add(attachment);
-	}
+	TEST_STRATEGY_DONE(
+			":bug:", 
+			"Visual Studio Support", 
+			"<%s | Bug #%d> - "+VisualStudioTaskName.TEST_STRATEGY.value+" has been agreed, you can start working on this bug."),
+	
+	DEVELOP_FIX_DONE(
+			":bug:", 
+			"Visual Studio Support", 
+			"<%s | Bug #%d> - Bug has been fixed, this is ready for testing."),
+	
+	FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE(
+			":bug:",
+			"Visual Studio Support", 
+			"<%s | Bug #%d> - Bug was tested and Code was reviewed and approved. You can "+VisualStudioTaskName.MERGE_TO_MASTER.value+"."),
+	
+	MERGE_TO_MASTER_DONE(
+			":bug:", 
+			"Visual Studio Support", 
+			"<%s | Bug #%d> - Bug has been merged to master and is ready for you to Test on master."),
 	
 	
-	//TEST
-	public static void main(String[] args) throws IOException {
-		String name = "name example";
-		
-		String fullUrl = "https://www.google.com";
-		String phase = "phase";
-		
-		String user = "evaleiras@insynctive.com";
-		String branch = "branchName";
-		String node = "node example";
-		String account = "alpha";
-		String version = "5.0.000.0000";
-		
-		String message = "Main Message";
-		SlackMessage Slackmessage = new SlackMessageBuilder()
-				.setUsername("Jenkins Install - Success Messenger")
-				.setText(message)
-				.setIconEmoji(":sunglasses:")
-				.setChannel("@eugeniovaleiras")
-				.addAttachment(new SlackAttachmentBuilder()
-						.setPretext("pretext")
-						.setColor("#00CE00")
-						.setFallback("fallback")
-						.addField(new SlackFieldBuilder().setTitle("title 1").setValue("value 1").build())
-						.build())
-				.addAttachment(new SlackAttachmentBuilder()
-						.setPretext("pretext")
-						.setColor("#00CE00")
-						.setFallback("fallback")
-						.addField(new SlackFieldBuilder().setTitle("title 2.0").setValue("value 2.0").build())
-						.addField(new SlackFieldBuilder().setTitle("title 2.1").setValue("value 2.1").build())
-						.build())
-				.build();
-			
-		SlackUtil.sendMessage(Slackmessage);
+	NEW_ASSIGNED_TO_WORK_ITEM(
+			":point_right:", 
+			"Visual Studio Support", 
+			"<%s | %s #%d> has just been assigned to you"),
+	
+	ASSIGNED_TO_WORK_ITEM(
+			":point_right:", 
+			"Visual Studio Support", 
+			"<%s | %s #%d> has been assigned from %s to you");
+	
+	public String img;
+	public String senderName; 
+	public String message;
+	
+	private SlackMessage(String img, String senderName, String message) {
+		this.img = img;
+		this.senderName = senderName;
+		this.message = message;
 	}
+	
 }

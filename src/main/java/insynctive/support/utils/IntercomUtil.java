@@ -22,14 +22,14 @@ public class IntercomUtil {
 	}
 
 	public static void makeANoteInIntercom(String body, String intercomID) {
-		makeANoteInIntercom(body, intercomID, null);
+		makeANoteInConversation(body, intercomID, null);
 	}
 	
-	public static void makeANoteInIntercomWithAuthor(String body, String intercomID, Admin admin) {
-		makeANoteInIntercom(body, intercomID, admin != null ? admin.getId() : null);
+	public static void makeANoteWithAuthor(String body, String intercomID, Admin admin) {
+		makeANoteInConversation(body, intercomID, admin != null ? admin.getId() : null);
 	}
 	
-	public static void makeANoteInIntercom(String body, String intercomID, String userID) {
+	public static void makeANoteInConversation(String body, String intercomID, String userID) {
 		Admin admin = new Admin().setId(userID != null ? userID : supportID);
 		AdminReply adminReply = new AdminReply(admin);
 		adminReply.setMessageType("note");
@@ -38,7 +38,7 @@ public class IntercomUtil {
 		Conversation.reply(intercomID, adminReply);
 	}
 	
-	public static void makeACommentInConversationIntercom(String body, String intercomID) {
+	public static void makeACommentInConversation(String body, String intercomID) {
 		Admin admin = new Admin().setId(supportID);
 		AdminReply adminReply = new AdminReply(admin);
 		adminReply.setBody(body);
@@ -52,7 +52,7 @@ public class IntercomUtil {
 		return admins;
 	}
 	
-	public static Conversation findIntercomConversationByID(String id){
+	public static Conversation findConversationByID(String id){
 		final Conversation conversation = Conversation.find(id);
 		
 		return conversation;

@@ -17,8 +17,8 @@ import insynctive.support.form.vs.VisualStudioForm;
 import insynctive.support.form.vs.VisualStudioRevisionForm;
 import insynctive.support.model.VisualStudioWorkItemEntity;
 import insynctive.support.utils.VisualStudioUtil;
+import insynctive.support.utils.slack.SlackMessageObject;
 import insynctive.support.utils.slack.SlackMessage;
-import insynctive.support.utils.slack.SlackMessages;
 import insynctive.support.utils.slack.SlackUtil;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 import insynctive.support.utils.vs.VisualStudioTaskName;
@@ -51,7 +51,7 @@ public class VisualStudioController {
 		returnMessage += "- Was Change to In Progress: "+workItemUpdated.wasChangeToInProgress();
 		returnMessage += "- Was Change to Done: "+workItemUpdated.wasChangeToDone();
 
-		if(workItemUpdated.wasChangeAssignation()){
+		if(workItemUpdated.wasChangeAssignation() && workItemUpdated.isATask()){
 			alertAssignation(workItemUpdated, account);
 		}
 		
@@ -73,20 +73,20 @@ public class VisualStudioController {
 		//Slack Assigned..
 		String project = workItemUpdated.getProject();
 		String text = workItemUpdated.getOldAssigned() != null ?
-				String.format(SlackMessages.ASSIGNED_TO_WORK_ITEM.message, 
+				String.format(SlackMessage.ASSIGNED_TO_WORK_ITEM.message, 
 						VisualStudioUtil.getVisualWorkItemUrl(workItemUpdated.getWorkItemID().toString(), project, account), 
 						workItemUpdated.getType(), 
 						workItemUpdated.getWorkItemID(), 
 						workItemUpdated.getOldAssignedName()) 
 				:
-				String.format(SlackMessages.NEW_ASSIGNED_TO_WORK_ITEM.message, 
+				String.format(SlackMessage.NEW_ASSIGNED_TO_WORK_ITEM.message, 
 						VisualStudioUtil.getVisualWorkItemUrl(workItemUpdated.getWorkItemID().toString(), project, account), 
 						workItemUpdated.getType(), 
 						workItemUpdated.getWorkItemID());
 		
-		SlackMessage message = new SlackMessageBuilder()
-			.setIconEmoji(SlackMessages.ASSIGNED_TO_WORK_ITEM.img)
-			.setUsername(SlackMessages.ASSIGNED_TO_WORK_ITEM.senderName)
+		SlackMessageObject message = new SlackMessageBuilder()
+			.setIconEmoji(SlackMessage.ASSIGNED_TO_WORK_ITEM.img)
+			.setUsername(SlackMessage.ASSIGNED_TO_WORK_ITEM.senderName)
 			.setChannel(SlackUtil.getSlackAccountMentionByEmail(workItemUpdated.getAssignedToEmail()))
 			.setText(text)
 			.build();
@@ -153,14 +153,6 @@ public class VisualStudioController {
 				rebaseIntegrationToMasterAndTestOnMasterDoneProcess(workItemUpdated, account, bugWorkItem);
 			}
 		}
-//		//Slack QA fort testing..
-//		SlackMessage message = new SlackMessageBuilder()
-//				.setIconEmoji(":bug:")
-//				.setUsername("Visual Studio Support")
-//				.setChannel(SlackUtil.getSlackAccountMentionByEmail(testBugWorkItem.getAssignedToEmail()))
-//				.setText("<"+workItemUpdated.getFirstRelation().getEditURL()+"| Bug #"+workItemUpdated.getFirstRelation().getRelationID()+"> - Has been fixed and is ready for you to test it.")
-//				.build();
-//		SlackUtil.sendMessage(message);
 		return returnMessage;
 	}
 
@@ -178,13 +170,12 @@ public class VisualStudioController {
 					.addTitle(VisualStudioTaskName.TEST_STRATEGY.value)
 					.addStatus(VisualStudioTaskState.TO_DO)
 					.addIteration(workItemUpdated.getIteration())
-					.addAssignTo(workItemUpdated.getCreatedBy())
+					.addAssignTo(workItemUpdated.getCreatedByName())
 					.build();
 				
 				
 				//Check if the task were not created.
 				if(workItemDao.getByEntityID(workItemUpdated.getWorkItemID()) == null){
-					
 					VisualStudioWorkItemEntity dbBug = new VisualStudioWorkItemEntity(); 
 					dbBug.setWorkItemID(workItemUpdated.getWorkItemID());
 					createANewTask(dbBug, testStrategyWorkItem, project, account, () -> dbBug.setTestStrategy(true), () -> !dbBug.isTestStrategy());
@@ -193,11 +184,11 @@ public class VisualStudioController {
 				}
 				
 				//Slack QA for create test strategy..
-				SlackMessage message = new SlackMessageBuilder()
-					.setIconEmoji(SlackMessages.BUG_APPROVED.img)
-					.setUsername(SlackMessages.BUG_APPROVED.senderName)
+				SlackMessageObject message = new SlackMessageBuilder()
+					.setIconEmoji(SlackMessage.BUG_APPROVED.img)
+					.setUsername(SlackMessage.BUG_APPROVED.senderName)
 					.setChannel(SlackUtil.getSlackAccountMentionByEmail(workItemUpdated.getCreatedByEmail()))
-					.setText(String.format(SlackMessages.BUG_APPROVED.message, VisualStudioUtil.getVisualWorkItemUrl(workItemUpdated.getWorkItemID().toString(), project, account), workItemUpdated.getWorkItemID()))
+					.setText(String.format(SlackMessage.BUG_APPROVED.message, VisualStudioUtil.getVisualWorkItemUrl(workItemUpdated.getWorkItemID().toString(), project, account), workItemUpdated.getWorkItemID()))
 					.build();
 				SlackUtil.sendMessage(message);
 				
@@ -230,18 +221,18 @@ public class VisualStudioController {
 			.addTitle(VisualStudioTaskName.REABASE_INTEGRATION_TO_MASTER.value)
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
-			.addAssignTo(bugWorkItem.getAssignedToName())
+			.addAssignTo(bugWorkItem.findMergeToMaster(account).getAssignedToName())
 			.build();
 		
 		
 		//Find Owner of 'Test Strategy'
-		String ownserOFAddAcceptanceCriteria = bugWorkItem.findTestStrategy(account).getAssignedToName();
+		VisualStudioRevisionForm functionalTest = bugWorkItem.findFunctionalTest(account);
 		VisualStudioWorkItem doneDoneTestTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
 			.addTitle(VisualStudioTaskName.TEST_ON_MASTER.value)
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
-			.addAssignTo(ownserOFAddAcceptanceCriteria)	
+			.addAssignTo(functionalTest.getAssignedToName())	
 			.build();
 
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString()); 
@@ -250,11 +241,11 @@ public class VisualStudioController {
 		workItemDao.saveOrUpdate(dbBug);
 		
 		//Slack QA for Functional Test
-		SlackMessage message = new SlackMessageBuilder()
-			.setIconEmoji(SlackMessages.MERGE_TO_MASTER_DONE.img)
-			.setUsername(SlackMessages.MERGE_TO_MASTER_DONE.senderName)
-			.setChannel(SlackUtil.getSlackAccountMentionByEmail(workItemUpdated.getCreatedByEmail()))
-			.setText(String.format(SlackMessages.MERGE_TO_MASTER_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(workItemUpdated.getWorkItemID().toString(), project, account), workItemUpdated.getWorkItemID()))
+		SlackMessageObject message = new SlackMessageBuilder()
+			.setIconEmoji(SlackMessage.MERGE_TO_MASTER_DONE.img)
+			.setUsername(SlackMessage.MERGE_TO_MASTER_DONE.senderName)
+			.setChannel(SlackUtil.getSlackAccountMentionByEmail(functionalTest.getAssignedToEmail()))
+			.setText(String.format(SlackMessage.MERGE_TO_MASTER_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(bugWorkItem.getId().toString(), project, account), bugWorkItem.getId()))
 			.build();
 		SlackUtil.sendMessage(message);
 				
@@ -266,11 +257,12 @@ public class VisualStudioController {
 		String returnMessage;
 		returnMessage = "Create 'Merge to Master'";
 		
+		VisualStudioRevisionForm findGetCodeReview = bugWorkItem.findGetCodeReview(account);
 		VisualStudioWorkItem mergeToMasterTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
 			.addTitle(VisualStudioTaskName.MERGE_TO_MASTER.value)
 			.addStatus(VisualStudioTaskState.TO_DO)
-			.addAssignTo(bugWorkItem.getAssignedToName())
+			.addAssignTo(findGetCodeReview.getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
 			.build();
 
@@ -279,11 +271,11 @@ public class VisualStudioController {
 		workItemDao.saveOrUpdate(dbBug);
 		
 		//Slack QA for Functional Test
-		SlackMessage message = new SlackMessageBuilder()
-			.setIconEmoji(SlackMessages.FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE.img)
-			.setUsername(SlackMessages.FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE.senderName)
-			.setChannel(SlackUtil.getSlackAccountMentionByEmail(bugWorkItem.getAssignedToEmail()))
-			.setText(String.format(SlackMessages.FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(bugWorkItem.getId().toString(), project, account), bugWorkItem.getId()))
+		SlackMessageObject message = new SlackMessageBuilder()
+			.setIconEmoji(SlackMessage.FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE.img)
+			.setUsername(SlackMessage.FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE.senderName)
+			.setChannel(SlackUtil.getSlackAccountMentionByEmail(findGetCodeReview.getAssignedToEmail()))
+			.setText(String.format(SlackMessage.FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(bugWorkItem.getId().toString(), project, account), bugWorkItem.getId()))
 			.build();
 		SlackUtil.sendMessage(message);
 				
@@ -305,12 +297,12 @@ public class VisualStudioController {
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString());
 		
 		//Find Owner of 'Find Test Strategy'
-		String ownserOFAddAcceptanceCriteria = bugWorkItem.findTestStrategy(account).getAssignedToName();
+		VisualStudioRevisionForm ownserOFAddAcceptanceCriteria = bugWorkItem.findTestStrategy(account);
 		VisualStudioWorkItem functionalTestTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
 			.addTitle(VisualStudioTaskName.FUNCTIONAL_TEST.value)
 			.addStatus(VisualStudioTaskState.TO_DO)
-			.addAssignTo(ownserOFAddAcceptanceCriteria)
+			.addAssignTo(ownserOFAddAcceptanceCriteria.getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
 			.build();
 
@@ -318,7 +310,7 @@ public class VisualStudioController {
 			.addParent(String.valueOf(bugWorkItem.getId()))
 			.addTitle(VisualStudioTaskName.GET_CODE_REVIEW.value)
 			.addStatus(VisualStudioTaskState.TO_DO)
-			.addAssignTo(bugWorkItem.getAssignedToName())
+			.addAssignTo(bugWorkItem.findDevelopFix(account).getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
 			.build();
 		
@@ -327,11 +319,11 @@ public class VisualStudioController {
 		workItemDao.saveOrUpdate(dbBug);
 		
 		//Slack QA for Functional Test
-		SlackMessage message = new SlackMessageBuilder()
-			.setIconEmoji(SlackMessages.DEVELOP_FIX_DONE.img)
-			.setUsername(SlackMessages.DEVELOP_FIX_DONE.senderName)
-			.setChannel(SlackUtil.getSlackAccountMentionByEmail(workItemUpdated.getCreatedByEmail()))
-			.setText(String.format(SlackMessages.DEVELOP_FIX_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(workItemUpdated.getWorkItemID().toString(), project, account), workItemUpdated.getWorkItemID()))
+		SlackMessageObject message = new SlackMessageBuilder()
+			.setIconEmoji(SlackMessage.DEVELOP_FIX_DONE.img)
+			.setUsername(SlackMessage.DEVELOP_FIX_DONE.senderName)
+			.setChannel(SlackUtil.getSlackAccountMentionByEmail(ownserOFAddAcceptanceCriteria.getAssignedToEmail()))
+			.setText(String.format(SlackMessage.DEVELOP_FIX_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(bugWorkItem.getId().toString(), project, account), bugWorkItem.getId()))
 			.build();
 		SlackUtil.sendMessage(message);
 		
@@ -357,7 +349,7 @@ public class VisualStudioController {
 			.addTitle(VisualStudioTaskName.DEVELOP_FIX.value)
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
-			.addAssignTo(bugWorkItem.getAssignedToName())
+			.addAssignTo(bugWorkItem.findReproduceWithAutomatedTest(account).getAssignedToName())
 			.build();
 		createANewTask(dbBug, developFixTask, project, account, () -> dbBug.setDevelopFix(true), () -> !dbBug.isDevelopFix());
 		workItemDao.saveOrUpdate(dbBug);
@@ -383,7 +375,7 @@ public class VisualStudioController {
 			.addTitle(VisualStudioTaskName.REPRODUCE_WITH_AUTOMATED_TESTS.value)
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
-			.addAssignTo(bugWorkItem.getAssignedToName())
+			.addAssignTo(bugWorkItem.findCreateNewBranch(account).getAssignedToName())
 			.build();
 		
 		createANewTask(dbBug, reproduceWithAutomatedTestWorkItem, project, account, () -> dbBug.setReproduceWithAutomatedTest(true), () -> !dbBug.isReproduceWithAutomatedTest());
@@ -436,11 +428,11 @@ public class VisualStudioController {
 		workItemDao.saveOrUpdate(dbBug);
 		
 		//Slack DEV for start working
-		SlackMessage message = new SlackMessageBuilder()
-			.setIconEmoji(SlackMessages.TEST_STRATEGY_DONE.img)
-			.setUsername(SlackMessages.TEST_STRATEGY_DONE.senderName)
-			.setChannel(SlackUtil.getSlackAccountMentionByEmail(workItemUpdated.getCreatedByEmail()))
-			.setText(String.format(SlackMessages.TEST_STRATEGY_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(workItemUpdated.getWorkItemID().toString(), project, account), workItemUpdated.getWorkItemID()))
+		SlackMessageObject message = new SlackMessageBuilder()
+			.setIconEmoji(SlackMessage.TEST_STRATEGY_DONE.img)
+			.setUsername(SlackMessage.TEST_STRATEGY_DONE.senderName)
+			.setChannel(SlackUtil.getSlackAccountMentionByEmail(bugWorkItem.getAssignedToEmail()))
+			.setText(String.format(SlackMessage.TEST_STRATEGY_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(bugWorkItem.getId().toString(), project, account), bugWorkItem.getId()))
 			.build();
 		SlackUtil.sendMessage(message);
 		
