@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import insynctive.support.utils.vs.VisualStudioBugState;
+import insynctive.support.utils.vs.VisualStudioTaskState;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioChangeFieldForm {
@@ -50,32 +51,32 @@ public class VisualStudioChangeFieldForm {
 
 	@JsonIgnore
 	public boolean isDone(){
-		return state != null && state.getNewValue().equals(VisualStudioBugState.DONE.value);
+		return state != null && state.getNewValue().equals(VisualStudioTaskState.DONE.value);
 	}
 
 	@JsonIgnore
 	public boolean wasDone(){
-		return state != null && state.getOldValue().equals(VisualStudioBugState.DONE.value);
+		return state != null && state.getOldValue().equals(VisualStudioTaskState.DONE.value);
 	}
 
 	@JsonIgnore
 	public boolean isInProgress(){
-		return state != null && state.getNewValue().equals(VisualStudioBugState.IN_PROGRESS.value);
+		return state != null && state.getNewValue().equals(VisualStudioTaskState.IN_PROGRESS.value);
 	}
 
 	@JsonIgnore
 	public boolean wasInProgress(){
-		return state != null && state.getOldValue().equals(VisualStudioBugState.IN_PROGRESS.value);
+		return state != null && state.getOldValue().equals(VisualStudioTaskState.IN_PROGRESS.value);
 	}
 
 	@JsonIgnore
 	public boolean isTodo() {
-		return state != null && state.getNewValue().equals(VisualStudioBugState.DONE.value);
+		return state != null && state.getNewValue().equals(VisualStudioTaskState.DONE.value);
 	}
 
 	@JsonIgnore
 	public boolean wasTodo() {
-		return state != null && state.getOldValue().equals(VisualStudioBugState.DONE.value);
+		return state != null && state.getOldValue().equals(VisualStudioTaskState.DONE.value);
 	}
 
 	@JsonIgnore

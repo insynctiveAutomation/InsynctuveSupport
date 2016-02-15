@@ -1,10 +1,12 @@
 package insynctive.support.utils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
@@ -17,6 +19,7 @@ import org.springframework.web.util.UriUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import insynctive.support.form.vs.VisualStudioIterationForm;
 import insynctive.support.form.vs.VisualStudioRevisionForm;
 import insynctive.support.utils.vs.VisualStudioField;
 import insynctive.support.utils.vs.VisualStudioRelation;
@@ -24,7 +27,7 @@ import insynctive.support.utils.vs.VisualStudioWorkItem;
 
 public class VisualStudioUtil {
 
-	private static final String username = " evaleiras@insynctive.com";
+	private static final String username = "evaleiras@insynctive.com";
 	private static final String password = "Benefits123";
 	
 	private static final String encoding = Base64.encodeBase64String((username+":"+password).getBytes());
@@ -48,27 +51,23 @@ public class VisualStudioUtil {
 	public static Boolean createNewTask(VisualStudioWorkItem workItem, String project, String account) throws IOException, URISyntaxException{
 		String urlString = getCreateWorkItemUrl(project, "Task", account);
 
-		JSONArray fields = new JSONArray();
-		for(VisualStudioField field : workItem.getFields()){
-			fields.add(field.asJson());
-		}
-		for(VisualStudioRelation relation : workItem.getRelations()){
-			fields.add(relation.asJson());
-		}
+		JSONArray fields = getJsonFields(workItem);
+		
+		return sendPatch(urlString, fields);
+	}
+	
+	public static Boolean createNewBug(VisualStudioWorkItem workItem, String project, String account) throws IOException, URISyntaxException{
+		String urlString = getCreateWorkItemUrl(project, "Bug", account);
+
+		JSONArray fields = getJsonFields(workItem);
 		
 		return sendPatch(urlString, fields);
 	}
 
 	public static Boolean updateWorkItem(VisualStudioWorkItem workItem, String id, String project, String account) throws IOException, URISyntaxException{
-		String urlString = getModifiedWorkItemUrl(project, id, account);
+		String urlString = getModifiedWorkItemUrl(id, account);
 
-		JSONArray fields = new JSONArray();
-		for(VisualStudioField field : workItem.getFields()){
-			fields.add(field.asJson());
-		}
-		for(VisualStudioRelation relation : workItem.getRelations()){
-			fields.add(relation.asJson());	
-		} 
+		JSONArray fields = getJsonFields(workItem); 
 		
 		return sendPatch(urlString, fields);
 	}
@@ -97,8 +96,40 @@ public class VisualStudioUtil {
 		
 		return response.getStatusLine().getStatusCode() == 200;
 	}
+
+	public static String getCurrentIteration(String project, String account) throws ParseException, IOException {
+		String encodeUri = UriUtils.encodeQuery(getCurrentIterationUrl(project, account), "UTF-8");
+		
+		HttpGet httpGet = new HttpGet(encodeUri);
+		httpGet.addHeader("Authorization", "Basic " + encoding);
+		
+		//Run Patch
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpResponse response = httpClient.execute(httpGet);
+		String json = EntityUtils.toString(response.getEntity());
+		
+		System.out.println(json);
+		VisualStudioIterationForm iterationForm = mapper.readValue(json, VisualStudioIterationForm.class); 
+		
+		return iterationForm.getPath();
+	}
+
+	private static JSONArray getJsonFields(VisualStudioWorkItem workItem) {
+		JSONArray fields = new JSONArray();
+		for(VisualStudioField field : workItem.getFields()){
+			fields.add(field.asJson());
+		}
+		for(VisualStudioRelation relation : workItem.getRelations()){
+			fields.add(relation.asJson());
+		}
+		return fields;
+	}
 	
-	private static String getModifiedWorkItemUrl(String project, String id, String account){
+	private static String getCurrentIterationUrl(String project, String account){
+		return "https://"+account+".visualstudio.com/DefaultCollection/"+project+"/_apis/work/teamsettings/iterations?$timeframe=current&api-version=v2.0-preview";
+	}
+	
+	private static String getModifiedWorkItemUrl(String id, String account){
 		return "https://"+account+".visualstudio.com/DefaultCollection/_apis/wit/workitems/"+id+"?api-version=1.0";
 	}
 	

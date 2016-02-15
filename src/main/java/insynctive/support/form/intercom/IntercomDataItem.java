@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.intercom.api.ConversationPartCollection;
 import io.intercom.api.User;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -20,6 +21,9 @@ public class IntercomDataItem {
 	
 	@JsonProperty("conversation_message")
 	private ConversationMessage conversationMessage;
+	
+	@JsonProperty("conversation_parts")
+	private ConversationPartCollection conversationParts;
 	
 	@JsonProperty("open")
 	private boolean open;
@@ -90,4 +94,13 @@ public class IntercomDataItem {
 	public void setConversationMessage(ConversationMessage conversationMessage) {
 		this.conversationMessage = conversationMessage;
 	}
+
+	public ConversationPartCollection getConversationParts() {
+		return conversationParts;
+	}
+
+	public void setConversationParts(ConversationPartCollection conversationParts) {
+		this.conversationParts = conversationParts;
+	}
+	
 }

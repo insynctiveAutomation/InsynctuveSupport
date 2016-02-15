@@ -4,7 +4,7 @@ import insynctive.support.utils.vs.VisualStudioField;
 import insynctive.support.utils.vs.VisualStudioRelation;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
-import insynctive.support.utils.vs.VisualStudioWorkItemState;
+import insynctive.support.utils.vs.VisualStudioBugState;
 
 public class VisualStudioWorkItemBuilder {
 
@@ -44,7 +44,7 @@ public class VisualStudioWorkItemBuilder {
 		return this;
 	}
 	
-	public VisualStudioWorkItemBuilder addStatus(VisualStudioWorkItemState status) {
+	public VisualStudioWorkItemBuilder addStatus(VisualStudioBugState status) {
 		item.addVisualStudioField(new VisualStudioField("add", "/fields/System.State", status.value));
 		return this;
 	}
@@ -59,7 +59,7 @@ public class VisualStudioWorkItemBuilder {
 		return this;
 	}
 	
-	public VisualStudioWorkItemBuilder modifiedStatus(VisualStudioWorkItemState status){
+	public VisualStudioWorkItemBuilder modifiedStatus(VisualStudioBugState status){
 		item.addVisualStudioField(new VisualStudioField("replace", "/fields/System.State", status.value));
 		return this;
 	}

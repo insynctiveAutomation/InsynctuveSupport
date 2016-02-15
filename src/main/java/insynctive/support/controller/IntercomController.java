@@ -1,10 +1,14 @@
 package insynctive.support.controller;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import org.json.JSONException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,11 +17,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.dao.TargetProcessAndIntercomDao;
+import insynctive.support.form.intercom.IntercomForm;
 import insynctive.support.form.tp.TargetProcessForm;
 import insynctive.support.model.TargetProcessIntercomEntity;
 import insynctive.support.utils.IntercomUtil;
+import insynctive.support.utils.VisualStudioUtil;
 import insynctive.support.utils.intercom.IntercomNote;
+import insynctive.support.utils.vs.VisualStudioBugState;
+import insynctive.support.utils.vs.VisualStudioTaskName;
+import insynctive.support.utils.vs.VisualStudioTaskState;
+import insynctive.support.utils.vs.VisualStudioWorkItem;
+import insynctive.support.utils.vs.builder.VisualStudioWorkItemBuilder;
 import io.intercom.api.AdminCollection;
+import io.intercom.api.ConversationPart;
+import io.intercom.api.ConversationPartCollection;
 
 @Controller
 @RequestMapping("/intercom")
@@ -66,7 +79,6 @@ public class IntercomController {
 		boolean isStatusChange = isEntityInDB && !entity.getStatus().equals(form.getStatus());
 		
 		if(isEntityInDB && isStatusChange){
-			String oldStatus = entity.getStatus();
 			tpDao.updateStatus(entity, form.getStatus());
 
 			IntercomUtil.makeACommentInConversation("Your request changed status to "+form.getStatus(), entity.getIntercomID());
@@ -79,6 +91,32 @@ public class IntercomController {
 		} else {
 			return "{\"status\" : 404}";
 		}
+	}
+	
+	@RequestMapping(value = "/report/{account}/{project}" ,method = RequestMethod.POST)
+	@ResponseBody
+	public String report(@PathVariable String account, @PathVariable String project, @RequestBody IntercomForm form) throws JSONException, IOException, URISyntaxException{
+		
+		ConversationPartCollection conversationParts = form.getConversation().getConversationParts();
+		List<ConversationPart> page = conversationParts.getPage();
+		for(ConversationPart part : page){
+			Document htmlNoteBody = Jsoup.parse(part.getBody());
+			Document htmlConversationSubject = Jsoup.parse(form.getConversation().getConversationMessage().getSubject());
+			String noteBody = htmlNoteBody.getElementsByTag("p").text();
+			if(noteBody.toLowerCase().contains("/report")){
+				String[] reportSplit = noteBody.split("/report "); 
+
+				VisualStudioWorkItem workItem = new VisualStudioWorkItemBuilder()
+				.addTitle("Incident: "+((reportSplit.length > 1) ? reportSplit[1] : htmlConversationSubject.getElementsByTag("p").text()))
+				.addStatus(VisualStudioBugState.NEW.value)
+				.addIteration(VisualStudioUtil.getCurrentIteration(project, account))
+				.build();
+				 
+				VisualStudioUtil.createNewBug(workItem, project, account);
+			}
+		}
+		
+		return "{\"status\" : 200}";
 	}
 	
 	@RequestMapping(value = "/admins" ,method = RequestMethod.GET)

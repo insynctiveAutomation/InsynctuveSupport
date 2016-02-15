@@ -24,7 +24,7 @@ import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 import insynctive.support.utils.vs.VisualStudioTaskName;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
-import insynctive.support.utils.vs.VisualStudioWorkItemState;
+import insynctive.support.utils.vs.VisualStudioBugState;
 import insynctive.support.utils.vs.builder.VisualStudioWorkItemBuilder;
 
 @Controller
@@ -200,7 +200,7 @@ public class VisualStudioController {
 			VisualStudioRevisionForm bugWorkItem) throws IOException, URISyntaxException, Exception {
 		//Modified State to DONE
 		VisualStudioWorkItem partialBugItem = new VisualStudioWorkItemBuilder()
-				.modifiedStatus(VisualStudioWorkItemState.DONE)
+				.modifiedStatus(VisualStudioBugState.DONE)
 				.build();
 		//Update
 		VisualStudioUtil.updateWorkItem(partialBugItem, String.valueOf(bugWorkItem.getId()), workItemUpdated.getProject(), account);
@@ -399,7 +399,7 @@ public class VisualStudioController {
 		
 		//Modified State to COMMITED
 		VisualStudioWorkItem updatedItem = new VisualStudioWorkItemBuilder()
-			.modifiedStatus(VisualStudioWorkItemState.COMMITTED)
+			.modifiedStatus(VisualStudioBugState.COMMITTED)
 			.build();
 		//Update
 		VisualStudioUtil.updateWorkItem(updatedItem, String.valueOf(bugWorkItem.getId()), workItemUpdated.getProject(), account);
