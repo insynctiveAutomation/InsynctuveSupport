@@ -63,6 +63,11 @@ public class VisualStudioController {
 		if(workItemUpdated.isABug() && workItemUpdated.wasChangeToCritical()) {
 			SlackUtil.createNewChannel("Critical-"+workItemUpdated.getTitle());
 		}
+
+		//Manage Updated For Critical Bug
+		if(workItemUpdated.isABug() && workItemUpdated.isCritical() && workItemUpdated.wasChangeToDone()) {
+			SlackUtil.archiveChannel("Critical-"+workItemUpdated.getTitle());
+		}
 		
 		//Manage Updated For TASK
 		if(workItemUpdated.isATask()) {

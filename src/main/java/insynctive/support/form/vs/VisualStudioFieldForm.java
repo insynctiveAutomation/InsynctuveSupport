@@ -27,6 +27,9 @@ public class VisualStudioFieldForm {
 	
 	@JsonProperty("System.CreatedBy")
 	private String createdBy;
+	
+	@JsonProperty("System.Tags")
+	private String tags;
 
 	public String getState() {
 		return state;
@@ -82,6 +85,14 @@ public class VisualStudioFieldForm {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 
 	//Methods

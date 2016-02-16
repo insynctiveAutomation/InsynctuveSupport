@@ -213,6 +213,11 @@ public class VisualStudioResourceForm {
 	public boolean wasChangeToCritical() {
 		return getFields() != null && getFields().isCritical() && !getFields().wasCritical();
 	}
+	
+	@JsonIgnore
+	public boolean isCritical() {
+		return getFields() != null && getFields().isCritical();
+	}
 
 	@JsonIgnore
 	public boolean wasChangeToApproved() {

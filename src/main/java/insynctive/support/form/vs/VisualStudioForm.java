@@ -70,6 +70,11 @@ public class VisualStudioForm {
 		return resource != null && resource.wasChangeToCritical();
 	}
 
+	@JsonIgnore	
+	public boolean isCritical() {
+		return resource != null && resource.isCritical();
+	}
+
 	@JsonIgnore
 	public boolean wasChangeAssignation() {
 		return resource != null && resource.wasChangeAssignation(); 

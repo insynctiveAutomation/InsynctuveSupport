@@ -41,6 +41,14 @@ public class VisualStudioChangeFieldForm {
 	public void setAssignedTo(VisualStudioChangeValue assignedTo) {
 		this.assignedTo = assignedTo;
 	}
+	
+	public VisualStudioChangeValue getTags() {
+		return tags;
+	}
+
+	public void setTags(VisualStudioChangeValue tags) {
+		this.tags = tags;
+	}
 
 	//Methods
 	@JsonIgnore
@@ -98,10 +106,12 @@ public class VisualStudioChangeFieldForm {
 		return assignedTo != null && !assignedTo.getNewValue().equals(assignedTo.getOldValue());
 	}
 
+	@JsonIgnore
 	public String getOldAssigned() {
 		return (assignedTo != null) ? assignedTo.getOldValue() : null;
 	}
 	
+	@JsonIgnore
 	public String getOldAssignedName() {
 		return (assignedTo != null) ? getName(assignedTo.getOldValue()) : null;
 	}
@@ -109,7 +119,7 @@ public class VisualStudioChangeFieldForm {
 	public String getOldAssignedEmail() {
 		return (assignedTo != null) ? getEmail(assignedTo.getOldValue()) : null;
 	}
-	
+
 	@JsonIgnore
 	private String getEmail(String str) {
 		if(str != null){
