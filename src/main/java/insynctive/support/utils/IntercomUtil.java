@@ -29,6 +29,10 @@ public class IntercomUtil {
 		makeANoteInConversation(body, intercomID, admin != null ? admin.getId() : null);
 	}
 	
+	public static void makeANoteInConversation(String body, String intercomID) {
+		makeANoteInConversation(body, intercomID, null);
+	}
+	
 	public static void makeANoteInConversation(String body, String intercomID, String userID) {
 		Admin admin = new Admin().setId(userID != null ? userID : supportID);
 		AdminReply adminReply = new AdminReply(admin);

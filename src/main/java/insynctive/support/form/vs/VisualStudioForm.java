@@ -65,6 +65,11 @@ public class VisualStudioForm {
 		return resource.getWorkItemId();
 	}
 
+	@JsonIgnore	
+	public boolean wasChangeToCritical() {
+		return resource != null && resource.wasChangeToCritical();
+	}
+
 	@JsonIgnore
 	public boolean wasChangeAssignation() {
 		return resource != null && resource.wasChangeAssignation(); 

@@ -38,7 +38,6 @@ public class VisualStudioController {
 		this.workItemDao = workItemDao;
 	}
 	
-	
 	@RequestMapping(value = "/updateWorkItem/{account}" ,method = RequestMethod.POST)
 	@ResponseBody
 	public String restToState(@RequestBody VisualStudioForm workItemUpdated, @PathVariable String account) throws Exception{
@@ -59,6 +58,11 @@ public class VisualStudioController {
 		if(workItemUpdated.isABug() && workItemUpdated.noHaveParent()) {
 			returnMessage = manageUpdatedForIndividualBug(workItemUpdated, account, returnMessage);
 		}
+
+		//Manage Updated For Critical Bug
+		if(workItemUpdated.isABug() && workItemUpdated.wasChangeToCritical()) {
+			SlackUtil.createNewChannel("Critical-"+workItemUpdated.getTitle());
+		}
 		
 		//Manage Updated For TASK
 		if(workItemUpdated.isATask()) {
@@ -67,7 +71,6 @@ public class VisualStudioController {
 		
 		return "{\"status\" : 200, \"message\": \""+returnMessage+"\"}";
 	}
-
 
 	private void alertAssignation(VisualStudioForm workItemUpdated, String account) throws IOException, Exception {
 		//Slack Assigned..
@@ -92,7 +95,6 @@ public class VisualStudioController {
 			.build();
 		SlackUtil.sendMessage(message);
 	}
-
 
 	//Manage Task Upadated
 	private String manageUpdatedForTask(VisualStudioForm workItemUpdated, String account, String returnMessage) throws Exception {

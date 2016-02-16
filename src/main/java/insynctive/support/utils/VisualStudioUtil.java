@@ -53,10 +53,10 @@ public class VisualStudioUtil {
 
 		JSONArray fields = getJsonFields(workItem);
 		
-		return sendPatch(urlString, fields);
+		return sendPatch(urlString, fields) != null;
 	}
 	
-	public static Boolean createNewBug(VisualStudioWorkItem workItem, String project, String account) throws IOException, URISyntaxException{
+	public static Integer createNewBug(VisualStudioWorkItem workItem, String project, String account) throws IOException, URISyntaxException{
 		String urlString = getCreateWorkItemUrl(project, "Bug", account);
 
 		JSONArray fields = getJsonFields(workItem);
@@ -69,10 +69,10 @@ public class VisualStudioUtil {
 
 		JSONArray fields = getJsonFields(workItem); 
 		
-		return sendPatch(urlString, fields);
+		return sendPatch(urlString, fields) != null;
 	}
 
-	private static Boolean sendPatch(String urlString, JSONArray fields) throws IOException, ClientProtocolException, URISyntaxException {
+	private static Integer sendPatch(String urlString, JSONArray fields) throws IOException, ClientProtocolException, URISyntaxException {
 		//Create Data JSON
 		StringEntity entity = new StringEntity(fields.toJSONString(), "UTF-8");
 		entity.setContentType("application/json");
@@ -94,7 +94,12 @@ public class VisualStudioUtil {
 		System.out.println("Status: \n"+response.getStatusLine().getStatusCode());
 		System.out.println("Response: \n"+response);
 		
-		return response.getStatusLine().getStatusCode() == 200;
+		try{
+			VisualStudioRevisionForm readValue = mapper.readValue(response.getEntity().getContent(), VisualStudioRevisionForm.class);
+			return readValue.getId();
+		} catch(Exception ex){
+			return null;
+		}
 	}
 
 	public static String getCurrentIteration(String project, String account) throws ParseException, IOException {
@@ -142,7 +147,10 @@ public class VisualStudioUtil {
 	}
 	
 	public static String getVisualWorkItemUrl(String id, String project, String account) {
-		// Engineering%20in%20Productivity%20Team/_workitems?_a=edit&id=189
 		return "https://"+(account)+".visualstudio.com/DefaultCollection/"+(project)+"/_workitems?_a=edit&id="+id;
+	}
+	
+	public static String getVisualWorkItemUrlEncoded(String id, String project, String account) throws UnsupportedEncodingException {
+		return UriUtils.encodeQuery("https://"+(account)+".visualstudio.com/DefaultCollection/"+(project)+"/_workitems?_a=edit&id="+id, "UTF-8");
 	}
 }

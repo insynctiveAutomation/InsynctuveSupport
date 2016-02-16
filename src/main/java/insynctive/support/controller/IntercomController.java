@@ -46,13 +46,13 @@ public class IntercomController {
 	@RequestMapping(value = "/newRequest" ,method = RequestMethod.POST)
 	@ResponseBody
 	public String newRequest(@RequestBody TargetProcessForm form) throws JSONException, IOException{
-		TargetProcessIntercomEntity entity = new TargetProcessIntercomEntity();
 		
+		TargetProcessIntercomEntity entity = new TargetProcessIntercomEntity();
 		entity.addValuesFromTPRequest(form);
 		tpDao.save(entity);
 		
 		IntercomUtil.makeACommentInConversation("Your request was submitted to QA for Triage under the number: "+form.getEntityID(), form.getIntercomID());
-		IntercomUtil.makeANoteInConversation("A request was created in TP.  https://insynctive.tpondemand.com/entity/"+form.getEntityID(), form.getIntercomID(), null);
+		IntercomUtil.makeANoteInConversation("A request was created in TP.  https://insynctive.tpondemand.com/entity/"+form.getEntityID(), form.getIntercomID());
 		
 		return "{\"status\" : 200}";
 	}
@@ -60,8 +60,8 @@ public class IntercomController {
 	@RequestMapping(value = "/createNote" ,method = RequestMethod.POST)
 	@ResponseBody
 	public String createNote(@RequestBody IntercomNote form) throws JSONException, IOException{
+
 		TargetProcessIntercomEntity entity = tpDao.getByEntityID(form.getEntityID());
-		
 		if(entity != null){
 			IntercomUtil.makeANoteWithAuthor(form.getBody(), entity.getIntercomID(), IntercomUtil.findAdminByEmail(form.getUserEmail()));
 			return "{\"status\" : 200}";
@@ -111,8 +111,10 @@ public class IntercomController {
 				.addStatus(VisualStudioBugState.NEW.value)
 				.addIteration(VisualStudioUtil.getCurrentIteration(project, account))
 				.build();
-				 
-				VisualStudioUtil.createNewBug(workItem, project, account);
+				
+				Integer bugId = VisualStudioUtil.createNewBug(workItem, project, account);
+				
+				IntercomUtil.makeANoteInConversation("Bug created "+VisualStudioUtil.getVisualWorkItemUrlEncoded(bugId.toString(), project, account), form.getConversation().getId());
 			}
 		}
 		
@@ -130,4 +132,5 @@ public class IntercomController {
 	public String getConversationByID(@PathVariable("id") String id) throws JSONException, IOException{
 		return "{\"status\" : 200, \"body\" : \""+IntercomUtil.findConversationByID(id).getConversationMessage().getBody()+"\"}";
 	}
+	
 }

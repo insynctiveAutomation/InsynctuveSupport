@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import insynctive.support.utils.vs.VisualStudioBugState;
+import insynctive.support.utils.vs.VisualStudioTag;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,6 +22,9 @@ public class VisualStudioChangeFieldForm {
 	
 	@JsonProperty("System.AssignedTo")
 	private VisualStudioChangeValue assignedTo;
+	
+	@JsonProperty("System.Tags")
+	private VisualStudioChangeValue tags;
 	
 	public VisualStudioChangeValue getState() {
 		return state;
@@ -39,6 +43,16 @@ public class VisualStudioChangeFieldForm {
 	}
 
 	//Methods
+	@JsonIgnore
+	public boolean isCritical() {
+		return tags.getNewValue().toLowerCase().contains(VisualStudioTag.CRITICAL.getValue().toLowerCase());
+	}
+
+	@JsonIgnore
+	public boolean wasCritical() {
+		return tags.getOldValue().toLowerCase().contains(VisualStudioTag.CRITICAL.getValue().toLowerCase());
+	}
+	
 	@JsonIgnore
 	public boolean isApproved(){
 		return state != null && state.getNewValue().equals(VisualStudioBugState.APPROVED.value);
