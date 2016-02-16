@@ -163,6 +163,11 @@ public class VisualStudioRevisionForm {
 		return getFields().isTask();
 	}
 	
+	@JsonIgnore
+	public boolean isCritical() {
+		return getFields().isCritical();
+	}
+	
 	@JsonIgnore	
 	public VisualStudioRevisionForm findDevelopFixTask(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
@@ -320,6 +325,7 @@ public class VisualStudioRevisionForm {
 	public boolean isStateDone() {
 		return fields.getState().equals(VisualStudioTaskState.DONE.value);
 	}
+	
 	public String getType() {
 		return fields.getType();
 	}

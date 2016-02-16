@@ -216,7 +216,7 @@ public class VisualStudioResourceForm {
 	
 	@JsonIgnore
 	public boolean isCritical() {
-		return getFields() != null && getFields().isCritical();
+		return revision != null && revision.isCritical();
 	}
 
 	@JsonIgnore
@@ -227,6 +227,11 @@ public class VisualStudioResourceForm {
 	@JsonIgnore
 	public boolean wasChangeToDone() {
 		return getFields() != null && getFields().isDone() && !getFields().wasDone();
+	}
+	
+	@JsonIgnore
+	public boolean waschangeToRemoved() {
+		return getFields() != null && getFields().isRemoved() && !getFields().wasRemoved();
 	}
 	
 	@JsonIgnore

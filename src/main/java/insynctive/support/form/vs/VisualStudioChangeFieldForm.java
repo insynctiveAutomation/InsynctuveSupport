@@ -53,12 +53,12 @@ public class VisualStudioChangeFieldForm {
 	//Methods
 	@JsonIgnore
 	public boolean isCritical() {
-		return tags.getNewValue().toLowerCase().contains(VisualStudioTag.CRITICAL.getValue().toLowerCase());
+		return tags != null ? tags.getNewValue().toLowerCase().contains(VisualStudioTag.CRITICAL.getValue().toLowerCase()) : false;
 	}
 
 	@JsonIgnore
 	public boolean wasCritical() {
-		return tags.getOldValue().toLowerCase().contains(VisualStudioTag.CRITICAL.getValue().toLowerCase());
+		return tags != null ? tags.getOldValue().toLowerCase().contains(VisualStudioTag.CRITICAL.getValue().toLowerCase()): null;
 	}
 	
 	@JsonIgnore
@@ -100,10 +100,20 @@ public class VisualStudioChangeFieldForm {
 	public boolean wasTodo() {
 		return state != null && state.getOldValue().equals(VisualStudioTaskState.DONE.value);
 	}
+	
+	@JsonIgnore
+	public boolean isRemoved() {
+		return state != null && state.getNewValue().equals(VisualStudioTaskState.REMOVED.value);
+	}
+	
+	@JsonIgnore
+	public boolean wasRemoved() {
+		return state != null && state.getOldValue().equals(VisualStudioTaskState.REMOVED.value);
+	}
 
 	@JsonIgnore
 	public boolean wasChangeAssignation() {
-		return assignedTo != null && !assignedTo.getNewValue().equals(assignedTo.getOldValue());
+		return assignedTo != null && !assignedTo.getNewValue().equals(assignedTo.getOldValue()) && assignedTo.getOldValue() != null;
 	}
 
 	@JsonIgnore

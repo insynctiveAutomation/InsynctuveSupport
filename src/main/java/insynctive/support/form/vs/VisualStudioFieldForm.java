@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import insynctive.support.utils.vs.VisualStudioTag;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioFieldForm {
 
@@ -108,10 +110,14 @@ public class VisualStudioFieldForm {
 
 	@JsonIgnore
 	private String getEmail(String str) {
-		if(str != null){
-			return str.split("<")[1].split(">")[0];
-		} else {
-			return "";
+		try {
+			if(str != null){
+				return str.split("<")[1].split(">")[0];
+			} else {
+				return "";
+			}
+		} catch (Exception ex){
+			return str;
 		}
 	}
 	
@@ -142,6 +148,11 @@ public class VisualStudioFieldForm {
 	@JsonIgnore
 	public String getCreatedByName() {
 		return getName(createdBy);
+	}
+
+	@JsonIgnore
+	public boolean isCritical() {
+		return tags != null && tags.toLowerCase().contains(VisualStudioTag.CRITICAL.getValue().toLowerCase());
 	}
 	
 	

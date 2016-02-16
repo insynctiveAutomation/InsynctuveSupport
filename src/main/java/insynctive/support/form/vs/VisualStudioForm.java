@@ -90,6 +90,11 @@ public class VisualStudioForm {
 		return resource != null && resource.wasChangeToDone();
 	}
 	
+	@JsonIgnore
+	public boolean waschangeToRemoved(){
+		return resource != null && resource.waschangeToRemoved();
+	}
+	
 	@JsonIgnore	
 	public boolean wasChangeToInProgress(){
 		return resource != null && resource.wasChangeToInProgress();

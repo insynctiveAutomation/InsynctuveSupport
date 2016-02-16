@@ -116,8 +116,8 @@ public class VisualStudioController {
 		
 		
 		//Reproduce with automated tests was moved to DONE
-		else if(workItemUpdated.isReproduceWithAutomatedTest() && workItemUpdated.wasChangeToDone()){
-			returnMessage = reproduceWithAutomatedTestsDoneProcess(workItemUpdated, account);
+		else if(workItemUpdated.isReproduceWithAutomatedTest() && (workItemUpdated.wasChangeToDone() || workItemUpdated.waschangeToRemoved())){
+			returnMessage = reproduceWithAutomatedTestsDoneOrRemovedProcess(workItemUpdated, account);
 		}
 		
 		//Develop Fix was moved to DONE - TODO Need to make the build automatically
@@ -311,6 +311,7 @@ public class VisualStudioController {
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(ownserOFAddAcceptanceCriteria.getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
+			.addEstimate("0.5")
 			.build();
 
 		VisualStudioWorkItem getCodeReviewTask = new VisualStudioWorkItemBuilder()
@@ -338,7 +339,7 @@ public class VisualStudioController {
 	}
 
 
-	private String reproduceWithAutomatedTestsDoneProcess(VisualStudioForm workItemUpdated, String account)
+	private String reproduceWithAutomatedTestsDoneOrRemovedProcess(VisualStudioForm workItemUpdated, String account)
 			throws Exception, IOException, URISyntaxException {
 		String returnMessage;
 		returnMessage = "Reproduce With automated Test Change to DONE";
@@ -356,6 +357,7 @@ public class VisualStudioController {
 			.addTitle(VisualStudioTaskName.DEVELOP_FIX.value)
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
+			.addEstimate("1")
 			.addAssignTo(bugWorkItem.findReproduceWithAutomatedTest(account).getAssignedToName())
 			.build();
 		createANewTask(dbBug, developFixTask, project, account, () -> dbBug.setDevelopFix(true), () -> !dbBug.isDevelopFix());
@@ -383,6 +385,7 @@ public class VisualStudioController {
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.findCreateNewBranch(account).getAssignedToName())
+			.addEstimate("1")
 			.build();
 		
 		createANewTask(dbBug, reproduceWithAutomatedTestWorkItem, project, account, () -> dbBug.setReproduceWithAutomatedTest(true), () -> !dbBug.isReproduceWithAutomatedTest());

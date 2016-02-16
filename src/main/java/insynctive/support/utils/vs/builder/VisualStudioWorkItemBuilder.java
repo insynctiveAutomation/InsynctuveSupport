@@ -4,6 +4,7 @@ import insynctive.support.utils.vs.VisualStudioField;
 import insynctive.support.utils.vs.VisualStudioRelation;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
+import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 import insynctive.support.utils.vs.VisualStudioBugState;
 
 public class VisualStudioWorkItemBuilder {
@@ -84,8 +85,6 @@ public class VisualStudioWorkItemBuilder {
 		return this;
 	}
 	
-	
-	
 	public VisualStudioWorkItemBuilder addVisualStudioField(VisualStudioField field){
 		item.addVisualStudioField(field);
 		return this;
@@ -93,6 +92,16 @@ public class VisualStudioWorkItemBuilder {
 	
 	public VisualStudioWorkItemBuilder addVisualStudioRelation(VisualStudioRelation relation){
 		item.addVisualStudioRelation(relation);
+		return this;
+	}
+
+	public VisualStudioWorkItemBuilder addEstimate(String time) {
+		item.addVisualStudioField(new VisualStudioField("add", "/fields/Microsoft.VSTS.Scheduling.RemainingWork", time));
+		return this;
+	}
+
+	public VisualStudioWorkItemBuilder modifiedEstimate(String time) {
+		item.addVisualStudioField(new VisualStudioField("replace", "/fields/Microsoft.VSTS.Scheduling.RemainingWork", time));
 		return this;
 	}
 	

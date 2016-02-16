@@ -57,42 +57,4 @@ public class SlackMessageObject {
 	public void addAttachment(SlackAttachment attachment){
 		attachments.add(attachment);
 	}
-	
-	
-	//TEST
-	public static void main(String[] args) throws IOException {
-		String name = "name example";
-		
-		String fullUrl = "https://www.google.com";
-		String phase = "phase";
-		
-		String user = "evaleiras@insynctive.com";
-		String branch = "branchName";
-		String node = "node example";
-		String account = "alpha";
-		String version = "5.0.000.0000";
-		
-		String message = "Main Message";
-		SlackMessageObject Slackmessage = new SlackMessageBuilder()
-				.setUsername("Jenkins Install - Success Messenger")
-				.setText(message)
-				.setIconEmoji(":sunglasses:")
-				.setChannel("@eugeniovaleiras")
-				.addAttachment(new SlackAttachmentBuilder()
-						.setPretext("pretext")
-						.setColor("#00CE00")
-						.setFallback("fallback")
-						.addField(new SlackFieldBuilder().setTitle("title 1").setValue("value 1").build())
-						.build())
-				.addAttachment(new SlackAttachmentBuilder()
-						.setPretext("pretext")
-						.setColor("#00CE00")
-						.setFallback("fallback")
-						.addField(new SlackFieldBuilder().setTitle("title 2.0").setValue("value 2.0").build())
-						.addField(new SlackFieldBuilder().setTitle("title 2.1").setValue("value 2.1").build())
-						.build())
-				.build();
-			
-		SlackUtil.sendMessage(Slackmessage);
-	}
 }
