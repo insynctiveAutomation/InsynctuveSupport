@@ -135,6 +135,16 @@ public class VisualStudioWorkItemBuilder {
 		return this;
 	}
 	
+	public VisualStudioWorkItemBuilder addDescription(String description) {
+		item.addVisualStudioField(new VisualStudioField("add", "/fields/System.Description", description));
+		return this;
+	}
+		
+	public VisualStudioWorkItemBuilder modifiedDescription(String description) {
+		item.addVisualStudioField(new VisualStudioField("replace", "/fields/System.Description", description));
+		return this;
+	}
+	
 	public VisualStudioWorkItem build(){
 		return item;
 	}

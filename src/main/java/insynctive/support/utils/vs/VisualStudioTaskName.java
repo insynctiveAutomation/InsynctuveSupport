@@ -10,8 +10,8 @@ public enum VisualStudioTaskName {
 	GET_CODE_REVIEW("Get code review"),
 	FUNCTIONAL_TEST("Functional test"), 
 	MERGE_TO_MASTER("Merge to master"), 
-	REABASE_INTEGRATION_TO_MASTER("Rebase Integration to master"), 
-	TEST_ON_MASTER("Test on Master");
+	REBASE_INTEGRATION_TO_MASTER("Rebase Integration to master"), 
+	TEST_ON_MASTER("Test on master");
 	
 	public final String value;
 	

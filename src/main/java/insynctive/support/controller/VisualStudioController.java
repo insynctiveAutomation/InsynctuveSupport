@@ -174,10 +174,11 @@ public class VisualStudioController {
 
 				VisualStudioWorkItem testStrategyWorkItem = new VisualStudioWorkItemBuilder()
 					.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
-					.addTitle(VisualStudioTaskName.TEST_STRATEGY.value)
+					.addTitle(VisualStudioTaskName.TEST_STRATEGY.value + " - " + workItemUpdated.getTitle())
 					.addStatus(VisualStudioTaskState.TO_DO)
 					.addIteration(workItemUpdated.getIteration())
 					.addAssignTo(workItemUpdated.getCreatedByName())
+					.addEstimate("0.5")
 					.build();
 				
 				
@@ -213,7 +214,6 @@ public class VisualStudioController {
 		VisualStudioUtil.updateWorkItem(partialBugItem, String.valueOf(bugWorkItem.getId()), workItemUpdated.getProject(), account);
 	}
 
-
 	private String mergeToMasterDoneProcess(VisualStudioForm workItemUpdated, String account)
 			throws Exception, IOException, URISyntaxException {
 		String returnMessage;
@@ -225,10 +225,11 @@ public class VisualStudioController {
 		
 		VisualStudioWorkItem rebaseIntegrationToMasterTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.REABASE_INTEGRATION_TO_MASTER.value)
+			.addTitle(VisualStudioTaskName.REBASE_INTEGRATION_TO_MASTER.value + " - " + bugWorkItem.getTitle() )
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.findMergeToMaster(account).getAssignedToName())
+			.addEstimate("0.5")
 			.build();
 		
 		
@@ -236,10 +237,11 @@ public class VisualStudioController {
 		VisualStudioRevisionForm functionalTest = bugWorkItem.findFunctionalTest(account);
 		VisualStudioWorkItem doneDoneTestTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.TEST_ON_MASTER.value)
+			.addTitle(VisualStudioTaskName.TEST_ON_MASTER.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
-			.addAssignTo(functionalTest.getAssignedToName())	
+			.addAssignTo(functionalTest.getAssignedToName())
+			.addEstimate("0.5")
 			.build();
 
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString()); 
@@ -267,10 +269,11 @@ public class VisualStudioController {
 		VisualStudioRevisionForm findGetCodeReview = bugWorkItem.findGetCodeReview(account);
 		VisualStudioWorkItem mergeToMasterTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.MERGE_TO_MASTER.value)
+			.addTitle(VisualStudioTaskName.MERGE_TO_MASTER.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(findGetCodeReview.getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
+			.addEstimate("0.5")
 			.build();
 
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString()); 
@@ -307,7 +310,7 @@ public class VisualStudioController {
 		VisualStudioRevisionForm ownserOFAddAcceptanceCriteria = bugWorkItem.findTestStrategy(account);
 		VisualStudioWorkItem functionalTestTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.FUNCTIONAL_TEST.value)
+			.addTitle(VisualStudioTaskName.FUNCTIONAL_TEST.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(ownserOFAddAcceptanceCriteria.getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
@@ -316,7 +319,7 @@ public class VisualStudioController {
 
 		VisualStudioWorkItem getCodeReviewTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.GET_CODE_REVIEW.value)
+			.addTitle(VisualStudioTaskName.GET_CODE_REVIEW.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(bugWorkItem.findDevelopFix(account).getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
@@ -354,7 +357,7 @@ public class VisualStudioController {
 		
 		VisualStudioWorkItem developFixTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.DEVELOP_FIX.value)
+			.addTitle(VisualStudioTaskName.DEVELOP_FIX.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addEstimate("1")
@@ -381,7 +384,7 @@ public class VisualStudioController {
 		//Create Reproduce with automated test TASK
 		VisualStudioWorkItem reproduceWithAutomatedTestWorkItem = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.REPRODUCE_WITH_AUTOMATED_TESTS.value)
+			.addTitle(VisualStudioTaskName.REPRODUCE_WITH_AUTOMATED_TESTS.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.findCreateNewBranch(account).getAssignedToName())
@@ -419,7 +422,7 @@ public class VisualStudioController {
 		//Create Add Acceptance Criteria
 		VisualStudioWorkItem addAcceptanceCriteriaTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.ADD_ACCEPTANCE_CRITERIA.value)
+			.addTitle(VisualStudioTaskName.ADD_ACCEPTANCE_CRITERIA.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(ownserOFAddAcceptanceCriteria)
@@ -427,7 +430,7 @@ public class VisualStudioController {
 
 		VisualStudioWorkItem createNewBranchWorkItem = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.CREATE_A_NEW_BRANCH.value)
+			.addTitle(VisualStudioTaskName.CREATE_A_NEW_BRANCH.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.getAssignedToName() != null ? bugWorkItem.getAssignedToName() : "")

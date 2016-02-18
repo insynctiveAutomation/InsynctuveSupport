@@ -59,7 +59,7 @@ public enum UserDetails {
 		return null;
 	}
 
-	public static UserDetails findNameByContainString(String nameOfUser) {
+	public static UserDetails findByContainStringInName(String nameOfUser) {
 		for(UserDetails userDetail : values()){
 			if(userDetail.name.contains(nameOfUser)){
 				return userDetail;

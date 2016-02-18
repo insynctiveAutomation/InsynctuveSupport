@@ -13,12 +13,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @PropertySource("classpath:application.properties")
 @ComponentScan(basePackages = "insynctive")
 @EnableTransactionManagement
+@EnableScheduling
 public class AppConfig {
 
 	@Bean
@@ -64,7 +68,7 @@ public class AppConfig {
 		transactionManager.setSessionFactory(sessionFactory().getObject());
 		return transactionManager;
 	}
-
+	
 	private Properties hibProperties() {
 		Properties properties = new Properties();
 		properties.put("hibernate.hbm2ddl.auto", "update");

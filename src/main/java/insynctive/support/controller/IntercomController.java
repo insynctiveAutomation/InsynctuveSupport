@@ -101,19 +101,25 @@ public class IntercomController {
 		ConversationPartCollection conversationParts = form.getConversation().getConversationParts();
 		List<ConversationPart> page = conversationParts.getPage();
 		for(ConversationPart part : page){
-			Document htmlNoteBody = Jsoup.parse(part.getBody());
 			Document htmlConversationSubject = Jsoup.parse(form.getConversation().getConversationMessage().getSubject());
+			
+			Document htmlNoteBody = Jsoup.parse(part.getBody());
 			String noteBody = htmlNoteBody.getElementsByTag("p").text();
+
+			String body = form.getConversation().getConversationMessage().getBody();
+			
 			if(noteBody.toLowerCase().contains("/report")){
 				String[] reportSplit = noteBody.split("/report "); 
-
+				UserDetails createdBy = UserDetails.findByContainStringInName(part.getAuthor().getName());
+				
 				VisualStudioWorkItem workItem = new VisualStudioWorkItemBuilder()
 				.addTitle("Incident: "+((reportSplit.length > 1) ? reportSplit[1] : htmlConversationSubject.getElementsByTag("p").text()))
 				.addStatus(VisualStudioBugState.NEW.value)
 				.addIteration(VisualStudioUtil.getCurrentIteration(project, account))
 				.addIntercomConversation(form.getConversationUrl())
 				.addIsIncident(true)
-				.addCreatedBy(UserDetails.findNameByContainString(form.getNameOfUser()).name)
+				.addCreatedBy(createdBy != null ? createdBy.name : "Eugenio Valeiras")
+				.addDescription("Subject: "+htmlConversationSubject != null ? htmlConversationSubject.text() : "No subject provided"+"<br>Content: "+body)
 				.build();
 				
 				Integer bugId = VisualStudioUtil.createNewBug(workItem, project, account);
