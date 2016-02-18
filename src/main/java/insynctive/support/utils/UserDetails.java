@@ -58,4 +58,13 @@ public enum UserDetails {
 		}
 		return null;
 	}
+
+	public static UserDetails findNameByContainString(String nameOfUser) {
+		for(UserDetails userDetail : values()){
+			if(userDetail.name.contains(nameOfUser)){
+				return userDetail;
+			}
+		}
+		return null;
+	}
 }

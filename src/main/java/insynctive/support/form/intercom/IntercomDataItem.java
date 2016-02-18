@@ -102,5 +102,9 @@ public class IntercomDataItem {
 	public void setConversationParts(ConversationPartCollection conversationParts) {
 		this.conversationParts = conversationParts;
 	}
+
+	public String getNameOfUser() {
+		return user != null ? user.getName() : null;
+	}
 	
 }

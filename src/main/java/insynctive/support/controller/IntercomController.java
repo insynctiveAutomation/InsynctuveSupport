@@ -21,6 +21,7 @@ import insynctive.support.form.intercom.IntercomForm;
 import insynctive.support.form.tp.TargetProcessForm;
 import insynctive.support.model.TargetProcessIntercomEntity;
 import insynctive.support.utils.IntercomUtil;
+import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.VisualStudioUtil;
 import insynctive.support.utils.intercom.IntercomNote;
 import insynctive.support.utils.vs.VisualStudioBugState;
@@ -112,6 +113,7 @@ public class IntercomController {
 				.addIteration(VisualStudioUtil.getCurrentIteration(project, account))
 				.addIntercomConversation(form.getConversationUrl())
 				.addIsIncident(true)
+				.addCreatedBy(UserDetails.findNameByContainString(form.getNameOfUser()).name)
 				.build();
 				
 				Integer bugId = VisualStudioUtil.createNewBug(workItem, project, account);

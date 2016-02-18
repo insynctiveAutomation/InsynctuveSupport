@@ -19,5 +19,9 @@ public class IntercomData {
 	public void setItem(IntercomDataItem item) {
 		this.item = item;
 	}
+
+	public String getNameOfUser() {
+		return item != null ? item.getNameOfUser() : null;
+	}
 	
 }

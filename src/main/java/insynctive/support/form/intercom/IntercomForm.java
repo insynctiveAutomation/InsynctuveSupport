@@ -52,5 +52,9 @@ public class IntercomForm {
 	public boolean isAConversationCreation(){
 		return topic.equals(IntercomTopic.CONVERSATION_CREATED.getValue());
 	}
+
+	public String getNameOfUser() {
+		return data != null ? data.getNameOfUser() : null; 
+	}
 	
 }

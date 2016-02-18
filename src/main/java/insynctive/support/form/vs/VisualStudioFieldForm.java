@@ -167,7 +167,7 @@ public class VisualStudioFieldForm {
 	}
 	
 	@JsonIgnore
-	public String getNameOfChangeBy() {
+	public String getChangeByName() {
 		return getName(changeBy);
 	}
 	

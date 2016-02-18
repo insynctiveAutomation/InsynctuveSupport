@@ -124,6 +124,16 @@ public class VisualStudioWorkItemBuilder {
 		item.addVisualStudioField(new VisualStudioField("replace", "/fields/insynctive.InsynctiveSCRUM.Incident", isIncident ? "YES" : "NO"));
 		return this;
 	}
+
+	public VisualStudioWorkItemBuilder addCreatedBy(String name) {
+		item.addVisualStudioField(new VisualStudioField("add", "/fields/System.CreatedBy", name));
+		return this;
+	}
+
+	public VisualStudioWorkItemBuilder modifiedCreatedBy(String name) {
+		item.addVisualStudioField(new VisualStudioField("replace", "/fields/System.CreatedBy", name));
+		return this;
+	}
 	
 	public VisualStudioWorkItem build(){
 		return item;
