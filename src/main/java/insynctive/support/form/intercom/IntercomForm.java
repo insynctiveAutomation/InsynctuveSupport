@@ -44,7 +44,7 @@ public class IntercomForm {
 	}
 
 	@JsonIgnore
-	public Object getConversationUrl() {
+	public String getConversationUrl() {
 		return getData().getItem().getLinks().getConversationWeb();
 	}
 	

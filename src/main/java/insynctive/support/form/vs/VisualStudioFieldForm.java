@@ -30,6 +30,9 @@ public class VisualStudioFieldForm {
 	@JsonProperty("System.CreatedBy")
 	private String createdBy;
 	
+	@JsonProperty("System.ChangedBy")
+	private String changeBy;
+	
 	@JsonProperty("System.Tags")
 	private String tags;
 
@@ -97,6 +100,14 @@ public class VisualStudioFieldForm {
 		this.tags = tags;
 	}
 
+	public String getChangeBy() {
+		return changeBy;
+	}
+
+	public void setChangeBy(String changeBy) {
+		this.changeBy = changeBy;
+	}
+
 	//Methods
 	@JsonIgnore
 	public boolean isBug(){
@@ -155,5 +166,9 @@ public class VisualStudioFieldForm {
 		return tags != null && tags.toLowerCase().contains(VisualStudioTag.CRITICAL.getValue().toLowerCase());
 	}
 	
+	@JsonIgnore
+	public String getNameOfChangeBy() {
+		return getName(changeBy);
+	}
 	
 }

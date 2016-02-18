@@ -110,6 +110,8 @@ public class IntercomController {
 				.addTitle("Incident: "+((reportSplit.length > 1) ? reportSplit[1] : htmlConversationSubject.getElementsByTag("p").text()))
 				.addStatus(VisualStudioBugState.NEW.value)
 				.addIteration(VisualStudioUtil.getCurrentIteration(project, account))
+				.addIntercomConversation(form.getConversationUrl())
+				.addIsIncident(true)
 				.build();
 				
 				Integer bugId = VisualStudioUtil.createNewBug(workItem, project, account);

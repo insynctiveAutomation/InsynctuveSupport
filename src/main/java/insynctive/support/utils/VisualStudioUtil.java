@@ -153,4 +153,6 @@ public class VisualStudioUtil {
 	public static String getVisualWorkItemUrlEncoded(String id, String project, String account) throws UnsupportedEncodingException {
 		return UriUtils.encodeQuery("https://"+(account)+".visualstudio.com/DefaultCollection/"+(project)+"/_workitems?_a=edit&id="+id, "UTF-8");
 	}
+	
+	
 }

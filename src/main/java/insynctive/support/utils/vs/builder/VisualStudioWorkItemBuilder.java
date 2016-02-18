@@ -105,6 +105,26 @@ public class VisualStudioWorkItemBuilder {
 		return this;
 	}
 	
+	public VisualStudioWorkItemBuilder addIntercomConversation(String conversation) {
+		item.addVisualStudioField(new VisualStudioField("add", "/fields/insynctive.InsynctiveSCRUM.IntercomConversaton", conversation));
+		return this;
+	}
+	
+	public VisualStudioWorkItemBuilder modifiedIntercomConversation(String conversation) {
+		item.addVisualStudioField(new VisualStudioField("replace", "/fields/insynctive.InsynctiveSCRUM.IntercomConversaton", conversation));
+		return this;
+	}
+	
+	public VisualStudioWorkItemBuilder addIsIncident(Boolean isIncident) {
+		item.addVisualStudioField(new VisualStudioField("add", "/fields/insynctive.InsynctiveSCRUM.Incident", isIncident ? "YES" : "NO"));
+		return this;
+	}
+	
+	public VisualStudioWorkItemBuilder modifiedIsIncident(Boolean isIncident) {
+		item.addVisualStudioField(new VisualStudioField("replace", "/fields/insynctive.InsynctiveSCRUM.Incident", isIncident ? "YES" : "NO"));
+		return this;
+	}
+	
 	public VisualStudioWorkItem build(){
 		return item;
 	}
