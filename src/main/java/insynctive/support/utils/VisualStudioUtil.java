@@ -10,13 +10,17 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.util.UriUtils;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import insynctive.support.form.vs.VisualStudioIterationForm;
@@ -24,6 +28,7 @@ import insynctive.support.form.vs.VisualStudioRevisionForm;
 import insynctive.support.utils.vs.VisualStudioField;
 import insynctive.support.utils.vs.VisualStudioRelation;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
+import insynctive.support.utils.vs.VisualStudioWorkItemsForQuery;
 
 public class VisualStudioUtil {
 
@@ -102,6 +107,46 @@ public class VisualStudioUtil {
 		}
 	}
 
+	public static Integer countWorkInProgressCurrentIteration(String username, String project, String account) throws Exception{
+		
+		String postObject = "{\"query\": \"Select [System.Id]"+ 
+			" From WorkItems"+ 
+			" Where ([System.AssignedTo] = '"+username+"'"+ 
+			" AND [System.State] = 'In Progress'"+ 
+			" AND [System.WorkItemType] = 'Task'"+ 
+			" AND [System.IterationPath] = @CurrentIteration"
+		+")\"}";
+		
+		StringEntity entity = new StringEntity(postObject, "UTF-8");
+		
+		String urlString = getSendQueryUrl(project, account);
+		String encodeUri = UriUtils.encodeQuery(urlString, "UTF-8");
+		
+		HttpPost httpPost = new HttpPost(encodeUri);
+		httpPost.addHeader("Content-Type", "application/json");
+		httpPost.addHeader("Authorization", "Basic " + encoding);
+		httpPost.setEntity(entity);
+		
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpResponse response = httpClient.execute(httpPost);
+		
+		if(response.getStatusLine().getStatusCode() != 200){
+			System.out.println("URL: \n"+encodeUri);
+			System.out.println("Data: \n"+postObject);
+			
+			System.out.println("Status: \n"+response.getStatusLine().getStatusCode());
+			System.out.println("Response: \n"+response);
+		}
+		
+		try{
+			VisualStudioWorkItemsForQuery responseObject = mapper.readValue(response.getEntity().getContent(), VisualStudioWorkItemsForQuery.class);
+			System.out.println(username +" - "+ responseObject.countWorkItems());
+			return responseObject.countWorkItems();
+		} catch(Exception ex){
+			return null;
+		}
+	}
+	
 	public static String getCurrentIteration(String project, String account) throws ParseException, IOException {
 		String encodeUri = UriUtils.encodeQuery(getCurrentIterationUrl(project, account), "UTF-8");
 		
@@ -118,7 +163,7 @@ public class VisualStudioUtil {
 		
 		return iterationForm.getPath();
 	}
-
+	
 	private static JSONArray getJsonFields(VisualStudioWorkItem workItem) {
 		JSONArray fields = new JSONArray();
 		for(VisualStudioField field : workItem.getFields()){
@@ -154,5 +199,15 @@ public class VisualStudioUtil {
 		return UriUtils.encodeQuery("https://"+(account)+".visualstudio.com/DefaultCollection/"+(project)+"/_workitems?_a=edit&id="+id, "UTF-8");
 	}
 	
+	private static String getSendQueryUrl(String project, String account){
+		return "https://"+(account)+".visualstudio.com/DefaultCollection/"+(project)+"/_apis/wit/wiql?api-version=1.0";
+	}
 	
+//	POST : {
+//	  "query": "Select [System.Id] 
+//				From WorkItems 
+//				Where ([System.AssignedTo] = 'Ignacio Fernandez' 
+			//		AND [System.State] = 'In Progress' 
+			//		AND [System.IterationPath] = @CurrentIteration)" 
+//	}
 }

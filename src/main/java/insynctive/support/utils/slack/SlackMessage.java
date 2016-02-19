@@ -54,7 +54,19 @@ public enum SlackMessage {
 	ASSIGNED_TO_WORK_ITEM(
 			":point_right:", 
 			"Visual Studio Support", 
-			"<%s | %s #%d> has been assigned from %s to you");
+			"<%s | %s #%d> has been assigned from %s to you"),
+	
+	
+	//Other Slack Mentions
+	NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT (
+			":point_right:", 
+			"Visual Studio Support", 
+			"You have no task in progress"),
+	
+	HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS (
+			":point_right:", 
+			"Visual Studio Support", 
+			"You have 2 tasks in progress when you should have only one !");
 	
 	public String img;
 	public String senderName; 
