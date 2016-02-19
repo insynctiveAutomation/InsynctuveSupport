@@ -145,6 +145,16 @@ public class VisualStudioWorkItemBuilder {
 		return this;
 	}
 	
+	public VisualStudioWorkItemBuilder addReproSteps(String description) {
+		item.addVisualStudioField(new VisualStudioField("add", "/fields/Microsoft.VSTS.TCM.ReproSteps", description));
+		return this;
+	}
+	
+	public VisualStudioWorkItemBuilder modifiedReproSteps(String description) {
+		item.addVisualStudioField(new VisualStudioField("replace", "/fields/Microsoft.VSTS.TCM.ReproSteps", description));
+		return this;
+	}
+	
 	public VisualStudioWorkItem build(){
 		return item;
 	}

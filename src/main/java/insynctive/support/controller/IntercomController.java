@@ -120,7 +120,7 @@ public class IntercomController {
 				.addIntercomConversation(form.getConversationUrl())
 				.addIsIncident(true)
 				.addCreatedBy(createdBy != null ? createdBy.name : "Eugenio Valeiras")
-				.addDescription(DescriptionOfBug) 
+				.addReproSteps(DescriptionOfBug) 
 				.build();
 				
 				Integer bugId = VisualStudioUtil.createNewBug(workItem, project, account);

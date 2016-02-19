@@ -35,6 +35,9 @@ public class VisualStudioFieldForm {
 	
 	@JsonProperty("System.Tags")
 	private String tags;
+	
+	@JsonProperty("Microsoft.VSTS.TCM.ReproSteps")
+	private String reproSteps;
 
 	public String getState() {
 		return state;
@@ -106,6 +109,14 @@ public class VisualStudioFieldForm {
 
 	public void setChangeBy(String changeBy) {
 		this.changeBy = changeBy;
+	}
+	
+	public String getReproSteps() {
+		return reproSteps;
+	}
+
+	public void setReproSteps(String reproSteps) {
+		this.reproSteps = reproSteps;
 	}
 
 	//Methods
