@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import insynctive.support.utils.VisualStudioUtil;
-import insynctive.support.utils.vs.VisualStudioTaskName;
+import insynctive.support.utils.vs.VisualStudioTaskData;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -101,61 +101,61 @@ public class VisualStudioRevisionForm {
 	
 	public boolean isDevelopFix(){
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.DEVELOP_FIX.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.DEVELOP_FIX.value) : false;
 	}
 
 	@JsonIgnore
 	public boolean isInvestigateBug() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.INVESTIGATE_BUG.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.INVESTIGATE_BUG.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isMergeToMaster(){
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.MERGE_TO_MASTER.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.MERGE_TO_MASTER.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isTestStrategy() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.TEST_STRATEGY.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.TEST_STRATEGY.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isCreateANewBranch() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.CREATE_A_NEW_BRANCH.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.CREATE_A_NEW_BRANCH.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isReproduceWithAutomatedTest() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.REPRODUCE_WITH_AUTOMATED_TESTS.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.REPRODUCE_WITH_AUTOMATED_TESTS.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isGetCodeReview() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.GET_CODE_REVIEW.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.GET_CODE_REVIEW.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isFunctionalTest() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.FUNCTIONAL_TEST.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.FUNCTIONAL_TEST.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isRebaseIntegrationToMaster() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.REBASE_INTEGRATION_TO_MASTER.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.REBASE_INTEGRATION_TO_MASTER.value) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isTestOnMaster() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskName.TEST_ON_MASTER.value) : false;
+		return (title != null) ? title.contains(VisualStudioTaskData.TEST_ON_MASTER.value) : false;
 	}
 	
 	@JsonIgnore

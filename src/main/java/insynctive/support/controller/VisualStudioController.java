@@ -21,7 +21,7 @@ import insynctive.support.utils.slack.SlackMessageObject;
 import insynctive.support.utils.slack.SlackMessage;
 import insynctive.support.utils.slack.SlackUtil;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
-import insynctive.support.utils.vs.VisualStudioTaskName;
+import insynctive.support.utils.vs.VisualStudioTaskData;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
 import insynctive.support.utils.vs.VisualStudioBugState;
@@ -142,10 +142,38 @@ public class VisualStudioController {
 			
 			Boolean isGetCodeReview = workItemUpdated.isGetCodeReview();
 			Boolean isFunctionalTest = workItemUpdated.isFunctionalTest();
+
+			VisualStudioRevisionForm functionaltest = bugWorkItem.findFunctionalTest(account);
+			VisualStudioRevisionForm getCodeReview = bugWorkItem.findGetCodeReview(account);
 			
-			if((isGetCodeReview && bugWorkItem.findFunctionalTest(account).isStateDone()) || (isFunctionalTest && bugWorkItem.findGetCodeReview(account).isStateDone())){
+			if((isGetCodeReview && functionaltest.isStateDone()) || (isFunctionalTest && getCodeReview.isStateDone())){
+				
 				returnMessage = getCodeReviewanFunctionalTestDoneProcess(account, project, bugWorkItem);
+			
+			} else {
+			
+				if(isGetCodeReview && !functionaltest.isStateDone()){
+					SlackMessageObject message = new SlackMessageBuilder()
+						.setIconEmoji(SlackMessage.GET_CODE_REVIEW_DONE_FUNCTIONAL_TEST_NOT.img)
+						.setUsername(SlackMessage.GET_CODE_REVIEW_DONE_FUNCTIONAL_TEST_NOT.senderName)
+						.setChannel(SlackUtil.getSlackAccountMentionByEmail(functionaltest.getAssignedToEmail()))
+						.setText(String.format(SlackMessage.GET_CODE_REVIEW_DONE_FUNCTIONAL_TEST_NOT.message, VisualStudioUtil.getVisualWorkItemUrl(bugWorkItem.getId().toString(), project, account), workItemUpdated.getWorkItemID()))
+						.build();
+					SlackUtil.sendMessage(message);
+				}
+	
+				if(isFunctionalTest && !getCodeReview.isStateDone()){
+					SlackMessageObject message = new SlackMessageBuilder()
+							.setIconEmoji(SlackMessage.FUNCTIONAL_TEST_DONE_GET_CODE_REVIEW_NOT.img)
+							.setUsername(SlackMessage.FUNCTIONAL_TEST_DONE_GET_CODE_REVIEW_NOT.senderName)
+							.setChannel(SlackUtil.getSlackAccountMentionByEmail(getCodeReview.getAssignedToEmail()))
+							.setText(String.format(SlackMessage.FUNCTIONAL_TEST_DONE_GET_CODE_REVIEW_NOT.message, VisualStudioUtil.getVisualWorkItemUrl(bugWorkItem.getId().toString(), project, account), workItemUpdated.getWorkItemID()))
+							.build();
+						SlackUtil.sendMessage(message);
+				}
+				
 			}
+			
 		}
 		
 		//Merge to Master was moved to DONE - TODO Run Build 
@@ -180,11 +208,11 @@ public class VisualStudioController {
 
 				VisualStudioWorkItem investigateBugWorkItem = new VisualStudioWorkItemBuilder()
 						.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
-						.addTitle(VisualStudioTaskName.INVESTIGATE_BUG.value + " - " + workItemUpdated.getTitle())
+						.addTitle(VisualStudioTaskData.INVESTIGATE_BUG.value + " - " + workItemUpdated.getTitle())
 						.addStatus(VisualStudioTaskState.TO_DO)
 						.addIteration(workItemUpdated.getIteration())
 						.addAssignTo(workItemUpdated.getAssignedToName() != null ? workItemUpdated.getAssignedToName() : "")
-						.addEstimate("0.5")
+						.addEstimate(VisualStudioTaskData.INVESTIGATE_BUG.defaultEstimate)
 						.build();
 				
 				//Check if the task were not created.
@@ -230,11 +258,11 @@ public class VisualStudioController {
 		
 		VisualStudioWorkItem rebaseIntegrationToMasterTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.REBASE_INTEGRATION_TO_MASTER.value + " - " + bugWorkItem.getTitle() )
+			.addTitle(VisualStudioTaskData.REBASE_INTEGRATION_TO_MASTER.value + " - " + bugWorkItem.getTitle() )
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.findMergeToMaster(account).getAssignedToName())
-			.addEstimate("0.5")
+			.addEstimate(VisualStudioTaskData.REBASE_INTEGRATION_TO_MASTER.defaultEstimate)
 			.build();
 		
 		
@@ -242,11 +270,11 @@ public class VisualStudioController {
 		VisualStudioRevisionForm functionalTest = bugWorkItem.findFunctionalTest(account);
 		VisualStudioWorkItem doneDoneTestTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.TEST_ON_MASTER.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.TEST_ON_MASTER.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(functionalTest.getAssignedToName())
-			.addEstimate("0.5")
+			.addEstimate(VisualStudioTaskData.TEST_ON_MASTER.defaultEstimate)
 			.build();
 
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString()); 
@@ -274,11 +302,11 @@ public class VisualStudioController {
 		VisualStudioRevisionForm findGetCodeReview = bugWorkItem.findGetCodeReview(account);
 		VisualStudioWorkItem mergeToMasterTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.MERGE_TO_MASTER.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.MERGE_TO_MASTER.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(findGetCodeReview.getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
-			.addEstimate("0.5")
+			.addEstimate(VisualStudioTaskData.MERGE_TO_MASTER.defaultEstimate)
 			.build();
 
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString()); 
@@ -315,19 +343,20 @@ public class VisualStudioController {
 		VisualStudioRevisionForm ownserOFAddAcceptanceCriteria = bugWorkItem.findTestStrategy(account);
 		VisualStudioWorkItem functionalTestTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.FUNCTIONAL_TEST.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.FUNCTIONAL_TEST.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(ownserOFAddAcceptanceCriteria.getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
-			.addEstimate("0.5")
+			.addEstimate(VisualStudioTaskData.FUNCTIONAL_TEST.defaultEstimate) 
 			.build();
 
 		VisualStudioWorkItem getCodeReviewTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.GET_CODE_REVIEW.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.GET_CODE_REVIEW.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(bugWorkItem.findDevelopFix(account).getAssignedToName())
 			.addIteration(bugWorkItem.getIteration())
+			.addEstimate(VisualStudioTaskData.GET_CODE_REVIEW.defaultEstimate)
 			.build();
 		
 		createANewTask(dbBug, functionalTestTask, project, account, () -> dbBug.setFunctionalTest(true), () -> !dbBug.isFunctionalTest());
@@ -362,10 +391,10 @@ public class VisualStudioController {
 		
 		VisualStudioWorkItem developFixTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.DEVELOP_FIX.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.DEVELOP_FIX.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
-			.addEstimate("1")
+			.addEstimate(VisualStudioTaskData.DEVELOP_FIX.defaultEstimate)
 			.addAssignTo(bugWorkItem.findReproduceWithAutomatedTest(account).getAssignedToName())
 			.build();
 		createANewTask(dbBug, developFixTask, project, account, () -> dbBug.setDevelopFix(true), () -> !dbBug.isDevelopFix());
@@ -389,11 +418,11 @@ public class VisualStudioController {
 		//Create Reproduce with automated test TASK
 		VisualStudioWorkItem reproduceWithAutomatedTestWorkItem = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.REPRODUCE_WITH_AUTOMATED_TESTS.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.REPRODUCE_WITH_AUTOMATED_TESTS.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.findCreateNewBranch(account).getAssignedToName())
-			.addEstimate("1")
+			.addEstimate(VisualStudioTaskData.REPRODUCE_WITH_AUTOMATED_TESTS.defaultEstimate)
 			.build();
 		
 		createANewTask(dbBug, reproduceWithAutomatedTestWorkItem, project, account, () -> dbBug.setReproduceWithAutomatedTest(true), () -> !dbBug.isReproduceWithAutomatedTest());
@@ -415,30 +444,25 @@ public class VisualStudioController {
 		//Get entity of DB
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString());
 		
-		//Modified State to COMMITED
-		VisualStudioWorkItem updatedItem = new VisualStudioWorkItemBuilder()
-			.modifiedStatus(VisualStudioBugState.COMMITTED)
-			.build();
-		//Update
-		VisualStudioUtil.updateWorkItem(updatedItem, String.valueOf(bugWorkItem.getId()), workItemUpdated.getProject(), account);
-		
 		//Find Owner of 'Test Strategy'
 		String ownserOFAddAcceptanceCriteria = bugWorkItem.findTestStrategy(account).getAssignedToName();
 		//Create Add Acceptance Criteria
 		VisualStudioWorkItem addAcceptanceCriteriaTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.ADD_ACCEPTANCE_CRITERIA.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.ADD_ACCEPTANCE_CRITERIA.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(ownserOFAddAcceptanceCriteria)
+			.addEstimate(VisualStudioTaskData.ADD_ACCEPTANCE_CRITERIA.defaultEstimate)
 			.build();
 
 		VisualStudioWorkItem createNewBranchWorkItem = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskName.CREATE_A_NEW_BRANCH.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.CREATE_A_NEW_BRANCH.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.getAssignedToName() != null ? bugWorkItem.getAssignedToName() : "")
+			.addEstimate(VisualStudioTaskData.CREATE_A_NEW_BRANCH.defaultEstimate)
 			.build();
 		
 		createANewTask(dbBug, addAcceptanceCriteriaTask, project, account, () -> dbBug.setAddAcceptanceCriteria(true), () -> !dbBug.isAddAcceptanceCriteria());
@@ -469,13 +493,21 @@ public class VisualStudioController {
 		//Get entity of DB
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString());
 		
+		
+		//Modified State to COMMITED
+		VisualStudioWorkItem updatedItem = new VisualStudioWorkItemBuilder()
+			.modifiedStatus(VisualStudioBugState.COMMITTED)
+			.build();
+		//Update
+		VisualStudioUtil.updateWorkItem(updatedItem, String.valueOf(bugWorkItem.getId()), workItemUpdated.getProject(), account);
+		
 		VisualStudioWorkItem testStrategyWorkItem = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
-			.addTitle(VisualStudioTaskName.TEST_STRATEGY.value + " - " + bugWorkItem.getTitle())
+			.addParent(String.valueOf( bugWorkItem.getId()))
+			.addTitle(VisualStudioTaskData.TEST_STRATEGY.value + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(workItemUpdated.getCreatedByName())
-			.addEstimate("0.5")
+			.addEstimate(VisualStudioTaskData.TEST_STRATEGY.defaultEstimate)
 			.build();		
 
 		createANewTask(dbBug, testStrategyWorkItem, project, account, () -> dbBug.setTestStrategy(true), () -> !dbBug.isTestStrategy());
