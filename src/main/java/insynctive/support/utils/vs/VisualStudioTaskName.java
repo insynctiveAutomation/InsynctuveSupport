@@ -3,6 +3,7 @@ package insynctive.support.utils.vs;
 public enum VisualStudioTaskName {
 	
 	CREATE_A_NEW_BRANCH("Create a new branch"), 
+	INVESTIGATE_BUG("Investigate bug"), 
 	TEST_STRATEGY("Define test strategy"), 
 	ADD_ACCEPTANCE_CRITERIA("Add acceptance criteria"), 
 	REPRODUCE_WITH_AUTOMATED_TESTS("Reproduce with automated tests"), 

@@ -107,6 +107,7 @@ public class IntercomController {
 			String noteBody = htmlNoteBody.getElementsByTag("p").text();
 
 			String body = form.getConversation().getConversationMessage().getBody();
+			String DescriptionOfBug = "Subject: "+(htmlConversationSubject != null ? htmlConversationSubject.text() : "No subject provided") + "<br>Content: " + body;
 			
 			if(noteBody.toLowerCase().contains("/report")){
 				String[] reportSplit = noteBody.split("/report "); 
@@ -119,7 +120,7 @@ public class IntercomController {
 				.addIntercomConversation(form.getConversationUrl())
 				.addIsIncident(true)
 				.addCreatedBy(createdBy != null ? createdBy.name : "Eugenio Valeiras")
-				.addDescription("Subject: "+htmlConversationSubject != null ? htmlConversationSubject.text() : "No subject provided"+"<br>Content: "+body)
+				.addDescription(DescriptionOfBug) 
 				.build();
 				
 				Integer bugId = VisualStudioUtil.createNewBug(workItem, project, account);

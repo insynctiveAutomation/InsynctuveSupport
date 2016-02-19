@@ -8,7 +8,12 @@ public enum SlackMessage {
 	BUG_APPROVED(
 			":bug:", 
 			"Visual Studio Support", 
-			"<%s | Bug #%d> - Bug has been approved and is ready for \""+VisualStudioTaskName.TEST_STRATEGY.value+"\"."),
+			"<%s | Bug #%d> - Bug has been approved and is ready for \""+VisualStudioTaskName.INVESTIGATE_BUG.value+"\"."),
+
+	INVESTIGATE_BUG_DONE(
+			":bug:", 
+			"Visual Studio Support", 
+			"<%s | Bug #%d> - Bug has been investigated and is ready for \""+VisualStudioTaskName.TEST_STRATEGY.value+"\"."),
 	
 	TEST_STRATEGY_DONE(
 			":bug:", 

@@ -99,10 +99,15 @@ public class VisualStudioRevisionForm {
 		throw new Exception("VisualStudioRevisionForm.getCreatedByName");
 	}
 	
-	@JsonIgnore
 	public boolean isDevelopFix(){
 		String title = getTitle();
 		return (title != null) ? title.contains(VisualStudioTaskName.DEVELOP_FIX.value) : false;
+	}
+
+	@JsonIgnore
+	public boolean isInvestigateBug() {
+		String title = getTitle();
+		return (title != null) ? title.contains(VisualStudioTaskName.INVESTIGATE_BUG.value) : false;
 	}
 	
 	@JsonIgnore

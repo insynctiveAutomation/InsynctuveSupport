@@ -48,29 +48,31 @@ public class VisualStudioController {
 		returnMessage += "- Is Develop Fix: "+workItemUpdated.isDevelopFix();
 		returnMessage += "- Was Change to approved: "+workItemUpdated.wasChangeToApprooved();
 		returnMessage += "- Was Change to In Progress: "+workItemUpdated.wasChangeToInProgress();
-		returnMessage += "- Was Change to Done: "+workItemUpdated.wasChangeToDone();
+		returnMessage += "- Was Change to Done: "+workItemUpdated.changedToDone();
 
-		if(workItemUpdated.wasChangeAssignation() && workItemUpdated.isATask()){
-			alertAssignation(workItemUpdated, account);
+		//IF is a BUG
+		if(workItemUpdated.isABug()){
+			//Manage Updated For Individual BUG
+			if(workItemUpdated.noHaveParent()) {
+				returnMessage = manageUpdatedForIndividualBug(workItemUpdated, account, returnMessage);
+			}
+			
+			//Manage Updated For Critical Bug
+			if(workItemUpdated.changedToCritical()) {
+				SlackUtil.createNewChannel("Critical-"+workItemUpdated.getTitle());
+			}
+			
+			//Manage Updated For Critical Bug
+			if(workItemUpdated.isCritical() && workItemUpdated.changedToDone()) {
+				SlackUtil.archiveChannel("Critical-"+workItemUpdated.getTitle());
+			}
 		}
 		
-		//Manage Updated For Individual BUG
-		if(workItemUpdated.isABug() && workItemUpdated.noHaveParent()) {
-			returnMessage = manageUpdatedForIndividualBug(workItemUpdated, account, returnMessage);
-		}
-
-		//Manage Updated For Critical Bug
-		if(workItemUpdated.isABug() && workItemUpdated.wasChangeToCritical()) {
-			SlackUtil.createNewChannel("Critical-"+workItemUpdated.getTitle());
-		}
-
-		//Manage Updated For Critical Bug
-		if(workItemUpdated.isABug() && workItemUpdated.isCritical() && workItemUpdated.wasChangeToDone()) {
-			SlackUtil.archiveChannel("Critical-"+workItemUpdated.getTitle());
-		}
-		
-		//Manage Updated For TASK
-		if(workItemUpdated.isATask()) {
+		//IF is a TASK
+		if(workItemUpdated.isATask()){
+			if(workItemUpdated.changedAssignation()){
+				alertAssignation(workItemUpdated, account);
+			}
 			returnMessage = manageUpdatedForTask(workItemUpdated, account, returnMessage);
 		}
 		
@@ -105,28 +107,33 @@ public class VisualStudioController {
 	private String manageUpdatedForTask(VisualStudioForm workItemUpdated, String account, String returnMessage) throws Exception {
 		
 		//Test Strategy was moved to DONE
-		if(workItemUpdated.isTestStrategy() && workItemUpdated.wasChangeToDone()) {
+		if(workItemUpdated.isInvestigateBug() && workItemUpdated.changedToDone()) {
+			returnMessage = investigateBugDoneProcess(workItemUpdated, account);
+		}
+		
+		//Test Strategy was moved to DONE
+		if(workItemUpdated.isTestStrategy() && workItemUpdated.changedToDone()) {
 			returnMessage = testStrategyDoneProcess(workItemUpdated, account);
 		}
 		
 		//Create a New Branch was moved to DONE
-		else if(workItemUpdated.isCreateANewBranch() && workItemUpdated.wasChangeToDone()){
+		else if(workItemUpdated.isCreateANewBranch() && workItemUpdated.changedToDone()){
 			returnMessage = createNewBranchDoneProcess(workItemUpdated, account);
 		}
 		
 		
 		//Reproduce with automated tests was moved to DONE
-		else if(workItemUpdated.isReproduceWithAutomatedTest() && (workItemUpdated.wasChangeToDone() || workItemUpdated.waschangeToRemoved())){
+		else if(workItemUpdated.isReproduceWithAutomatedTest() && (workItemUpdated.changedToDone() || workItemUpdated.waschangeToRemoved())){
 			returnMessage = reproduceWithAutomatedTestsDoneOrRemovedProcess(workItemUpdated, account);
 		}
 		
 		//Develop Fix was moved to DONE - TODO Need to make the build automatically
-		else if (workItemUpdated.isDevelopFix() && workItemUpdated.wasChangeToDone()){
+		else if (workItemUpdated.isDevelopFix() && workItemUpdated.changedToDone()){
 			returnMessage = developFixDoneProcess(workItemUpdated, account);
 		}
 		
 		//Get Code Review and functional Test were moved to DONE
-		else if((workItemUpdated.isGetCodeReview() || workItemUpdated.isFunctionalTest() ) && workItemUpdated.wasChangeToDone()){
+		else if((workItemUpdated.isGetCodeReview() || workItemUpdated.isFunctionalTest() ) && workItemUpdated.changedToDone()){
 
 			String project = workItemUpdated.getProject();
 			
@@ -137,18 +144,17 @@ public class VisualStudioController {
 			Boolean isFunctionalTest = workItemUpdated.isFunctionalTest();
 			
 			if((isGetCodeReview && bugWorkItem.findFunctionalTest(account).isStateDone()) || (isFunctionalTest && bugWorkItem.findGetCodeReview(account).isStateDone())){
-				
 				returnMessage = getCodeReviewanFunctionalTestDoneProcess(account, project, bugWorkItem);
 			}
 		}
 		
 		//Merge to Master was moved to DONE - TODO Run Build 
-		else if(workItemUpdated.isMergeToMaster() && workItemUpdated.wasChangeToDone()){
+		else if(workItemUpdated.isMergeToMaster() && workItemUpdated.changedToDone()){
 			returnMessage = mergeToMasterDoneProcess(workItemUpdated, account);
 		}
 		
 		//Rebase Integration to Master and Test on Master were move to Done
-		else if((workItemUpdated.isRebaseIntegrationToMaster() || workItemUpdated.isTestOnMaster())  && workItemUpdated.wasChangeToDone()){
+		else if((workItemUpdated.isRebaseIntegrationToMaster() || workItemUpdated.isTestOnMaster())  && workItemUpdated.changedToDone()){
 			
 			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
 			if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
@@ -172,21 +178,20 @@ public class VisualStudioController {
 				returnMessage = "Create Test Strategy - Slack to QA. ";
 				String project = workItemUpdated.getProject();
 
-				VisualStudioWorkItem testStrategyWorkItem = new VisualStudioWorkItemBuilder()
-					.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
-					.addTitle(VisualStudioTaskName.TEST_STRATEGY.value + " - " + workItemUpdated.getTitle())
-					.addStatus(VisualStudioTaskState.TO_DO)
-					.addIteration(workItemUpdated.getIteration())
-					.addAssignTo(workItemUpdated.getCreatedByName())
-					.addEstimate("0.5")
-					.build();
-				
+				VisualStudioWorkItem investigateBugWorkItem = new VisualStudioWorkItemBuilder()
+						.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
+						.addTitle(VisualStudioTaskName.INVESTIGATE_BUG.value + " - " + workItemUpdated.getTitle())
+						.addStatus(VisualStudioTaskState.TO_DO)
+						.addIteration(workItemUpdated.getIteration())
+						.addAssignTo(workItemUpdated.getAssignedToName() != null ? workItemUpdated.getAssignedToName() : "")
+						.addEstimate("0.5")
+						.build();
 				
 				//Check if the task were not created.
 				if(workItemDao.getByEntityID(workItemUpdated.getWorkItemID()) == null){
 					VisualStudioWorkItemEntity dbBug = new VisualStudioWorkItemEntity(); 
 					dbBug.setWorkItemID(workItemUpdated.getWorkItemID());
-					createANewTask(dbBug, testStrategyWorkItem, project, account, () -> dbBug.setTestStrategy(true), () -> !dbBug.isTestStrategy());
+					createANewTask(dbBug, investigateBugWorkItem, project, account, () -> dbBug.setInvestigateBug(true), () -> !dbBug.isInvestigateBug());
 					workItemDao.save(dbBug);
 
 				}
@@ -195,7 +200,7 @@ public class VisualStudioController {
 				SlackMessageObject message = new SlackMessageBuilder()
 					.setIconEmoji(SlackMessage.BUG_APPROVED.img)
 					.setUsername(SlackMessage.BUG_APPROVED.senderName)
-					.setChannel(SlackUtil.getSlackAccountMentionByEmail(workItemUpdated.getCreatedByEmail()))
+					.setChannel(SlackUtil.getSlackAccountMentionByEmail(workItemUpdated.getAssignedToEmail()))
 					.setText(String.format(SlackMessage.BUG_APPROVED.message, VisualStudioUtil.getVisualWorkItemUrl(workItemUpdated.getWorkItemID().toString(), project, account), workItemUpdated.getWorkItemID()))
 					.build();
 				SlackUtil.sendMessage(message);
@@ -279,7 +284,7 @@ public class VisualStudioController {
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString()); 
 		createANewTask(dbBug, mergeToMasterTask, project, account, () -> dbBug.setMergeToMaster(true), () -> !dbBug.isMergeToMaster());
 		workItemDao.saveOrUpdate(dbBug);
-		
+		 
 		//Slack QA for Functional Test
 		SlackMessageObject message = new SlackMessageBuilder()
 			.setIconEmoji(SlackMessage.FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE.img)
@@ -326,9 +331,9 @@ public class VisualStudioController {
 			.build();
 		
 		createANewTask(dbBug, functionalTestTask, project, account, () -> dbBug.setFunctionalTest(true), () -> !dbBug.isFunctionalTest());
-		createANewTask(dbBug, getCodeReviewTask, project, account, () -> dbBug.setGetCodeReview(true), () -> !dbBug.isGetCodeReview());
+		createANewTask(dbBug, getCodeReviewTask, project, account, () -> dbBug.setGetCodeReview(true), () -> !dbBug.isGetCodeReview()); 
 		workItemDao.saveOrUpdate(dbBug);
-		
+		 
 		//Slack QA for Functional Test
 		SlackMessageObject message = new SlackMessageBuilder()
 			.setIconEmoji(SlackMessage.DEVELOP_FIX_DONE.img)
@@ -452,6 +457,42 @@ public class VisualStudioController {
 		return returnMessage;
 	}
 
+	private String investigateBugDoneProcess(VisualStudioForm workItemUpdated, String account) throws Exception, IOException, URISyntaxException {
+		String returnMessage;
+		returnMessage = "Investigate Bug moved to Done";
+		String project = workItemUpdated.getProject();
+
+		//Get Bug Relation.
+		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+		if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
+
+		//Get entity of DB
+		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityID(bugWorkItem.getId().toString());
+		
+		VisualStudioWorkItem testStrategyWorkItem = new VisualStudioWorkItemBuilder()
+			.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
+			.addTitle(VisualStudioTaskName.TEST_STRATEGY.value + " - " + bugWorkItem.getTitle())
+			.addStatus(VisualStudioTaskState.TO_DO)
+			.addIteration(workItemUpdated.getIteration())
+			.addAssignTo(workItemUpdated.getCreatedByName())
+			.addEstimate("0.5")
+			.build();		
+
+		createANewTask(dbBug, testStrategyWorkItem, project, account, () -> dbBug.setTestStrategy(true), () -> !dbBug.isTestStrategy());
+		workItemDao.saveOrUpdate(dbBug);
+		
+		//Slack DEV for start working
+		SlackMessageObject message = new SlackMessageBuilder()
+			.setIconEmoji(SlackMessage.INVESTIGATE_BUG_DONE.img)
+			.setUsername(SlackMessage.INVESTIGATE_BUG_DONE.senderName)
+			.setChannel(SlackUtil.getSlackAccountMentionByEmail(bugWorkItem.getCreatedByEmail()))
+			.setText(String.format(SlackMessage.INVESTIGATE_BUG_DONE.message, VisualStudioUtil.getVisualWorkItemUrl(bugWorkItem.getId().toString(), project, account), bugWorkItem.getId()))
+			.build();
+		SlackUtil.sendMessage(message);
+		
+		return returnMessage;
+	}
+	
 	//Lambda Methods
 	interface setValue {
 		void evaluate();

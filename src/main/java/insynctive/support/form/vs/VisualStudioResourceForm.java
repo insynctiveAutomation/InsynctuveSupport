@@ -134,6 +134,14 @@ public class VisualStudioResourceForm {
 		}
 		return false;
 	}
+
+	@JsonIgnore
+	public boolean isInvestigateBug() {
+		if(revision != null) {
+			return revision.isInvestigateBug();
+		}
+		return false;
+	}
 	
 	@JsonIgnore
 	public boolean isABug(){

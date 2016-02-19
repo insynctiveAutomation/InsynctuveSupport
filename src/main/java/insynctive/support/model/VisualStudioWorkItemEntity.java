@@ -18,6 +18,9 @@ public class VisualStudioWorkItemEntity {
 	@Column(name = "create_a_new_branch")
 	private Boolean createANewBranch = false;
 	
+	@Column(name = "investigate_bug")
+	private Boolean investigateBug = false;
+	
 	@Column(name = "test_strategy")
 	private Boolean testStrategy = false;
 	
@@ -33,7 +36,7 @@ public class VisualStudioWorkItemEntity {
 	@Column(name = "functional_test")
 	private Boolean functionalTest = false;
 	
-	@Column(name = "merte_to_master")
+	@Column(name = "merge_to_master")
 	private Boolean mergeToMaster = false;
 	
 	@Column(name = "rebase_integration_to_master")
@@ -45,66 +48,87 @@ public class VisualStudioWorkItemEntity {
 	@Column(name = "add_acceptance_critaria")
 	private Boolean addAcceptanceCriteria = false;
 	
-
+	public VisualStudioWorkItemEntity(BigInteger workItemID) {
+		this.workItemID = workItemID;
+	}
 	public VisualStudioWorkItemEntity() {
 		// TODO 
 	}
-	
-	public VisualStudioWorkItemEntity(BigInteger id) {
-		this.workItemID = id;
-	}
-	
-	public BigInteger getWorkItemID() {
+
+	public BigInteger isWorkItemID() {
 		return workItemID;
 	}
+
 
 	public void setWorkItemID(BigInteger workItemID) {
 		this.workItemID = workItemID;
 	}
 
+
 	public Boolean isCreateANewBranch() {
 		return createANewBranch;
 	}
+
 
 	public void setCreateANewBranch(Boolean createANewBranch) {
 		this.createANewBranch = createANewBranch;
 	}
 
+
+	public Boolean isInvestigateBug() {
+		return investigateBug;
+	}
+
+
+	public void setInvestigateBug(Boolean investigateBug) {
+		this.investigateBug = investigateBug;
+	}
+
+
 	public Boolean isTestStrategy() {
 		return testStrategy;
 	}
+
 
 	public void setTestStrategy(Boolean testStrategy) {
 		this.testStrategy = testStrategy;
 	}
 
+
 	public Boolean isReproduceWithAutomatedTest() {
 		return reproduceWithAutomatedTest;
 	}
+
 
 	public void setReproduceWithAutomatedTest(Boolean reproduceWithAutomatedTest) {
 		this.reproduceWithAutomatedTest = reproduceWithAutomatedTest;
 	}
 
+
 	public Boolean isDevelopFix() {
 		return developFix;
 	}
+
 
 	public void setDevelopFix(Boolean developFix) {
 		this.developFix = developFix;
 	}
 
+
 	public Boolean isGetCodeReview() {
 		return getCodeReview;
 	}
 
+
 	public void setGetCodeReview(Boolean isCodeReview) {
-		this.getCodeReview = getCodeReview;
+		this.getCodeReview = isCodeReview;
 	}
+
 
 	public Boolean isFunctionalTest() {
 		return functionalTest;
 	}
+
 
 	public void setFunctionalTest(Boolean functionalTest) {
 		this.functionalTest = functionalTest;
@@ -122,25 +146,28 @@ public class VisualStudioWorkItemEntity {
 		return rebaseIntegrationToMaster;
 	}
 
+
 	public void setRebaseIntegrationToMaster(Boolean rebaseIntegrationToMaster) {
 		this.rebaseIntegrationToMaster = rebaseIntegrationToMaster;
 	}
+
 
 	public Boolean isDoneDoneTest() {
 		return doneDoneTest;
 	}
 
+
 	public void setDoneDoneTest(Boolean doneDoneTest) {
 		this.doneDoneTest = doneDoneTest;
 	}
+
 
 	public Boolean isAddAcceptanceCriteria() {
 		return addAcceptanceCriteria;
 	}
 
+
 	public void setAddAcceptanceCriteria(Boolean addAcceptanceCriteria) {
 		this.addAcceptanceCriteria = addAcceptanceCriteria;
 	}
-	
-	
 }

@@ -66,7 +66,7 @@ public class VisualStudioForm {
 	}
 
 	@JsonIgnore	
-	public boolean wasChangeToCritical() {
+	public boolean changedToCritical() {
 		return resource != null && resource.wasChangeToCritical();
 	}
 
@@ -76,7 +76,7 @@ public class VisualStudioForm {
 	}
 
 	@JsonIgnore
-	public boolean wasChangeAssignation() {
+	public boolean changedAssignation() {
 		return resource != null && resource.wasChangeAssignation(); 
 	}
 	
@@ -86,7 +86,7 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore
-	public boolean wasChangeToDone(){
+	public boolean changedToDone(){
 		return resource != null && resource.wasChangeToDone();
 	}
 	
@@ -129,6 +129,11 @@ public class VisualStudioForm {
 	@JsonIgnore
 	public boolean isMergeToMaster(){
 		return resource.isMergeToMaster();
+	}
+
+	@JsonIgnore
+	public boolean isInvestigateBug() {
+		return resource.isInvestigateBug();
 	}
 	
 	@JsonIgnore
