@@ -28,8 +28,8 @@ public class WorkItemDao {
 		return sessionFactory.getCurrentSession();
 	}
 	
-    public Integer save(BigInteger workItemID){
-		return (Integer) openSession().save(new VisualStudioWorkItemEntity(workItemID));
+    public BigInteger save(BigInteger workItemID){
+		return (BigInteger) openSession().save(new VisualStudioWorkItemEntity(workItemID));
 	}
 	
     public BigInteger save(String workItemID){
@@ -53,6 +53,27 @@ public class WorkItemDao {
 			return entities.get(0);
 		} else {
 			return null;
+		}
+    }
+    
+    public VisualStudioWorkItemEntity getByEntityIDIfNotExistCreate(String entityID){
+		List<VisualStudioWorkItemEntity> entities = (List<VisualStudioWorkItemEntity>) openSession().createCriteria(VisualStudioWorkItemEntity.class).add(Restrictions.eq("workItemID", BigInteger.valueOf(Integer.valueOf(entityID)))).list();
+		
+		if(entities.size() > 0){
+			return entities.get(0);
+		} else {
+			save(entityID);
+			return getByEntityID(entityID);
+		}
+    }
+    
+    public VisualStudioWorkItemEntity getByEntityIDIfNotExistCreate(BigInteger entityID){
+    	List<VisualStudioWorkItemEntity> entities = (List<VisualStudioWorkItemEntity>) openSession().createCriteria(VisualStudioWorkItemEntity.class).add(Restrictions.eq("workItemID", entityID)).list();
+		if(entities.size() > 0){
+			return entities.get(0);
+		} else {
+			save(entityID);
+			return getByEntityID(entityID);
 		}
     }
 

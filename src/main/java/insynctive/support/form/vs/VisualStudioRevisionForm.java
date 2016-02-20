@@ -101,61 +101,61 @@ public class VisualStudioRevisionForm {
 	
 	public boolean isDevelopFix(){
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.DEVELOP_FIX.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.DEVELOP_FIX.value.toLowerCase()) : false;
 	}
 
 	@JsonIgnore
 	public boolean isInvestigateBug() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.INVESTIGATE_BUG.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.INVESTIGATE_BUG.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isMergeToMaster(){
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.MERGE_TO_MASTER.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.MERGE_TO_MASTER.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isTestStrategy() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.TEST_STRATEGY.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.TEST_STRATEGY.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isCreateANewBranch() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.CREATE_A_NEW_BRANCH.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.CREATE_A_NEW_BRANCH.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isReproduceWithAutomatedTest() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.REPRODUCE_WITH_AUTOMATED_TESTS.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.REPRODUCE_WITH_AUTOMATED_TESTS.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isGetCodeReview() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.GET_CODE_REVIEW.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.GET_CODE_REVIEW.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isFunctionalTest() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.FUNCTIONAL_TEST.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.FUNCTIONAL_TEST.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isRebaseIntegrationToMaster() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.REBASE_INTEGRATION_TO_MASTER.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.REBASE_INTEGRATION_TO_MASTER.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isTestOnMaster() {
 		String title = getTitle();
-		return (title != null) ? title.contains(VisualStudioTaskData.TEST_ON_MASTER.value) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.TEST_ON_MASTER.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
@@ -197,6 +197,15 @@ public class VisualStudioRevisionForm {
 		for(VisualStudioRelationsForm relation : relations){
 			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
 			if(workItem.isCreateANewBranch()) return workItem;
+		}
+		return null;
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findInvestigateBug(String account) throws Exception {
+		for(VisualStudioRelationsForm relation : relations){
+			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
+			if(workItem.isInvestigateBug()) return workItem;
 		}
 		return null;
 	}
