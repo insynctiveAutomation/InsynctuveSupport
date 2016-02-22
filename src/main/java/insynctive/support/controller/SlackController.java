@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import insynctive.support.form.intercom.IntercomForm;
 import insynctive.support.form.slack.SlackForm;
+import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.VictorOpsUtil;
 import insynctive.support.utils.slack.SlackMessageObject;
 import insynctive.support.utils.slack.SlackUtil;
@@ -28,6 +29,16 @@ public class SlackController {
 	@RequestMapping(value = "/send" ,method = RequestMethod.POST)
 	@ResponseBody
 	public String sendMessge(@RequestBody SlackMessageObject message) throws IOException {
+		
+		String channel = message.getChannel();
+		if(!channel.substring(0).equals("@") && !channel.substring(0).equals("#")){
+			UserDetails findByContainStringInName = UserDetails.findByContainStringInName(channel);
+			if(findByContainStringInName != null){
+				message.setChannel(findByContainStringInName.slackMention);
+			} else {
+				return "{\"status\" : 200, \"message\" : \"channel not found\"}";
+			}
+		}
 		
 		SlackUtil.sendMessage(message);
 		

@@ -9,6 +9,7 @@ import java.net.URL;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -23,15 +24,7 @@ public class SlackUtil {
 
 	private static final String token =  "xoxp-2598773363-6987940228-21463692417-b6025bd177";
 	
-	public static void sendMessage(SlackMessageObject message) throws IOException{
-		URL u = new URL(message.getUrl());
-		HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-		JSONObject payload = new JSONObject();
-		payload.put("icon_emoji", message.getIconEmoji());
-		payload.put("username", message.getUsername());
-		payload.put("text", message.getText());
-		payload.put("channel", message.getChannel());
-		payload.put("link_names", true);
+	public static boolean sendMessage(SlackMessageObject message) throws IOException {
 		
 		JSONArray attachments = new JSONArray();
 		for(SlackAttachment attach : message.getAttachments()){
@@ -52,21 +45,33 @@ public class SlackUtil {
 			attachments.add(attachment);
 		}
 		
-		payload.put("attachments", attachments);
+		String chatMessageUrl = 
+				"https://slack.com/api/chat.postMessage";
 		
-		conn.setRequestMethod("POST");
-		conn.setConnectTimeout(5000);
-		conn.setUseCaches(false);
-		conn.setDoInput(true);
-		conn.setDoOutput(true);
+		String chatMessageParameters = "?"
+						+ "token=xoxp-2598773363-6987940228-21463692417-b6025bd177"
+						+ "&channel=" + UriUtils.encodeQueryParam(message.getChannel(), "UTF-8")
+						+ "&text=" + UriUtils.encodeQueryParam(message.getText(), "UTF-8")
+						+ "&username=" + UriUtils.encodeQueryParam(message.getUsername(), "UTF-8")
+						+ "&attachments=" + UriUtils.encodeQueryParam(attachments.toJSONString(), "UTF-8")
+						+ "&icon_emoji="+UriUtils.encodeQueryParam(message.getIconEmoji(), "UTF-8")
+						+ "&link_names=1"
+						+ "&pretty=1";
 		
-		DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-		wr.writeBytes(payload.toString());
-		wr.flush();
-        wr.close();
-        
-		InputStream is = conn.getInputStream();
-		System.out.println(is);
+		HttpGet httpGet = new HttpGet(chatMessageUrl+chatMessageParameters);
+		
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpResponse response = httpClient.execute(httpGet);
+		
+		if(response.getStatusLine().getStatusCode() != 200){
+			System.out.println("URL: \n"+chatMessageUrl+chatMessageParameters);
+			System.out.println("Data: \n"+"{}");
+			
+			System.out.println("Status: \n"+response.getStatusLine().getStatusCode());
+			System.out.println("Response: \n"+response);
+		}
+		
+		return response.getStatusLine().getStatusCode() == 200;
 	}
 	
 	public static Boolean createNewChannel(String channelName) throws ClientProtocolException, IOException{
