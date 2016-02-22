@@ -3,12 +3,27 @@ package insynctive.support.utils.slack;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SlackAttachment {
 
+	@JsonProperty("fallback")
 	private String fallback;
+	
+	@JsonProperty("pretext")
 	private String pretext;
+	
+	@JsonProperty("color")
 	private String color;
+	
+	@JsonProperty("fields")
 	private List<SlackField> fields = new ArrayList<>();
+	
+	public SlackAttachment() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public String getFallback() {
 		return fallback;

@@ -208,7 +208,7 @@ public class VisualStudioController {
 
 				VisualStudioWorkItem investigateBugWorkItem = new VisualStudioWorkItemBuilder()
 						.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
-						.addTitle(VisualStudioTaskData.INVESTIGATE_BUG.value + " - " + workItemUpdated.getTitle())
+						.addTitle(VisualStudioTaskData.INVESTIGATE_BUG.value + " - B" + workItemUpdated.getWorkItemID() + " - " + workItemUpdated.getTitle())
 						.addStatus(VisualStudioTaskState.TO_DO)
 						.addIteration(workItemUpdated.getIteration())
 						.addAssignTo(workItemUpdated.getAssignedToName() != null ? workItemUpdated.getAssignedToName() : "")
@@ -258,7 +258,7 @@ public class VisualStudioController {
 		
 		VisualStudioWorkItem rebaseIntegrationToMasterTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.REBASE_INTEGRATION_TO_MASTER.value + " - " + bugWorkItem.getTitle() )
+			.addTitle(VisualStudioTaskData.REBASE_INTEGRATION_TO_MASTER.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle() )
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(workItemUpdated.getAssignedToName()) //workItemUpdated = Merge to Master
@@ -270,7 +270,7 @@ public class VisualStudioController {
 		VisualStudioRevisionForm functionalTest = bugWorkItem.findFunctionalTest(account);
 		VisualStudioWorkItem doneDoneTestTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.TEST_ON_MASTER.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.TEST_ON_MASTER.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(functionalTest != null ? functionalTest.getAssignedToName() : bugWorkItem.getCreatedByName())
@@ -302,7 +302,7 @@ public class VisualStudioController {
 		VisualStudioRevisionForm getCodeReview = bugWorkItem.findGetCodeReview(account);
 		VisualStudioWorkItem mergeToMasterTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.MERGE_TO_MASTER.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.MERGE_TO_MASTER.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(getCodeReview != null ? getCodeReview.getAssignedToName() : bugWorkItem.getAssignedToName())
 			.addIteration(getCodeReview != null ? getCodeReview.getIteration() : bugWorkItem.getIteration())
@@ -343,7 +343,7 @@ public class VisualStudioController {
 		VisualStudioRevisionForm testStrategy = bugWorkItem.findTestStrategy(account);
 		VisualStudioWorkItem functionalTestTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.FUNCTIONAL_TEST.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.FUNCTIONAL_TEST.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(testStrategy != null ? testStrategy.getAssignedToName() : bugWorkItem.getCreatedByName())
 			.addIteration(workItemUpdated.getIteration())
@@ -352,7 +352,7 @@ public class VisualStudioController {
 
 		VisualStudioWorkItem getCodeReviewTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.GET_CODE_REVIEW.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.GET_CODE_REVIEW.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(workItemUpdated.getAssignedToName()) //workItemUpdated = Develop Fix
@@ -391,7 +391,7 @@ public class VisualStudioController {
 		
 		VisualStudioWorkItem developFixTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.DEVELOP_FIX.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.DEVELOP_FIX.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(workItemUpdated.getAssignedToName()) //workItemUpdated = reproduce with automated tests
@@ -418,7 +418,7 @@ public class VisualStudioController {
 		//Create Reproduce with automated test TASK
 		VisualStudioWorkItem reproduceWithAutomatedTestWorkItem = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.REPRODUCE_WITH_AUTOMATED_TESTS.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.REPRODUCE_WITH_AUTOMATED_TESTS.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(workItemUpdated.getAssignedToName()) //workItemUpdated = Create New Branch
@@ -447,7 +447,7 @@ public class VisualStudioController {
 		//Create Add Acceptance Criteria
 		VisualStudioWorkItem addAcceptanceCriteriaTask = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.ADD_ACCEPTANCE_CRITERIA.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.ADD_ACCEPTANCE_CRITERIA.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(workItemUpdated.getAssignedToName() != null ? workItemUpdated.getAssignedToName() : bugWorkItem.getCreatedByName()) //workItemUpdated = 'Test Strategy'
@@ -457,7 +457,7 @@ public class VisualStudioController {
 		VisualStudioRevisionForm investigateBug = bugWorkItem.findInvestigateBug(account);
 		VisualStudioWorkItem createNewBranchWorkItem = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.CREATE_A_NEW_BRANCH.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.CREATE_A_NEW_BRANCH.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(investigateBug != null ? investigateBug.getAssignedToName() : bugWorkItem.getAssignedToName())
@@ -502,7 +502,7 @@ public class VisualStudioController {
 		
 		VisualStudioWorkItem testStrategyWorkItem = new VisualStudioWorkItemBuilder()
 			.addParent(String.valueOf( bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.TEST_STRATEGY.value + " - " + bugWorkItem.getTitle())
+			.addTitle(VisualStudioTaskData.TEST_STRATEGY.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.getCreatedByName())

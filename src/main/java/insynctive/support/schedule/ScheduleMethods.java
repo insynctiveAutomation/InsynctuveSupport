@@ -41,4 +41,21 @@ public class ScheduleMethods {
 				}
 			}
 		}
+		
+		@Scheduled(cron = "0 0 * * * ?")
+		public void HelloEugenio() throws Exception {	
+			SlackMessageObject message = new SlackMessageBuilder()
+				.setIconEmoji(":+1:")
+				.setUsername("Every Hour message")
+				.setText("Hello is a new Hour")
+				.setChannel(UserDetails.EUGENIO_VALEIRAS.slackMention)
+				.build();
+			SlackUtil.sendMessage(message);
+		}
+		
+		public static void main(String[] args) throws Exception {
+			for(UserDetails user : UserDetails.values()){
+				VisualStudioUtil.countWorkInProgressCurrentIteration(user.name, "Insynctive", "insynctive");
+			}
+		}
 }

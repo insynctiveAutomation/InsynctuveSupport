@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import insynctive.support.form.intercom.IntercomForm;
 import insynctive.support.form.slack.SlackForm;
 import insynctive.support.utils.VictorOpsUtil;
+import insynctive.support.utils.slack.SlackMessageObject;
 import insynctive.support.utils.slack.SlackUtil;
 import insynctive.support.utils.victorops.VictorOpsIncident;
 import insynctive.support.utils.victorops.builder.VictorOpsIncidentBuilder;
@@ -21,6 +24,15 @@ import insynctive.support.utils.victorops.builder.VictorOpsIncidentBuilder;
 @Controller
 @RequestMapping("/slack")
 public class SlackController {
+	
+	@RequestMapping(value = "/send" ,method = RequestMethod.POST)
+	@ResponseBody
+	public String sendMessge(@RequestBody SlackMessageObject message) throws IOException {
+		
+		SlackUtil.sendMessage(message);
+		
+		return "{\"status\" : 200}";
+	}
 
 	@RequestMapping(value = "/createChannel" ,method = RequestMethod.POST)
 	@ResponseBody
