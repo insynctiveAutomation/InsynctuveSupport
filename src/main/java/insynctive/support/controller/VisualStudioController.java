@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.dao.WorkItemDao;
 import insynctive.support.form.vs.VisualStudioForm;
+import insynctive.support.form.vs.VisualStudioRelationsForm;
 import insynctive.support.form.vs.VisualStudioRevisionForm;
 import insynctive.support.model.VisualStudioWorkItemEntity;
+import insynctive.support.utils.Property;
 import insynctive.support.utils.VisualStudioUtil;
 import insynctive.support.utils.slack.SlackMessageObject;
 import insynctive.support.utils.slack.SlackMessage;
@@ -32,9 +34,11 @@ import insynctive.support.utils.vs.builder.VisualStudioWorkItemBuilder;
 public class VisualStudioController {
 
 	private final WorkItemDao workItemDao;
+	private final Property property;
 	
 	@Inject
-	public VisualStudioController(WorkItemDao workItemDao) {
+	public VisualStudioController(WorkItemDao workItemDao, Property property) {
+		this.property = property;
 		this.workItemDao = workItemDao;
 	}
 	
@@ -63,17 +67,31 @@ public class VisualStudioController {
 			}
 			
 			//Manage Updated For Critical Bug
-			if(workItemUpdated.isCritical() && workItemUpdated.changedToDone()) {
+			if(workItemUpdated.criticalChangeStateToDone()) {
 				SlackUtil.archiveChannel("Critical-"+workItemUpdated.getTitle());
 			}
 		}
 		
 		//IF is a TASK
 		if(workItemUpdated.isATask()) {
+			
 			if(workItemUpdated.changedAssignation()){
-				alertAssignation(workItemUpdated, account);
+				alertAssignation(workItemUpdated, account); 
 			}
-			returnMessage = manageUpdatedForTask(workItemUpdated, account, returnMessage);
+			
+			VisualStudioRevisionForm firstRelation = workItemUpdated.getParentFullObject(account);
+			if(firstRelation.isABug() && firstRelation.noHaveParent()){
+				returnMessage = manageUpdatedForTaskInIndependentBug(workItemUpdated, account, returnMessage);
+			}
+			if(firstRelation.isAStory()){
+				returnMessage = manageUpdatedForTaskInStory(workItemUpdated, account);
+			}
+			
+			
+		}
+		
+		if(workItemUpdated.isAStory()){
+			
 		}
 		
 		return "{\"status\" : 200, \"message\": \""+returnMessage+"\"}";
@@ -104,7 +122,7 @@ public class VisualStudioController {
 	}
 
 	//Manage Task Upadated
-	private String manageUpdatedForTask(VisualStudioForm workItemUpdated, String account, String returnMessage) throws Exception {
+	private String manageUpdatedForTaskInIndependentBug(VisualStudioForm workItemUpdated, String account, String returnMessage) throws Exception {
 		
 		//Test Strategy was moved to DONE
 		if(workItemUpdated.isInvestigateBug() && workItemUpdated.changedToDone()) {
@@ -121,7 +139,6 @@ public class VisualStudioController {
 			returnMessage = createNewBranchDoneProcess(workItemUpdated, account);
 		}
 		
-		
 		//Reproduce with automated tests was moved to DONE
 		else if(workItemUpdated.isReproduceWithAutomatedTest() && (workItemUpdated.changedToDone() || workItemUpdated.waschangeToRemoved())){
 			returnMessage = reproduceWithAutomatedTestsDoneOrRemovedProcess(workItemUpdated, account);
@@ -137,7 +154,7 @@ public class VisualStudioController {
 
 			String project = workItemUpdated.getProject();
 			
-			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 			if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 			
 			Boolean isGetCodeReview = workItemUpdated.isGetCodeReview();
@@ -178,13 +195,13 @@ public class VisualStudioController {
 		
 		//Merge to Master was moved to DONE - TODO Run Build 
 		else if(workItemUpdated.isMergeToMaster() && workItemUpdated.changedToDone()){
-			returnMessage = mergeToMasterDoneProcess(workItemUpdated, account);
+			returnMessage = mergeToMasterBugDoneProcess(workItemUpdated, account);
 		}
 		
 		//Rebase Integration to Master and Test on Master were move to Done
 		else if((workItemUpdated.isRebaseIntegrationToMaster() || workItemUpdated.isTestOnMaster())  && workItemUpdated.changedToDone()){
 			
-			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 			if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 			
 			Boolean isRebaseIntegrationToMaster = workItemUpdated.isRebaseIntegrationToMaster();
@@ -197,6 +214,54 @@ public class VisualStudioController {
 		return returnMessage;
 	}
 
+	private String manageUpdatedForTaskInStory(VisualStudioForm workItemUpdated, String account) throws Exception {
+		
+		String returnMessage = "";
+		
+		//Test Strategy was moved to DONE
+//		if(workItemUpdated.isEstimateStory() && workItemUpdated.changedToDone()) {
+//			returnMessage = estimateStoryDoneProcess(workItemUpdated, account);
+//		}
+//
+//		if(workItemUpdated.isCreateANewBranch() && workItemUpdated.changedToDone()) {
+//			returnMessage = createANewBranchDoneProcess(workItemUpdated, account);
+//		}
+//		
+//		if(workItemUpdated.isDevelopTDD() && workItemUpdated.changedToDone()) {
+//			returnMessage = developTDDDoneProcess(workItemUpdated, account);
+//		}
+//		
+//		if(workItemUpdated.isPostStoryMovie() && workItemUpdated.changedToDone()) {
+//			returnMessage = postStoryMovieDoneProcess(workItemUpdated, account);
+//		}
+//		
+//		if(workItemUpdated.isPullRequestForStory() && workItemUpdated.changedToDone()) {
+//			returnMessage = pullRequestForStorDoneProcess(workItemUpdated, account);
+//		}
+//		
+//		if((workItemUpdated.isFunctionalTestOnIntegration() || workItemUpdated.isMergeToMaster() || workItemUpdated.isUIAutomatedTesting()) && workItemUpdated.changedToDone()) {
+//			returnMessage = pullRequestOrFunctionalTestOnIntegrationOrUiAutomatedtestingDoneProcess(workItemUpdated, account);
+//		}
+//
+//		if(workItemUpdated.isMergeToMaster() && workItemUpdated.changedToDone()) {
+//			returnMessage = mergeToMasterStoryDoneProcess(workItemUpdated, account);
+//		}
+//		
+//		if(workItemUpdated.isRebaseIntegrationToMaster() && workItemUpdated.changedToDone()) {
+//			returnMessage = rebaseIntegrationToMasterDoneProcess(workItemUpdated, account);
+//		}
+//		
+//		if(workItemUpdated.isTestOnMaster() && workItemUpdated.changedToDone()) {
+//			returnMessage = testOnMasterDoneProcess(workItemUpdated, account);
+//		}
+//		
+//		if(workItemUpdated.isApproveForRelease() && workItemUpdated.changedToDone()) {
+//			returnMessage = approveForReleaseDoneProcess(workItemUpdated, account);
+//		}
+		
+		return returnMessage;
+	}
+	
 	//Manage Bug Updated
 	private String manageUpdatedForIndividualBug(VisualStudioForm workItemUpdated, String account, String returnMessage) throws Exception {
 			
@@ -207,7 +272,7 @@ public class VisualStudioController {
 				String project = workItemUpdated.getProject();
 
 				VisualStudioWorkItem investigateBugWorkItem = new VisualStudioWorkItemBuilder()
-						.addParent(String.valueOf(workItemUpdated.getWorkItemID()))
+						.addParent(String.valueOf(workItemUpdated.getWorkItemID()), property.getVSAccount())
 						.addTitle(VisualStudioTaskData.INVESTIGATE_BUG.value + " - B" + workItemUpdated.getWorkItemID() + " - " + workItemUpdated.getTitle())
 						.addStatus(VisualStudioTaskState.TO_DO)
 						.addIteration(workItemUpdated.getIteration())
@@ -247,17 +312,17 @@ public class VisualStudioController {
 		VisualStudioUtil.updateWorkItem(partialBugItem, String.valueOf(bugWorkItem.getId()), workItemUpdated.getProject(), account);
 	}
 
-	private String mergeToMasterDoneProcess(VisualStudioForm workItemUpdated, String account)
+	private String mergeToMasterBugDoneProcess(VisualStudioForm workItemUpdated, String account)
 			throws Exception, IOException, URISyntaxException {
 		String returnMessage;
 		returnMessage = "Create 'Done done test' and 'Rebase integration to master'";
 		String project = workItemUpdated.getProject();
 		
-		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 		if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 		
 		VisualStudioWorkItem rebaseIntegrationToMasterTask = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
 			.addTitle(VisualStudioTaskData.REBASE_INTEGRATION_TO_MASTER.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle() )
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
@@ -269,12 +334,12 @@ public class VisualStudioController {
 		//Find Owner of 'Functional Test'
 		VisualStudioRevisionForm functionalTest = bugWorkItem.findFunctionalTest(account);
 		VisualStudioWorkItem doneDoneTestTask = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.TEST_ON_MASTER.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
+			.addTitle(VisualStudioTaskData.TEST_ON_MASTER_BUG.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
 			.addAssignTo(functionalTest != null ? functionalTest.getAssignedToName() : bugWorkItem.getCreatedByName())
-			.addEstimate(VisualStudioTaskData.TEST_ON_MASTER.defaultEstimate)
+			.addEstimate(VisualStudioTaskData.TEST_ON_MASTER_BUG.defaultEstimate)
 			.build();
 
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityIDIfNotExistCreate(bugWorkItem.getId().toString()); 
@@ -301,12 +366,12 @@ public class VisualStudioController {
 		
 		VisualStudioRevisionForm getCodeReview = bugWorkItem.findGetCodeReview(account);
 		VisualStudioWorkItem mergeToMasterTask = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.MERGE_TO_MASTER.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
+			.addTitle(VisualStudioTaskData.MERGE_TO_MASTER_BUG.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(getCodeReview != null ? getCodeReview.getAssignedToName() : bugWorkItem.getAssignedToName())
 			.addIteration(getCodeReview != null ? getCodeReview.getIteration() : bugWorkItem.getIteration())
-			.addEstimate(VisualStudioTaskData.MERGE_TO_MASTER.defaultEstimate)
+			.addEstimate(VisualStudioTaskData.MERGE_TO_MASTER_BUG.defaultEstimate)
 			.build();
 
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityIDIfNotExistCreate(bugWorkItem.getId().toString()); 
@@ -333,7 +398,7 @@ public class VisualStudioController {
 		String project = workItemUpdated.getProject();
 
 		//Get Bug Relation.
-		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 		if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 
 		//Get entity of DB
@@ -342,7 +407,7 @@ public class VisualStudioController {
 		//Find Owner of 'Test Strategy'
 		VisualStudioRevisionForm testStrategy = bugWorkItem.findTestStrategy(account);
 		VisualStudioWorkItem functionalTestTask = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
 			.addTitle(VisualStudioTaskData.FUNCTIONAL_TEST.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addAssignTo(testStrategy != null ? testStrategy.getAssignedToName() : bugWorkItem.getCreatedByName())
@@ -351,7 +416,7 @@ public class VisualStudioController {
 			.build();
 
 		VisualStudioWorkItem getCodeReviewTask = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
 			.addTitle(VisualStudioTaskData.GET_CODE_REVIEW.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
@@ -383,14 +448,14 @@ public class VisualStudioController {
 		String project = workItemUpdated.getProject();
 
 		//Get Bug Relation.
-		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 		if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 
 		//Get entity of DB
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityIDIfNotExistCreate(bugWorkItem.getId().toString());
 		
 		VisualStudioWorkItem developFixTask = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
 			.addTitle(VisualStudioTaskData.DEVELOP_FIX.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
@@ -410,14 +475,14 @@ public class VisualStudioController {
 		String project = workItemUpdated.getProject();
 
 		//Get Bug Relation.
-		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 		if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 
 		//Get entity of DB
 		VisualStudioWorkItemEntity dbBug = workItemDao.getByEntityIDIfNotExistCreate(bugWorkItem.getId().toString());
 		//Create Reproduce with automated test TASK
 		VisualStudioWorkItem reproduceWithAutomatedTestWorkItem = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
 			.addTitle(VisualStudioTaskData.REPRODUCE_WITH_AUTOMATED_TESTS.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
@@ -438,7 +503,7 @@ public class VisualStudioController {
 		String project = workItemUpdated.getProject();
 
 		//Get Bug Relation.
-		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 		if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 
 		//Get entity of DB
@@ -446,7 +511,7 @@ public class VisualStudioController {
 		
 		//Create Add Acceptance Criteria
 		VisualStudioWorkItem addAcceptanceCriteriaTask = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
 			.addTitle(VisualStudioTaskData.ADD_ACCEPTANCE_CRITERIA.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
@@ -456,7 +521,7 @@ public class VisualStudioController {
 
 		VisualStudioRevisionForm investigateBug = bugWorkItem.findInvestigateBug(account);
 		VisualStudioWorkItem createNewBranchWorkItem = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf(bugWorkItem.getId()))
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
 			.addTitle(VisualStudioTaskData.CREATE_A_NEW_BRANCH.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(workItemUpdated.getIteration())
@@ -486,7 +551,7 @@ public class VisualStudioController {
 		String project = workItemUpdated.getProject();
 
 		//Get Bug Relation.
-		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getFirstRelationFullObject(account);
+		VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 		if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
 
 		//Get entity of DB
@@ -501,12 +566,12 @@ public class VisualStudioController {
 		VisualStudioUtil.updateWorkItem(updatedItem, String.valueOf(bugWorkItem.getId()), workItemUpdated.getProject(), account);
 		
 		VisualStudioWorkItem testStrategyWorkItem = new VisualStudioWorkItemBuilder()
-			.addParent(String.valueOf( bugWorkItem.getId()))
-			.addTitle(VisualStudioTaskData.TEST_STRATEGY.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
+			.addParent(String.valueOf(bugWorkItem.getId()), property.getVSAccount())
+			.addTitle(VisualStudioTaskData.TEST_STRATEGY_BUG.value + " - B" + bugWorkItem.getId() + " - " + bugWorkItem.getTitle())
 			.addStatus(VisualStudioTaskState.TO_DO)
 			.addIteration(bugWorkItem.getIteration())
 			.addAssignTo(bugWorkItem.getCreatedByName())
-			.addEstimate(VisualStudioTaskData.TEST_STRATEGY.defaultEstimate)
+			.addEstimate(VisualStudioTaskData.TEST_STRATEGY_BUG.defaultEstimate)
 			.build();		
 
 		createANewTask(dbBug, testStrategyWorkItem, project, account, () -> dbBug.setTestStrategy(true), () -> !dbBug.isTestStrategy());

@@ -13,12 +13,12 @@ public enum SlackMessage {
 	INVESTIGATE_BUG_DONE(
 			":bug:", 
 			"Visual Studio Support", 
-			"<%s | Bug #%d> - Bug has been investigated and is ready for \""+VisualStudioTaskData.TEST_STRATEGY.value+"\"."),
+			"<%s | Bug #%d> - Bug has been investigated and is ready for \""+VisualStudioTaskData.TEST_STRATEGY_BUG.value+"\"."),
 	
 	TEST_STRATEGY_DONE(
 			":bug:", 
 			"Visual Studio Support", 
-			"<%s | Bug #%d> - "+VisualStudioTaskData.TEST_STRATEGY.value+" has been agreed, you can start working on this bug."),
+			"<%s | Bug #%d> - "+VisualStudioTaskData.TEST_STRATEGY_BUG.value+" has been agreed, you can start working on this bug."),
 	
 	DEVELOP_FIX_DONE(
 			":bug:", 
@@ -28,17 +28,17 @@ public enum SlackMessage {
 	FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE(
 			":bug:",
 			"Visual Studio Support", 
-			"<%s | Bug #%d> - Bug was tested and Code was reviewed and approved. You can "+VisualStudioTaskData.MERGE_TO_MASTER.value+"."),
+			"<%s | Bug #%d> - Bug was tested and Code was reviewed and approved. You can "+VisualStudioTaskData.MERGE_TO_MASTER_BUG.value+"."),
 	
 	FUNCTIONAL_TEST_DONE_GET_CODE_REVIEW_NOT(
 			":bug:",
 			"Visual Studio Support", 
-			"<%s | Bug #%d> - "+VisualStudioTaskData.MERGE_TO_MASTER.value+" task is waiting for you to complete Pull Request."),
+			"<%s | Bug #%d> - "+VisualStudioTaskData.MERGE_TO_MASTER_BUG.value+" task is waiting for you to complete Pull Request."),
 	
 	GET_CODE_REVIEW_DONE_FUNCTIONAL_TEST_NOT(
 			":bug:",
 			"Visual Studio Support", 
-			"<%s | Bug #%d> - "+VisualStudioTaskData.MERGE_TO_MASTER.value+" task is waiting for you to complete Functional Test."),
+			"<%s | Bug #%d> - "+VisualStudioTaskData.MERGE_TO_MASTER_BUG.value+" task is waiting for you to complete Functional Test."),
 	
 	MERGE_TO_MASTER_DONE(
 			":bug:", 
@@ -66,7 +66,7 @@ public enum SlackMessage {
 	HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS (
 			":point_right:", 
 			"Visual Studio Support", 
-			"You have 2 tasks in progress when you should have only one !");
+			"You have %d tasks in progress when you should have only one !");
 	
 	public String img;
 	public String senderName; 

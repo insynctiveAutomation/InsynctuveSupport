@@ -1,6 +1,7 @@
 package insynctive.support.form.vs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,12 +51,13 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore
-	public VisualStudioRelationsForm getFirstRelation(){
-		if(haveRelations()){
-			return relations.get(0);
-		} else {
-			return null;
-		}
+	public List<VisualStudioRelationsForm> getParents(){
+		return Arrays.asList(relations.stream().filter((rel) -> rel.isParent()).toArray(VisualStudioRelationsForm[]::new));
+	}
+	
+	@JsonIgnore
+	public List<VisualStudioRelationsForm> getChilds(){
+		return Arrays.asList(relations.stream().filter((rel) -> rel.isChild()).toArray(VisualStudioRelationsForm[]::new));
 	}
 	
 	@JsonIgnore
@@ -111,15 +113,15 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore
-	public boolean isMergeToMaster(){
+	public boolean isMergeToMasterBug(){
 		String title = getTitle();
-		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.MERGE_TO_MASTER.value.toLowerCase()) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.MERGE_TO_MASTER_BUG.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
-	public boolean isTestStrategy() {
+	public boolean isTestStrategyBug() {
 		String title = getTitle();
-		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.TEST_STRATEGY.value.toLowerCase()) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.TEST_STRATEGY_BUG.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
@@ -153,19 +155,91 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore
-	public boolean isTestOnMaster() {
+	public boolean isTestOnMasterBug() {
 		String title = getTitle();
-		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.TEST_ON_MASTER.value.toLowerCase()) : false;
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.TEST_ON_MASTER_BUG.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isEstimateStory() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.ESTIMATE_STORY.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isTestingStrategyStory() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.TEST_STRATEGY_STORY.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isDevelopTDD() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.DEVELOP_TDD_INTEGRATION_TESTS.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isDevelopCodeStory() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.DEVELOP_CODE_FOR_STORY.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isPostStoryMovie() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.POST_STORY_MOVIE.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isPullRequestForStory() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.PULL_REQUEST_FOR_STORY.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isFunctionalTestOnIntegration() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.FUNCTIONAL_TEST_ON_INTEGRATION.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isUIAutomatedTesting() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.UI_AUTOMATED_TESTING.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isMergeToMasterStory() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.MERGE_TO_MASTER_STORY.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isTestOnMasterStory() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.TEST_ON_MASTER_STORY.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
+	public boolean isApproveForRelease() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.APPROVE_FOR_RELEASE.value.toLowerCase()) : false;
 	}
 	
 	@JsonIgnore
 	public boolean isABug(){
-		return getFields().isBug();
+		return getFields().isABug();
+	}
+	
+	
+	@JsonIgnore
+	public boolean isAStory(){
+		return getFields().isAStory();
 	}
 	
 	@JsonIgnore
 	public boolean isATask(){
-		return getFields().isTask();
+		return getFields().isATask();
 	}
 	
 	@JsonIgnore
@@ -187,7 +261,7 @@ public class VisualStudioRevisionForm {
 	public VisualStudioRevisionForm findMergeToMasterTask(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
 			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isMergeToMaster()) return workItem;
+			if(workItem.isMergeToMasterBug()) return workItem;
 		}
 		return null;
 	}
@@ -214,7 +288,7 @@ public class VisualStudioRevisionForm {
 	public VisualStudioRevisionForm findTestStrategy(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
 			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isTestStrategy()) return workItem;
+			if(workItem.isTestStrategyBug()) return workItem;
 		}
 		return null;
 	}
@@ -259,7 +333,7 @@ public class VisualStudioRevisionForm {
 	public VisualStudioRevisionForm findMergeToMaster(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
 			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isMergeToMaster()) return workItem;
+			if(workItem.isMergeToMasterBug()) return workItem;
 		}
 		return null;
 	}
@@ -277,7 +351,7 @@ public class VisualStudioRevisionForm {
 	public VisualStudioRevisionForm findDoneDoneTest(String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
 			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isTestOnMaster()) return workItem;
+			if(workItem.isTestOnMasterBug()) return workItem;
 		}
 		return null;
 	}
@@ -340,7 +414,14 @@ public class VisualStudioRevisionForm {
 		return fields.getState().equals(VisualStudioTaskState.DONE.value);
 	}
 	
+	@JsonIgnore	
 	public String getType() {
 		return fields.getType();
 	}
+	
+	@JsonIgnore	
+	public Boolean noHaveParent() {
+		return getParents().size() == 0;
+	}
+	
 }

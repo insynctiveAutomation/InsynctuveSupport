@@ -1,9 +1,12 @@
 package insynctive.support.form.vs;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import insynctive.support.utils.vs.VisualStudioTaskData;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioResourceForm {
@@ -74,7 +77,7 @@ public class VisualStudioResourceForm {
 	@JsonIgnore
 	public boolean isMergeToMaster(){
 		if(revision != null) {
-			return revision.isMergeToMaster();
+			return revision.isMergeToMasterBug();
 		}
 		return false;
 	}
@@ -82,7 +85,7 @@ public class VisualStudioResourceForm {
 	@JsonIgnore
 	public boolean isTestStrategy() {
 		if(revision != null) {
-			return revision.isTestStrategy();
+			return revision.isTestStrategyBug();
 		}
 		return false;
 	}
@@ -130,7 +133,7 @@ public class VisualStudioResourceForm {
 	@JsonIgnore
 	public boolean isTestOnMaster() {
 		if(revision != null) {
-			return revision.isTestOnMaster();
+			return revision.isTestOnMasterBug();
 		}
 		return false;
 	}
@@ -144,13 +147,106 @@ public class VisualStudioResourceForm {
 	}
 	
 	@JsonIgnore
+	public boolean isEstimateStory() {
+		if(revision != null) {
+			return revision.isEstimateStory();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isTestingStrategyStory() {
+		if(revision != null) {
+			return revision.isTestingStrategyStory();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isDevelopTDD() {
+		if(revision != null) {
+			return revision.isDevelopTDD();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isDevelopCodeStory() {
+		if(revision != null) {
+			return revision.isDevelopCodeStory();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isPostStoryMovie() {
+		if(revision != null) {
+			return revision.isPostStoryMovie();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isPullRequestForStory() {
+		if(revision != null) {
+			return revision.isPullRequestForStory();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isFunctionalTestOnIntegration() {
+		if(revision != null) {
+			return revision.isFunctionalTestOnIntegration();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isUIAutomatedTesting() {
+		if(revision != null) {
+			return revision.isUIAutomatedTesting();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isMergeToMasterStory() {
+		if(revision != null) {
+			return revision.isMergeToMasterStory();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isTestOnMasterStory() {
+		if(revision != null) {
+			return revision.isTestOnMasterStory();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public boolean isApproveForRelease() {
+		if(revision != null) {
+			return revision.isApproveForRelease();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
 	public boolean isABug(){
-		return revision != null && revision.getFields().isBug();
+		return revision != null && revision.isABug();
 	}
 	
 	@JsonIgnore
 	public boolean isATask(){
-		return revision != null && revision.getFields().isTask();
+		return revision != null && revision.isATask();
+	}
+	
+	@JsonIgnore
+	public boolean isAStory(){
+		return revision != null && revision.isAStory();
 	}
 	
 	@JsonIgnore
@@ -200,13 +296,21 @@ public class VisualStudioResourceForm {
 		}
 		throw new Exception("VisualStudioResourceForm.getIteration()");
 	}
-
-	@JsonIgnore
-	public VisualStudioRelationsForm getFirstRelation() {
+	
+	public List<VisualStudioRelationsForm> getParents() throws Exception {
 		if(revision != null){
-			return revision.getFirstRelation();
+			return revision.getParents();
+		} else {
+			throw new Exception("Revision is NULL");
 		}
-		return null;
+	}
+	
+	public List<VisualStudioRelationsForm> getChilds() throws Exception {
+		if(revision != null){
+			return revision.getChilds();
+		} else {
+			throw new Exception("Revision is NULL");
+		}
 	}
 
 	@JsonIgnore

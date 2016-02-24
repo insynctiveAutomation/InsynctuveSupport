@@ -4,6 +4,10 @@ import insynctive.support.utils.vs.VisualStudioField;
 import insynctive.support.utils.vs.VisualStudioRelation;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import insynctive.support.utils.Property;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 import insynctive.support.utils.vs.VisualStudioBugState;
 
@@ -75,13 +79,13 @@ public class VisualStudioWorkItemBuilder {
 		return this;
 	}
 	
-	public VisualStudioWorkItemBuilder addParent(String relationID){
-		item.addVisualStudioRelation(new VisualStudioRelation("add", "/relations/-", "insynctive", relationID));
+	public VisualStudioWorkItemBuilder addParent(String relationID, String account) throws Exception {
+		item.addVisualStudioRelation(new VisualStudioRelation("add", "/relations/-", account, relationID));
 		return this;
 	}
 	
-	public VisualStudioWorkItemBuilder modifiedParent(String relationID){
-		item.addVisualStudioRelation(new VisualStudioRelation("replace", "/relations/-", "insynctive", relationID));
+	public VisualStudioWorkItemBuilder modifiedParent(String relationID, String account) throws Exception {
+		item.addVisualStudioRelation(new VisualStudioRelation("replace", "/relations/-", account, relationID));
 		return this;
 	}
 	

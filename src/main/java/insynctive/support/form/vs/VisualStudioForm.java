@@ -1,6 +1,7 @@
 package insynctive.support.form.vs;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -43,14 +44,6 @@ public class VisualStudioForm {
 	public String getUrl(){
 		return resource != null ? resource.getUrl() : "";
 	}
-	
-	@JsonIgnore
-	public VisualStudioRelationsForm getFirstRelation(){
-		if(resource != null){
-			return resource.getFirstRelation();
-		}
-		return null;
-	}
 
 	@JsonIgnore
 	public String getCreatedBy() throws Exception {
@@ -68,6 +61,11 @@ public class VisualStudioForm {
 	@JsonIgnore	
 	public boolean changedToCritical() {
 		return resource != null && resource.wasChangeToCritical();
+	}
+	
+	@JsonIgnore	
+	public boolean criticalChangeStateToDone() {
+		return isCritical() && changedToDone();
 	}
 
 	@JsonIgnore	
@@ -171,6 +169,61 @@ public class VisualStudioForm {
 		return resource.isTestOnMaster();
 	}
 	
+	@JsonIgnore
+	public boolean isEstimateStory() {
+		return resource.isEstimateStory();	
+	}
+	
+	@JsonIgnore
+	public boolean isTestingStrategyStory() {
+		return resource.isTestingStrategyStory();	
+	}
+	
+	@JsonIgnore
+	public boolean isDevelopTDD() {
+		return resource.isDevelopTDD();	
+	}
+	
+	@JsonIgnore
+	public boolean isDevelopCodeStory() {
+		return resource.isDevelopCodeStory();	
+	}
+	
+	@JsonIgnore
+	public boolean isPostStoryMovie() {
+		return resource.isPostStoryMovie();	
+	}
+	
+	@JsonIgnore
+	public boolean isPullRequestForStory() {
+		return resource.isPullRequestForStory();	
+	}
+	
+	@JsonIgnore
+	public boolean isFunctionalTestOnIntegration() {
+		return resource.isFunctionalTestOnIntegration();	
+	}
+	
+	@JsonIgnore
+	public boolean isUIAutomatedTesting() {
+		return resource.isUIAutomatedTesting();	
+	}
+	
+	@JsonIgnore
+	public boolean isMergeToMasterStory() {
+		return resource.isMergeToMasterStory();	
+	}
+	
+	@JsonIgnore
+	public boolean isTestOnMasterStory() {
+		return resource.isTestOnMasterStory();	
+	}
+	
+	@JsonIgnore
+	public boolean isApproveForRelease() {
+		return resource.isApproveForRelease();	
+	}
+	
 	//Work Item Manage
 	@JsonIgnore	
 	public boolean isABug(){
@@ -180,6 +233,11 @@ public class VisualStudioForm {
 	@JsonIgnore	
 	public boolean isATask(){
 		return resource.isATask();
+	}
+	
+	@JsonIgnore	
+	public boolean isAStory(){
+		return resource.isAStory();
 	}
 	
 	@JsonIgnore	
@@ -220,13 +278,33 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore	
-	public VisualStudioRevisionForm getFirstRelationFullObject(String account) throws Exception {
-		return VisualStudioUtil.getWorkItem(getFirstRelation().getRelationID(), account);
+	public VisualStudioRevisionForm getParentFullObject(String account) throws Exception {
+		
+		return VisualStudioUtil.getWorkItem(getParent().getRelationID(), account);
 	}
-
+	
 	@JsonIgnore	
-	public boolean noHaveParent() {
-		return getFirstRelation() == null;
+	public VisualStudioRelationsForm getParent() throws Exception {
+		List<VisualStudioRelationsForm> parents = getParents();
+		return parents.size() > 0 ? parents.get(0) : null;
+	}
+	
+	@JsonIgnore	
+	public List<VisualStudioRelationsForm> getParents() throws Exception {
+		if(resource != null){
+			return resource.getParents();
+		} else {
+			throw new Exception("resource is NULL");
+		}
+	}
+	
+	@JsonIgnore	
+	public List<VisualStudioRelationsForm> getChilds() throws Exception {
+		if(resource != null){
+			return resource.getChilds();
+		} else {
+			throw new Exception("resource is NULL");
+		}
 	}
 
 	@JsonIgnore	
@@ -243,5 +321,9 @@ public class VisualStudioForm {
 			return resource.getType();
 		}
 		throw new Exception("VisualStudioForm.getType()");
+	}
+	
+	public boolean noHaveParent() throws Exception{
+		return getParents().size() == 0;
 	}
 }

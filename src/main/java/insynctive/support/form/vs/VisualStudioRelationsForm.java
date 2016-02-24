@@ -38,4 +38,16 @@ public class VisualStudioRelationsForm {
 	public String getEditURL(){
 		return "https://insynctive.visualstudio.com/DefaultCollection/Insynctive/_workitems/edit/"+getRelationID();
 	}
+
+	@JsonIgnore
+	public Boolean isParent(){
+		return rel.equals("System.LinkTypes.Hierarchy-Reverse");
+	}
+	
+	@JsonIgnore
+	public Boolean isChild(){
+		return rel.equals("System.LinkTypes.Hierarchy-Forward");
+	}
+
+	
 }

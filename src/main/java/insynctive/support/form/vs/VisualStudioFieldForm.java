@@ -121,13 +121,18 @@ public class VisualStudioFieldForm {
 
 	//Methods
 	@JsonIgnore
-	public boolean isBug(){
+	public boolean isABug(){
 		return state != null && type.toLowerCase().equals("bug");
 	}
 
 	@JsonIgnore
-	public boolean isTask() {
+	public boolean isATask() {
 		return state != null && type.toLowerCase().equals("task");
+	}
+	
+	@JsonIgnore
+	public boolean isAStory() {
+		return state != null && type.toLowerCase().equals("story");
 	}
 
 	@JsonIgnore
