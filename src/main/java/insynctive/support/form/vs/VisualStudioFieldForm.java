@@ -122,17 +122,17 @@ public class VisualStudioFieldForm {
 	//Methods
 	@JsonIgnore
 	public boolean isABug(){
-		return state != null && type.toLowerCase().equals("bug");
+		return type != null && type.toLowerCase().equals("bug");
 	}
 
 	@JsonIgnore
 	public boolean isATask() {
-		return state != null && type.toLowerCase().equals("task");
+		return type != null && type.toLowerCase().equals("task");
 	}
 	
 	@JsonIgnore
 	public boolean isAStory() {
-		return state != null && type.toLowerCase().equals("story");
+		return type != null && type.toLowerCase().equals("product backlog item");
 	}
 
 	@JsonIgnore

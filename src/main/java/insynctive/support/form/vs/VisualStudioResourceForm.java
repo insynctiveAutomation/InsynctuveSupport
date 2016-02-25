@@ -187,6 +187,14 @@ public class VisualStudioResourceForm {
 	}
 	
 	@JsonIgnore
+	public boolean isApproveStoryMovie() {
+		if(revision != null) {
+			return revision.isApproveStoryMovie();
+		}
+		return false;
+	}
+	
+	@JsonIgnore
 	public boolean isPullRequestForStory() {
 		if(revision != null) {
 			return revision.isPullRequestForStory();

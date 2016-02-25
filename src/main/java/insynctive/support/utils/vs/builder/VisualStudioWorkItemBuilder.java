@@ -2,6 +2,7 @@ package insynctive.support.utils.vs.builder;
 
 import insynctive.support.utils.vs.VisualStudioField;
 import insynctive.support.utils.vs.VisualStudioRelation;
+import insynctive.support.utils.vs.VisualStudioTaskData;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
 

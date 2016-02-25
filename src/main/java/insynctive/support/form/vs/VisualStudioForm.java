@@ -79,7 +79,7 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore
-	public boolean wasChangeToApprooved(){
+	public boolean changedToApprooved(){
 		return resource != null && resource.wasChangeToApproved(); 
 	}
 	
@@ -89,17 +89,17 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore
-	public boolean waschangeToRemoved(){
+	public boolean changedToRemoved(){
 		return resource != null && resource.waschangeToRemoved();
 	}
 	
 	@JsonIgnore	
-	public boolean wasChangeToInProgress(){
+	public boolean changedToInProgress(){
 		return resource != null && resource.wasChangeToInProgress();
 	}
 
 	@JsonIgnore	
-	public boolean wasChangeFromDoneToToDo() {
+	public boolean changedFromDoneToToDo() {
 		return resource != null && resource.wasChangeFromDoneToTodo();
 	}
 	
@@ -195,6 +195,11 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore
+	public boolean isApproveStoryMovie() {
+		return resource.isApproveStoryMovie();	
+	}
+	
+	@JsonIgnore
 	public boolean isPullRequestForStory() {
 		return resource.isPullRequestForStory();	
 	}
@@ -279,7 +284,6 @@ public class VisualStudioForm {
 	
 	@JsonIgnore	
 	public VisualStudioRevisionForm getParentFullObject(String account) throws Exception {
-		
 		return VisualStudioUtil.getWorkItem(getParent().getRelationID(), account);
 	}
 	

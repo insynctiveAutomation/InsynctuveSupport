@@ -22,6 +22,7 @@ public enum VisualStudioTaskData {
 	DEVELOP_TDD_INTEGRATION_TESTS("Develop TDD Unit/Integration Tests for Story", "4"),
 	DEVELOP_CODE_FOR_STORY("Develop Code for Story", "6"),
 	POST_STORY_MOVIE("Post Story Movie", "0.5"),
+	APPROVE_STORY_MOVIE("Approve story movie", ""),
 	PULL_REQUEST_FOR_STORY("Pull Request for Story", "0.5"),
 	FUNCTIONAL_TEST_ON_INTEGRATION("Functional Test on integration", "2"),
 	UI_AUTOMATED_TESTING("UI aTesting", "6"),

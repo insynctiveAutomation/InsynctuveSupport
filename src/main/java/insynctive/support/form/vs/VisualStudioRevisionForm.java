@@ -191,6 +191,12 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore
+	public boolean isApproveStoryMovie() {
+		String title = getTitle();
+		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.APPROVE_STORY_MOVIE.value.toLowerCase()) : false;
+	}
+	
+	@JsonIgnore
 	public boolean isPullRequestForStory() {
 		String title = getTitle();
 		return (title != null) ? title.toLowerCase().contains(VisualStudioTaskData.PULL_REQUEST_FOR_STORY.value.toLowerCase()) : false;
@@ -247,113 +253,144 @@ public class VisualStudioRevisionForm {
 		return getFields().isCritical();
 	}
 	
+	//Lambda Methods
+	interface finderRelation {
+		boolean evaluate(VisualStudioRevisionForm workItem);
+	}
+	
 	@JsonIgnore	
-	public VisualStudioRevisionForm findDevelopFixTask(String account) throws Exception {
+	public VisualStudioRevisionForm find(finderRelation finder, String account) throws Exception {
 		for(VisualStudioRelationsForm relation : relations){
 			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isDevelopFix()) return workItem;
+			if(finder.evaluate(workItem)) return workItem;
 		}
 		return null;
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findDevelopFixTask(String account) throws Exception {
+		return find((workItem) -> workItem.isDevelopFix(), account);
 	}
 	
 	
 	@JsonIgnore	
 	public VisualStudioRevisionForm findMergeToMasterTask(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isMergeToMasterBug()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isMergeToMasterBug(), account);
 	}
 	
 	@JsonIgnore	
 	public VisualStudioRevisionForm findCreateNewBranch(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isCreateANewBranch()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isCreateANewBranch(), account);
 	}
 	
 	@JsonIgnore	
 	public VisualStudioRevisionForm findInvestigateBug(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isInvestigateBug()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isInvestigateBug(), account);
 	}
 	
 	@JsonIgnore	
 	public VisualStudioRevisionForm findTestStrategy(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isTestStrategyBug()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isTestStrategyBug(), account);
 	}
 
 	@JsonIgnore	
 	public VisualStudioRevisionForm findReproduceWithAutomatedTest(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isReproduceWithAutomatedTest()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isReproduceWithAutomatedTest(), account);
 	}
 
 	@JsonIgnore	
 	public VisualStudioRevisionForm findDevelopFix(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isDevelopFix()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isDevelopFix(), account);
 	}
 
 	@JsonIgnore	
 	public VisualStudioRevisionForm findGetCodeReview(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isGetCodeReview()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isGetCodeReview(), account);
 	}
 
 	@JsonIgnore	
 	public VisualStudioRevisionForm findFunctionalTest(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isFunctionalTest()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isFunctionalTest(), account);
 	}
 
 	@JsonIgnore	
 	public VisualStudioRevisionForm findMergeToMaster(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isMergeToMasterBug()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isMergeToMasterBug(), account);
 	}
 
 	@JsonIgnore	
 	public VisualStudioRevisionForm findRebaseIntegrationToMaster(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isRebaseIntegrationToMaster()) return workItem;
-		}
-		return null;
+		return find((workItem) -> workItem.isRebaseIntegrationToMaster(), account);
 	}
 
 	@JsonIgnore	
-	public VisualStudioRevisionForm findDoneDoneTest(String account) throws Exception {
-		for(VisualStudioRelationsForm relation : relations){
-			VisualStudioRevisionForm workItem = VisualStudioUtil.getWorkItem(relation.getRelationID(), account);
-			if(workItem.isTestOnMasterBug()) return workItem;
-		}
-		return null;
+	public VisualStudioRevisionForm findTestOnMasterBug(String account) throws Exception {
+		return find((workItem) -> workItem.isTestOnMasterBug(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findEstimateStory(String account) throws Exception {
+		return find((workItem) -> workItem.isEstimateStory(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findDevelopTDD(String account) throws Exception {
+		return find((workItem) -> workItem.isDevelopTDD(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findDevelopCodeForStory(String account) throws Exception {
+		return find((workItem) -> workItem.isDevelopCodeStory(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findPostStoryMovie(String account) throws Exception {
+		return find((workItem) -> workItem.isPostStoryMovie(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findApproveStoryMovie(String account) throws Exception {
+		return find((workItem) -> workItem.isApproveStoryMovie(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findPullRequestForStory(String account) throws Exception {
+		return find((workItem) -> workItem.isPullRequestForStory(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findTestingStrategy(String account) throws Exception {
+		return find((workItem) -> workItem.isTestingStrategyStory(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findFunctionalTestOnIntegration(String account) throws Exception {
+		return find((workItem) -> workItem.isFunctionalTestOnIntegration(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findUIAutomatedTesting(String account) throws Exception {
+		return find((workItem) -> workItem.isUIAutomatedTesting(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findMergeToMasterStory(String account) throws Exception {
+		return find((workItem) -> workItem.isMergeToMasterStory(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findRebaseIntegrationToMasterStory(String account) throws Exception {
+		return find((workItem) -> workItem.isRebaseIntegrationToMaster(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findTestOnMasterStory(String account) throws Exception {
+		return find((workItem) -> workItem.isTestOnMasterStory(), account);
+	}
+	
+	@JsonIgnore	
+	public VisualStudioRevisionForm findApproveForRelease(String account) throws Exception {
+		return find((workItem) -> workItem.isApproveForRelease(), account);
 	}
 	
 	@JsonIgnore	

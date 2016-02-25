@@ -66,11 +66,14 @@ public class VisualStudioWorkItemEntity {
 	@Column(name = "post_story_movie")
 	private Boolean postStoryMovie = false;
 	
+	@Column(name = "approve_story_movie")
+	private Boolean approveStoryMovie = false;
+	
 	@Column(name = "pull_request_for_Story")
 	private Boolean pullRequestForStory = false;
 	
 	@Column(name = "functional_test_on_integration")
-	private Boolean functionalTestOnMaster = false;
+	private Boolean functionalTestOnIntegration = false;
 	
 	@Column(name = "ui_automated_testing")
 	private Boolean uiAutomatedTesting = false;
@@ -250,12 +253,12 @@ public class VisualStudioWorkItemEntity {
 		this.pullRequestForStory = pullRequestForStory;
 	}
 
-	public Boolean isFunctionalTestOnMaster() {
-		return functionalTestOnMaster;
+	public Boolean isFunctionalTestOnIntegration() {
+		return functionalTestOnIntegration;
 	}
 
-	public void setFunctionalTestOnMaster(Boolean functionalTestOnMaster) {
-		this.functionalTestOnMaster = functionalTestOnMaster;
+	public void setFunctionalTestOnIntegration(Boolean functionalTestOnMaster) {
+		this.functionalTestOnIntegration = functionalTestOnMaster;
 	}
 
 	public Boolean isUiAutomatedTesting() {
@@ -266,7 +269,7 @@ public class VisualStudioWorkItemEntity {
 		this.uiAutomatedTesting = uiAutomatedTesting;
 	}
 
-	public Boolean isMegeToMasterStory() {
+	public Boolean isMergeToMasterStory() {
 		return mergeToMasterStory;
 	}
 
@@ -296,6 +299,14 @@ public class VisualStudioWorkItemEntity {
 
 	public void setApproveForRelease(Boolean approveForRelease) {
 		this.approveForRelease = approveForRelease;
+	}
+
+	public Boolean isApproveStoryMovie() {
+		return approveStoryMovie;
+	}
+
+	public void setApproveStoryMovie(Boolean approveStoryMovie) {
+		this.approveStoryMovie = approveStoryMovie;
 	}
 	
 	
