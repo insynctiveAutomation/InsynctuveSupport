@@ -10,24 +10,24 @@ public class Property {
 	private Integer environmentNumberInFile;
 	private String environmentNumberHeroku = System.getenv("ENVIRONMENT_NUMBER");
 
-	private Integer getEnvironment(){
+	private Integer getEnvironmentNumber(){
 		return environmentNumberHeroku != null ? Integer.valueOf(environmentNumberHeroku) :  environmentNumberInFile;
 	}
 	
 	public InsynctiveVSEnvironment findEnvironment() throws Exception{
-		 return InsynctiveVSEnvironment.findByProperyNumber(getEnvironment());
+		 return InsynctiveVSEnvironment.findByProperyNumber(getEnvironmentNumber());
 	}
 	
 	public String getVSAccount() throws Exception{
-		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironment()).getVsAccount();
+		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironmentNumber()).getVsAccount();
 	}
 
 	public String getVSProject() throws Exception{
-		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironment()).getVsProject();
+		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironmentNumber()).getVsProject();
 	}
 	
 	public Boolean isProduction() throws Exception{
-		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironment()).equals(InsynctiveVSEnvironment.PRODUCTION);
+		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironmentNumber()).equals(InsynctiveVSEnvironment.PRODUCTION);
 	}
 	
 }

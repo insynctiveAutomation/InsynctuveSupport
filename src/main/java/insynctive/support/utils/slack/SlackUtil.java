@@ -1,11 +1,7 @@
 package insynctive.support.utils.slack;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -17,12 +13,48 @@ import org.json.JSONObject;
 import org.json.simple.JSONArray;
 import org.springframework.web.util.UriUtils;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import insynctive.support.form.vs.VisualStudioRevisionForm;
 import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 
 public class SlackUtil {
 
 	private static final String token =  "xoxp-2598773363-6987940228-21463692417-b6025bd177";
+	private static final ObjectMapper mapper = new ObjectMapper();
+	
+	public static Boolean sendMessageIfOnline(SlackMessageObject message) throws Exception {
+		if(isEmployeeOnline(message.getChannel())){
+			return sendMessage(message);
+		}
+		return false;
+	}
+
+	public static Boolean isEmployeeOnline(String employeeID) throws Exception{
+		
+		String presenceUrl =  "https://slack.com/api/users.getPresence";
+		
+		String presenceParameters = "?"
+				+ "token=xoxp-2598773363-6987940228-21463692417-b6025bd177"
+				+ "&user=" + UriUtils.encodeQueryParam(employeeID, "UTF-8")
+				+ "&pretty=1";
+		
+		HttpGet httpGet = new HttpGet(presenceUrl+presenceParameters);
+		
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpResponse response = httpClient.execute(httpGet);
+		notifyIfNotSuccess(response);
+		
+		System.out.println(response.getEntity().getContent());
+		SlackUserPresence presenceResponse = map(mapper, response, SlackUserPresence.class);
+		
+		
+		return presenceResponse.isOnline() != null ? presenceResponse.isOnline() : false;
+	}
 	
 	public static boolean sendMessage(SlackMessageObject message) throws IOException {
 		
@@ -62,14 +94,7 @@ public class SlackUtil {
 		
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpResponse response = httpClient.execute(httpGet);
-		
-		if(response.getStatusLine().getStatusCode() != 200){
-			System.out.println("URL: \n"+chatMessageUrl+chatMessageParameters);
-			System.out.println("Data: \n"+"{}");
-			
-			System.out.println("Status: \n"+response.getStatusLine().getStatusCode());
-			System.out.println("Response: \n"+response);
-		}
+		notifyIfNotSuccess(response);
 		
 		return response.getStatusLine().getStatusCode() == 200;
 	}
@@ -153,4 +178,25 @@ public class SlackUtil {
 			SlackUtil.sendMessage(message);
 		}
 	}
+
+	private static void notifyIfNotSuccess(HttpResponse response){
+		if(response.getStatusLine().getStatusCode() != 200){
+			System.out.println("Data: \n"+"{}");
+			
+			System.out.println("Status: \n"+response.getStatusLine().getStatusCode());
+			System.out.println("Response: \n"+response);
+		}
+	}
+
+	private static <T> T map(ObjectMapper mapper, HttpResponse response,  Class<T> entity) throws Exception {
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+		return mapper.readValue(response.getEntity().getContent(), entity);
+	}
+	
+	public static void main(String[] args) throws Exception {
+		SlackMessageObject message = new SlackMessageBuilder().setChannel(UserDetails.EUGENIO_VALEIRAS.slackID).setText("Testing").build();
+		
+		sendMessageIfOnline(message);
+	}
+	
 }

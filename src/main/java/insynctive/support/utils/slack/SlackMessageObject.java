@@ -76,4 +76,14 @@ public class SlackMessageObject {
 	public void addAttachment(SlackAttachment attachment){
 		attachments.add(attachment);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof SlackMessageObject) && ((SlackMessageObject)obj).getChannel().equals(channel) && ((SlackMessageObject)obj).getText().equals(text);
+	}
+
+	@Override
+	public int hashCode() {
+		return text.hashCode() + channel.hashCode();
+	}
 }
