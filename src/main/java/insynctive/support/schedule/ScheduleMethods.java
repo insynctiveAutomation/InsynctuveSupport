@@ -42,7 +42,7 @@ public class ScheduleMethods {
 		CheckIfSendMessageAndSend(Arrays.asList(values.stream().filter((us) -> us.isQa() || us.isDev()).toArray(UserDetails[]::new)));
 	}
 
-	@Scheduled(cron = "0 0/5 * * * ?")
+	@Scheduled(cron = "0 5/5 * * * ?")
 //	@Scheduled(fixedDelay = 10000)
 	public void sendNoSendMessages() throws Exception{
 		List<UserDetails> values = new ArrayList<>();
