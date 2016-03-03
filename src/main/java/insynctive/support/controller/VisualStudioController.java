@@ -948,7 +948,6 @@ public class VisualStudioController {
 				.addTitle(VisualStudioTaskData.APPROVE_FOR_RELEASE.value + " - S" + storyWorkItem.getId() + " - " + storyWorkItem.getTitle())
 				.addStatus(VisualStudioTaskState.TO_DO)
 				.addIteration(testOnMaster.getIteration())
-				.addAssignTo(UserDetails.MARIJA_JANEVA.name)
 				.addEstimate(VisualStudioTaskData.APPROVE_FOR_RELEASE.defaultEstimate)
 				.build();		
 		
