@@ -5,6 +5,7 @@ import java.util.Properties;
 import javax.naming.ConfigurationException;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,6 +20,8 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import insynctive.support.utils.Property;
+
 @Configuration
 @PropertySource("classpath:application.properties")
 @Import({PropertyPlaceHolderConfiguration.class})
@@ -27,8 +30,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 public class AppConfig {
 
-	@Value("${environment}")
-	private Integer environment;
+	@Autowired
+	private Property properties;
 	
 	@Value("${hibernate.auto}")
 	private String hibernateAuto;
@@ -61,7 +64,7 @@ public class AppConfig {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
 
-		switch(environment){
+		switch(properties.getEnvironmentNumber()){
 		/*LOCAL*/
 		case 1 :
 			dataSource.setDriverClassName(driverClassName);
@@ -85,7 +88,7 @@ public class AppConfig {
 			dataSource.setPassword("a6083623");
 			break;
 		default :
-			throw new ConfigurationException(environment == null ? "No environment added in application.properties" : "Wrong environment added in application.properties");
+			throw new ConfigurationException(properties.getEnvironmentNumber() == null ? "No environment added in application.properties" : "Wrong environment added in application.properties");
 	}
 		
 //		dataSource.setDriverClassName("com.mysql.jdbc.Driver");

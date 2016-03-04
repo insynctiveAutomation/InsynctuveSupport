@@ -14,18 +14,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.dao.RunIDDao;
+import insynctive.support.utils.Property;
 
 @Controller
 @Scope("session")
 public class AppController {
 	
-	private final String targetProcessURL = "https://insynctive.tpondemand.com";
-	private final String tokenParamTargetProcess = "token=ODE6MjcyNUFBMzZBQkRGNkE0N0FGRDAyMzI2MDUyMTY1MzA=";
-	
 	private final RunIDDao runIDDao;
+	private final Property property;
 	
 	@Inject
-	public AppController(RunIDDao runIDDao) {
+	public AppController(RunIDDao runIDDao, Property property) {
+		this.property = property;
 		this.runIDDao = runIDDao;
 	}
 	
@@ -34,6 +34,12 @@ public class AppController {
 	public String getRunID() throws JSONException, IOException, URISyntaxException{
 		BigInteger newRunID = runIDDao.getNextRunID();
 		return "{\"status\" : 200, \"runID\" : "+newRunID+"}";
+	}
+	
+	@RequestMapping(value = "/property" ,method = RequestMethod.GET)
+	@ResponseBody
+	public String getPropertyNumber() throws Exception{
+		return "{\"status\" : 200, \"Environment\" : "+property.findEnvironment()+", \"Number\" : "+property.getEnvironmentNumber()+"}";
 	}
 	
 }

@@ -10,7 +10,7 @@ public class Property {
 	private Integer environmentNumberInFile;
 	private String environmentNumberHeroku = System.getenv("ENVIRONMENT_NUMBER");
 
-	private Integer getEnvironmentNumber(){
+	public Integer getEnvironmentNumber(){
 		return environmentNumberHeroku != null ? Integer.valueOf(environmentNumberHeroku) :  environmentNumberInFile;
 	}
 	
