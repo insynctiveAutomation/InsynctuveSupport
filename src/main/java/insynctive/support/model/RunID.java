@@ -1,5 +1,7 @@
 package insynctive.support.model;
 
+import java.math.BigInteger;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,13 +18,13 @@ public class RunID {
 	@Id
 	@GeneratedValue
 	@Column(name = "id")
-	private Integer id;
+	private BigInteger id;
 	
-	public Integer getId() {
+	public BigInteger getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(BigInteger id) {
 		this.id = id;
 	}
 	

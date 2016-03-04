@@ -1,5 +1,8 @@
 package insynctive.support.dao;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import javax.inject.Inject;
 
 import org.hibernate.Session;
@@ -24,14 +27,17 @@ public class RunIDDao {
 		return sessionFactory.getCurrentSession();
 	}
 	
-	private Integer save(RunID runID){
-		return (Integer) openSession().save(runID);
+	private BigInteger save(RunID runID){
+		return (BigInteger) openSession().save(runID);
 	}
 	
-	public synchronized Integer getNextRunID(){
-		Integer id = save(new RunID());
-		double runID = ((double) id-2)/10;
-		return (int) runID;
+	public synchronized BigInteger getNextRunID(){
+		BigInteger id = save(new RunID());
+		BigInteger two = new BigInteger("2");
+		BigInteger ten = new BigInteger("10");
+		Double runID = new Double(id.subtract(two).divide(ten).toString()); 
+		
+		return new BigDecimal(runID).toBigInteger();
 	}
 	
 }

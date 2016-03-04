@@ -1,6 +1,7 @@
 package insynctive.support.controller;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 
 import javax.inject.Inject;
@@ -31,7 +32,7 @@ public class AppController {
 	@RequestMapping(value = "/runID" ,method = RequestMethod.GET)
 	@ResponseBody
 	public String getRunID() throws JSONException, IOException, URISyntaxException{
-		Integer newRunID = runIDDao.getNextRunID();
+		BigInteger newRunID = runIDDao.getNextRunID();
 		return "{\"status\" : 200, \"runID\" : "+newRunID+"}";
 	}
 	
