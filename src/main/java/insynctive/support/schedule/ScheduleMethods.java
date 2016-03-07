@@ -22,6 +22,7 @@ public class ScheduleMethods {
 
 	private List<String> notSendMessages = new ArrayList<String>() {
 		
+		@Override
 		public boolean add(String e) {
 			if(!contains(e)){
 				return super.add(e); 
@@ -49,7 +50,6 @@ public class ScheduleMethods {
 		for(String email : notSendMessages){
 			values.add(UserDetails.findByEmail(email));
 		}
-		notSendMessages = new ArrayList<>();
 		CheckIfSendMessageAndSend(values);
 	}
 	
@@ -58,11 +58,11 @@ public class ScheduleMethods {
 			Integer countWorkInProgressCurrentIteration = VisualStudioUtil.countWorkInProgressCurrentIteration(user.name, property.getVSProject(), property.getVSAccount());
 			if (countWorkInProgressCurrentIteration > 1) {
 				SlackMessageObject message = new SlackMessageBuilder()
-						.setIconEmoji(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.img)
-						.setUsername(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.senderName)
-						.setText(String.format(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.message, countWorkInProgressCurrentIteration))
-						.setChannel(user.slackID)
-						.build();
+					.setIconEmoji(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.img)
+					.setUsername(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.senderName)
+					.setText(String.format(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.message, countWorkInProgressCurrentIteration))
+					.setChannel(user.slackID)
+					.build();
 				
 				if(!SlackUtil.sendMessageIfOnline(message)){
 					notSendMessages.add(user.email);
@@ -70,11 +70,11 @@ public class ScheduleMethods {
 				
 			} else if (countWorkInProgressCurrentIteration == 0) {
 				SlackMessageObject message = new SlackMessageBuilder()
-						.setIconEmoji(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.img)
-						.setUsername(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.senderName)
-						.setText(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.message)
-						.setChannel(user.slackID)
-						.build();
+					.setIconEmoji(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.img)
+					.setUsername(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.senderName)
+					.setText(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.message)
+					.setChannel(user.slackID)
+					.build();
 				
 				if(!SlackUtil.sendMessageIfOnline(message)){
 					notSendMessages.add(user.email);
