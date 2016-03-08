@@ -19,20 +19,22 @@ import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 @Component
 public class ScheduleMethods {
 
-	private List<String> notSendMessages = new ArrayList<String>() {
-		
-		@Override
-		public boolean add(String e) {
-			if(!contains(e)){
-				return super.add(e); 
-			}
-			return false;
-		};
-		
-	};
+	private List<String> notSendMessages = newUniqueList();
 	
 	@Autowired
 	private Property property;
+	
+	private List<String> newUniqueList() {
+		return new ArrayList<String>() {
+			@Override
+			public boolean add(String e) {
+				if (!contains(e)) {
+					return super.add(e);
+				}
+				return false;
+			}
+		};
+	}
 
 	//Repeat 1 per hour
 	@Scheduled(cron = "0 0 * * * ?")
@@ -40,44 +42,43 @@ public class ScheduleMethods {
 	public void checkWorkInProgressAndCallIfHaveMoreThanOne() throws Exception {
 		List<UserDetails> usersInEnvironment = UserDetails.values(property.findEnvironment());
 		List<UserDetails> values = Arrays.asList(usersInEnvironment.stream().filter((us) -> us.isQa() || us.isDev()).toArray(UserDetails[]::new));
+		System.out.println("New Hour: " + values);
 		CheckIfSendMessageAndSend(values);
 	}
 
-	@Scheduled(cron = "0 5/5 * * * ?")
+	@Scheduled(cron = "0 1/1 * * * ?")
 //	@Scheduled(fixedDelay = 10000)
 	public void sendNoSendMessages() throws Exception{
 		List<UserDetails> values = new ArrayList<>();
 		for(String email : notSendMessages){ values.add(UserDetails.findByEmail(email)); }
+		System.out.println("New minute: " + values);
 		CheckIfSendMessageAndSend(values);
 	}
 	
 	private void CheckIfSendMessageAndSend(List<UserDetails> listOfUsers) throws Exception {
+		notSendMessages = newUniqueList();
 		for(UserDetails user : listOfUsers){
+			SlackMessageObject message = null;
 			Integer countWorkInProgressCurrentIteration = VisualStudioUtil.countWorkInProgressCurrentIteration(user.name, property.getVSProject(), property.getVSAccount());
 			if (countWorkInProgressCurrentIteration > 1) {
-				SlackMessageObject message = new SlackMessageBuilder()
+				message = new SlackMessageBuilder()
 					.setIconEmoji(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.img)
 					.setUsername(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.senderName)
 					.setText(String.format(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.message, countWorkInProgressCurrentIteration))
 					.setChannel(user.slackID)
 					.build();
 				
-				if(!SlackUtil.sendMessageIfOnline(message)){
-					notSendMessages.add(user.email);
-				}
-				
 			} else if (countWorkInProgressCurrentIteration == 0) {
-				SlackMessageObject message = new SlackMessageBuilder()
+				message = new SlackMessageBuilder()
 					.setIconEmoji(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.img)
 					.setUsername(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.senderName)
 					.setText(SlackMessage.NO_HAVE_WORK_IN_PROGRESS_CURRENT_SPRINT.message)
 					.setChannel(user.slackID)
 					.build();
-				
-				if(!SlackUtil.sendMessageIfOnline(message)){
-					notSendMessages.add(user.email);
 				}
-				
+
+			if(message != null && !SlackUtil.sendMessageIfOnline(message)){
+				notSendMessages.add(user.email);
 			}
 		}	
 	}
