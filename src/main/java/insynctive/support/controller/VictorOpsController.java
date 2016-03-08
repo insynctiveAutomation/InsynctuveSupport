@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.form.intercom.IntercomForm;
 import insynctive.support.utils.VictorOpsUtil;
-import insynctive.support.utils.slack.SlackUtil;
 import insynctive.support.utils.victorops.VictorOpsIncident;
 import insynctive.support.utils.victorops.builder.VictorOpsIncidentBuilder;
 

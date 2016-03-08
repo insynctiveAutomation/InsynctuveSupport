@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import insynctive.support.utils.VisualStudioUtil;
-import insynctive.support.utils.vs.VisualStudioTaskData;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VisualStudioForm {

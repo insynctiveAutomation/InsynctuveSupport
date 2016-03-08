@@ -1,6 +1,5 @@
 package insynctive.support.schedule;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,17 +38,16 @@ public class ScheduleMethods {
 	@Scheduled(cron = "0 0 * * * ?")
 //	@Scheduled(fixedDelay = 60000)
 	public void checkWorkInProgressAndCallIfHaveMoreThanOne() throws Exception {
-		List<UserDetails> values = UserDetails.values(property.findEnvironment());
-		CheckIfSendMessageAndSend(Arrays.asList(values.stream().filter((us) -> us.isQa() || us.isDev()).toArray(UserDetails[]::new)));
+		List<UserDetails> usersInEnvironment = UserDetails.values(property.findEnvironment());
+		List<UserDetails> values = Arrays.asList(usersInEnvironment.stream().filter((us) -> us.isQa() || us.isDev()).toArray(UserDetails[]::new));
+		CheckIfSendMessageAndSend(values);
 	}
 
 	@Scheduled(cron = "0 5/5 * * * ?")
 //	@Scheduled(fixedDelay = 10000)
 	public void sendNoSendMessages() throws Exception{
 		List<UserDetails> values = new ArrayList<>();
-		for(String email : notSendMessages){
-			values.add(UserDetails.findByEmail(email));
-		}
+		for(String email : notSendMessages){ values.add(UserDetails.findByEmail(email)); }
 		CheckIfSendMessageAndSend(values);
 	}
 	

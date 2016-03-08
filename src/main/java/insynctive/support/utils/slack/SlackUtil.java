@@ -1,7 +1,6 @@
 package insynctive.support.utils.slack;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -13,12 +12,9 @@ import org.json.JSONObject;
 import org.json.simple.JSONArray;
 import org.springframework.web.util.UriUtils;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import insynctive.support.form.vs.VisualStudioRevisionForm;
 import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 

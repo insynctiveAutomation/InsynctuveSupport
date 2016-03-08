@@ -3,8 +3,6 @@ package insynctive.support.form.intercom;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.intercom.api.Author;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConversationMessage {
 

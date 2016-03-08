@@ -25,8 +25,6 @@ import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.VisualStudioUtil;
 import insynctive.support.utils.intercom.IntercomNote;
 import insynctive.support.utils.vs.VisualStudioBugState;
-import insynctive.support.utils.vs.VisualStudioTaskData;
-import insynctive.support.utils.vs.VisualStudioTaskState;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
 import insynctive.support.utils.vs.builder.VisualStudioWorkItemBuilder;
 import io.intercom.api.AdminCollection;

@@ -1,14 +1,6 @@
 package insynctive.support.utils;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.html.HTML;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.HTMLEditorKit.ParserCallback;
-import javax.swing.text.html.parser.ParserDelegator;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;

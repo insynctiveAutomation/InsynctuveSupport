@@ -3,11 +3,6 @@ package insynctive.support.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
-
-import org.abego.treelayout.internal.util.java.util.ListUtil;
-import org.apache.commons.lang3.ArrayUtils;
-import org.hibernate.metamodel.source.hbm.Helper.ValueSourcesAdapter;
 
 public enum UserDetails {
 
@@ -152,6 +147,14 @@ public enum UserDetails {
 			"@vojche", 
 			"U0GJSHYSH", 
 			PositionInCompany.EXTERNAL, 
+			InsynctiveVSEnvironment.PRODUCTION),
+	
+	PEPE(
+			"Petrica Petrea", 
+			"ppetrea@insynctive.com", 
+			"@pepe", 
+			"U06UN5W9G", 
+			PositionInCompany.DEV, 
 			InsynctiveVSEnvironment.PRODUCTION);
 	
 	public String name;

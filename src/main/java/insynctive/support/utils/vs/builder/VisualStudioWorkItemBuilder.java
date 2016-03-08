@@ -1,16 +1,10 @@
 package insynctive.support.utils.vs.builder;
 
+import insynctive.support.utils.vs.VisualStudioBugState;
 import insynctive.support.utils.vs.VisualStudioField;
 import insynctive.support.utils.vs.VisualStudioRelation;
-import insynctive.support.utils.vs.VisualStudioTaskData;
 import insynctive.support.utils.vs.VisualStudioTaskState;
 import insynctive.support.utils.vs.VisualStudioWorkItem;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import insynctive.support.utils.Property;
-import insynctive.support.utils.slack.builder.SlackMessageBuilder;
-import insynctive.support.utils.vs.VisualStudioBugState;
 
 public class VisualStudioWorkItemBuilder {
 
