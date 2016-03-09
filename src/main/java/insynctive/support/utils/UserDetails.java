@@ -135,7 +135,7 @@ public enum UserDetails {
 	
 	VLATKO_NIKOLOVSKI(
 			"Vlatko Nikolovski",
-			"vlatko_n3@hotmail.com", 
+			"vnikolovski@insynctive.com", 
 			"@vlatko_n3", 
 			"U0GJWU0C9", 
 			PositionInCompany.EXTERNAL, 
