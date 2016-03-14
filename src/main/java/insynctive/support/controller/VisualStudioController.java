@@ -125,32 +125,32 @@ public class VisualStudioController {
 	private String manageUpdatedForTaskInIndependentBug(VisualStudioForm workItemUpdated, String account, String returnMessage) throws Exception {
 		
 		//Test Strategy was moved to DONE
-		if(workItemUpdated.isInvestigateBug() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isInvestigateBug() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = investigateBugDoneProcess(workItemUpdated, account);
 		}
 		
 		//Test Strategy was moved to DONE
-		if(workItemUpdated.isTestStrategy() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isTestStrategy() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = testStrategyDoneProcess(workItemUpdated, account);
 		}
 		
 		//Create a New Branch was moved to DONE
-		else if(workItemUpdated.isCreateANewBranch() && workItemUpdated.changedToDone()){
+		else if(workItemUpdated.isCreateANewBranch() && workItemUpdated.isDoneOrRemoved()){
 			returnMessage = createNewBranchDoneProcess(workItemUpdated, account);
 		}
 		
 		//Reproduce with automated tests was moved to DONE
-		else if(workItemUpdated.isReproduceWithAutomatedTest() && (workItemUpdated.changedToDone() || workItemUpdated.changedToRemoved())){
+		else if(workItemUpdated.isReproduceWithAutomatedTest() && (workItemUpdated.isDoneOrRemoved() || workItemUpdated.changedToRemoved())){
 			returnMessage = reproduceWithAutomatedTestsDoneOrRemovedProcess(workItemUpdated, account);
 		}
 		
 		//Develop Fix was moved to DONE - TODO Need to make the build automatically
-		else if (workItemUpdated.isDevelopFix() && workItemUpdated.changedToDone()){
+		else if (workItemUpdated.isDevelopFix() && workItemUpdated.isDoneOrRemoved()){
 			returnMessage = developFixDoneProcess(workItemUpdated, account);
 		}
 		
 		//Get Code Review and functional Test were moved to DONE
-		else if((workItemUpdated.isGetCodeReview() || workItemUpdated.isFunctionalTest() ) && workItemUpdated.changedToDone()){
+		else if((workItemUpdated.isGetCodeReview() || workItemUpdated.isFunctionalTest() ) && workItemUpdated.isDoneOrRemoved()){
 
 			String project = workItemUpdated.getProject();
 			
@@ -194,12 +194,12 @@ public class VisualStudioController {
 		}
 		
 		//Merge to Master was moved to DONE - TODO Run Build 
-		else if(workItemUpdated.isMergeToMaster() && workItemUpdated.changedToDone()){
+		else if(workItemUpdated.isMergeToMaster() && workItemUpdated.isDoneOrRemoved()){
 			returnMessage = mergeToMasterBugDoneProcess(workItemUpdated, account);
 		}
 		
 		//Rebase Integration to Master and Test on Master were move to Done
-		else if((workItemUpdated.isRebaseIntegrationToMaster() || workItemUpdated.isTestOnMaster())  && workItemUpdated.changedToDone()){
+		else if((workItemUpdated.isRebaseIntegrationToMaster() || workItemUpdated.isTestOnMaster())  && workItemUpdated.isDoneOrRemoved()){
 			
 			VisualStudioRevisionForm bugWorkItem = workItemUpdated.getParentFullObject(account);
 			if(!bugWorkItem.isABug()) return "{\"status\" : 200, \"message\": \"Not a Bug\"}";
@@ -250,47 +250,47 @@ public class VisualStudioController {
 		String returnMessage = "";
 		
 		//Test Strategy was moved to DONE
-		if(workItemUpdated.isEstimateStory() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isEstimateStory() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = estimateStoryDoneProcess(workItemUpdated, account);
 		}
 
-		if(workItemUpdated.isCreateANewBranch() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isCreateANewBranch() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = createANewBranchDoneProcess(workItemUpdated, account);
 		}
 		
-		if(workItemUpdated.isDevelopTDD() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isDevelopTDD() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = developTDDDoneProcess(workItemUpdated, account);
 		}
 		
-		if(workItemUpdated.isDevelopCodeStory() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isDevelopCodeStory() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = developCodeStoryDoneProcess(workItemUpdated, account);
 		}
 		
-		if((workItemUpdated.isPostStoryMovie() || workItemUpdated.isTestingStrategyStory()) && workItemUpdated.changedToDone()) {
+		if((workItemUpdated.isPostStoryMovie() || workItemUpdated.isTestingStrategyStory()) && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = postStoryMovieOrTestingStrategyDoneProcess(workItemUpdated, account);
 		}
 		
-		if(workItemUpdated.isPostStoryMovie() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isPostStoryMovie() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = postStoryMovieDoneProcess(workItemUpdated, account);
 		}
 		
-		if(workItemUpdated.isApproveStoryMovie() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isApproveStoryMovie() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = approveStoryMovieDoneProcess(workItemUpdated, account);
 		}
 		
-		if((workItemUpdated.isFunctionalTestOnIntegration() || workItemUpdated.isPullRequestForStory() || workItemUpdated.isUIAutomatedTesting()) && workItemUpdated.changedToDone()) {
+		if((workItemUpdated.isFunctionalTestOnIntegration() || workItemUpdated.isPullRequestForStory() || workItemUpdated.isUIAutomatedTesting()) && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = pullRequestOrFunctionalTestOnIntegrationOrUiAutomatedtestingDoneProcess(workItemUpdated, account);
 		}
 
-		if(workItemUpdated.isMergeToMaster() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isMergeToMaster() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = mergeToMasterStoryDoneProcess(workItemUpdated, account);
 		}
 
-		if(workItemUpdated.isTestOnMasterStory() && workItemUpdated.changedToDone()) {
+		if(workItemUpdated.isTestOnMasterStory() && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = testOnMasterDoneProcess(workItemUpdated, account);
 		}
 		
-		if((workItemUpdated.isApproveForRelease() || workItemUpdated.isApproveForRelease()) && workItemUpdated.changedToDone()) {
+		if((workItemUpdated.isApproveForRelease() || workItemUpdated.isApproveForRelease()) && workItemUpdated.isDoneOrRemoved()) {
 			returnMessage = approveForReleaseOrRebaseIntegrationToMasterDoneProcess(workItemUpdated, account);
 		}
 		
