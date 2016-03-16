@@ -42,16 +42,14 @@ public class ScheduleMethods {
 	public void checkWorkInProgressAndCallIfHaveMoreThanOne() throws Exception {
 		List<UserDetails> usersInEnvironment = UserDetails.values(property.findEnvironment());
 		List<UserDetails> values = Arrays.asList(usersInEnvironment.stream().filter((us) -> us.isQa() || us.isDev()).toArray(UserDetails[]::new));
-		System.out.println("New Hour: " + values);
 		CheckIfSendMessageAndSend(values);
 	}
 
-	@Scheduled(cron = "0 1/1 * * * ?")
+	@Scheduled(cron = "0 5/5 * * * ?")
 //	@Scheduled(fixedDelay = 10000)
 	public void sendNoSendMessages() throws Exception{
 		List<UserDetails> values = new ArrayList<>();
 		for(String email : notSendMessages){ values.add(UserDetails.findByEmail(email)); }
-		System.out.println("New minute: " + values);
 		CheckIfSendMessageAndSend(values);
 	}
 	

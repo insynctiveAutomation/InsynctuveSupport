@@ -83,7 +83,7 @@ public class VisualStudioForm {
 	}
 	
 	@JsonIgnore
-	public boolean isDoneOrRemoved(){
+	public boolean wasChangedToDoneOrRemoved(){
 		return resource != null && (resource.wasChangeToDone() || resource.waschangeToRemoved());
 	}
 	

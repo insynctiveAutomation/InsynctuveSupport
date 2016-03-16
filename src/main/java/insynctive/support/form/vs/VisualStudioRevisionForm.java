@@ -452,6 +452,11 @@ public class VisualStudioRevisionForm {
 	}
 	
 	@JsonIgnore	
+	public boolean isStateRemoved() {
+		return fields.getState().equals(VisualStudioTaskState.REMOVED.value);
+	}
+	
+	@JsonIgnore	
 	public String getType() {
 		return fields.getType();
 	}
