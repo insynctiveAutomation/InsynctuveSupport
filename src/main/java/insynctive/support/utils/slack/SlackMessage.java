@@ -25,6 +25,11 @@ public enum SlackMessage {
 			"Visual Studio Support", 
 			"<%s | Bug #%d> - Bug has been fixed, this is ready for testing."),
 	
+	FUNCTIONAL_TEST_DONE(
+			":bug:",
+			"Visual Studio Support", 
+			"<%s | Bug #%d> - Bug was tested. You can "+VisualStudioTaskData.MERGE_TO_MASTER_BUG.value+"."),
+	
 	FUNCTIONAL_TEST_AND_CODE_REVIEW_DONE(
 			":bug:",
 			"Visual Studio Support", 

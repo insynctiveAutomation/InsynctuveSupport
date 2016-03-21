@@ -38,7 +38,12 @@
 	</properties>
 
 	<repositories>
-
+		
+		<repository>
+    		<id>jcenter</id>
+    		<url>http://jcenter.bintray.com</url>
+  		</repository>
+		
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
@@ -279,9 +284,9 @@
 		<dependency>
 			<groupId>com.github.EugeValeiras</groupId>
 			<artifactId>VisualStudioUtils</artifactId>
-			<version>a11b70f2d2290068291db4e599c12fda9e4e637e</version> 
+			<version>a11b70f2d2290068291db4e599c12fda9e4e637e</version>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
