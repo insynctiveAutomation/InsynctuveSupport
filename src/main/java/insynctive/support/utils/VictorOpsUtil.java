@@ -10,7 +10,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.simple.JSONObject;
 
-import insynctive.support.utils.victorops.VictorOpsIncident;
+import support.utils.victorops.VictorOpsIncident;
 
 public class VictorOpsUtil {
 

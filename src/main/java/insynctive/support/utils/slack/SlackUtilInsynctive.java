@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 
-public class SlackUtil {
+public class SlackUtilInsynctive {
 
 	private static final String token =  "xoxp-2598773363-6987940228-21463692417-b6025bd177";
 	private static final ObjectMapper mapper = new ObjectMapper();
@@ -171,7 +171,7 @@ public class SlackUtil {
 					.setUsername("Bot Notify")
 					.setChannel("@eugeniovaleiras")
 					.build();
-			SlackUtil.sendMessage(message);
+			SlackUtilInsynctive.sendMessage(message);
 		}
 	}
 

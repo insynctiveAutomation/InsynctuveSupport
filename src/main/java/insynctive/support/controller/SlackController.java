@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import insynctive.support.form.slack.SlackForm;
 import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.slack.SlackMessageObject;
-import insynctive.support.utils.slack.SlackUtil;
+import insynctive.support.utils.slack.SlackUtilInsynctive;
 
 @Controller
 @RequestMapping("/slack")
@@ -32,7 +32,7 @@ public class SlackController {
 			}
 		}
 		
-		SlackUtil.sendMessage(message);
+		SlackUtilInsynctive.sendMessage(message);
 		
 		return "{\"status\" : 200}";
 	}
@@ -41,7 +41,7 @@ public class SlackController {
 	@ResponseBody
 	public String createChannel(@RequestBody SlackForm form) throws JSONException, IOException, IllegalArgumentException, IllegalAccessException{
 		
-		SlackUtil.createNewChannel(form.getChannel());
+		SlackUtilInsynctive.createNewChannel(form.getChannel());
 		
 		return "{\"status\" : 200}";
 	}
@@ -50,7 +50,7 @@ public class SlackController {
 	@ResponseBody
 	public String archiveChannel(@RequestBody SlackForm form) throws JSONException, IOException, IllegalArgumentException, IllegalAccessException{
 		
-		SlackUtil.createNewChannel(form.getChannel());
+		SlackUtilInsynctive.createNewChannel(form.getChannel());
 		
 		return "{\"status\" : 200}";
 	}

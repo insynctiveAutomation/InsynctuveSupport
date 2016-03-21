@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 
 import insynctive.support.utils.Property;
 import insynctive.support.utils.UserDetails;
-import insynctive.support.utils.VisualStudioUtil;
 import insynctive.support.utils.slack.SlackMessage;
 import insynctive.support.utils.slack.SlackMessageObject;
-import insynctive.support.utils.slack.SlackUtil;
+import insynctive.support.utils.slack.SlackUtilInsynctive;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
+import support.utils.VisualStudioUtil;
 
 @Component
 public class ScheduleMethods {
@@ -75,7 +75,7 @@ public class ScheduleMethods {
 					.build();
 				}
 
-			if(message != null && !SlackUtil.sendMessageIfOnline(message)){
+			if(message != null && !SlackUtilInsynctive.sendMessageIfOnline(message)){
 				notSendMessages.add(user.email);
 			}
 		}	

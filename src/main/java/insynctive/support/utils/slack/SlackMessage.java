@@ -1,6 +1,6 @@
 package insynctive.support.utils.slack;
 
-import insynctive.support.utils.vs.VisualStudioTaskData;
+import support.utils.vs.VisualStudioTaskData;
 
 public enum SlackMessage {
 	

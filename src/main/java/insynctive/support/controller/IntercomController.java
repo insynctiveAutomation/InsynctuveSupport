@@ -22,14 +22,14 @@ import insynctive.support.form.tp.TargetProcessForm;
 import insynctive.support.model.TargetProcessIntercomEntity;
 import insynctive.support.utils.IntercomUtil;
 import insynctive.support.utils.UserDetails;
-import insynctive.support.utils.VisualStudioUtil;
 import insynctive.support.utils.intercom.IntercomNote;
-import insynctive.support.utils.vs.VisualStudioBugState;
-import insynctive.support.utils.vs.VisualStudioWorkItem;
-import insynctive.support.utils.vs.builder.VisualStudioWorkItemBuilder;
 import io.intercom.api.AdminCollection;
 import io.intercom.api.ConversationPart;
 import io.intercom.api.ConversationPartCollection;
+import support.utils.VisualStudioUtil;
+import support.utils.vs.VisualStudioBugState;
+import support.utils.vs.VisualStudioWorkItem;
+import support.utils.vs.builder.VisualStudioWorkItemBuilder;
 
 @Controller
 @RequestMapping("/intercom")
