@@ -284,7 +284,7 @@
 		<dependency>
 			<groupId>com.github.EugeValeiras</groupId>
 			<artifactId>VisualStudioUtils</artifactId>
-			<version>a11b70f2d2290068291db4e599c12fda9e4e637e</version>
+			<version>816227328f1d1003bacbdd98fc1d54dfaa36a37c</version>
 		</dependency>
 
 	</dependencies>
