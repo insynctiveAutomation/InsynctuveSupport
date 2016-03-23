@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.dao.RunIDDao;
 import insynctive.support.form.tp.ListOfItems;
-import insynctive.support.utils.TargetProcessUtil;
 import insynctive.support.utils.tp.TPStatus;
 import insynctive.support.utils.tp.TargetProcessItem;
+import insynctive.support.utils.tp.InsynctiveTargetProcessUtil;
 
 @Controller
 @RequestMapping(value = "/tp")
@@ -34,7 +34,7 @@ public class TargetProcessController {
 	@ResponseBody
 	public String restToState(@PathVariable("state") String state, @RequestBody ListOfItems items) throws JSONException, IOException{
 		for(TargetProcessItem item : items.getItems()){
-			TargetProcessUtil.changeStates(item, TPStatus.getID(state));
+			InsynctiveTargetProcessUtil.changeStates(item, TPStatus.getID(state));
 		}
 		return "{\"status\" : 200}";
 	}
@@ -42,6 +42,6 @@ public class TargetProcessController {
 	@RequestMapping(value = "/getAll/{type}" ,method = RequestMethod.GET)
 	@ResponseBody
 	public String restToState(@PathVariable("type") String type) throws JSONException, IOException, URISyntaxException{
-		return TargetProcessUtil.getAll(type);
+		return InsynctiveTargetProcessUtil.getAll(type);
 	}
 }

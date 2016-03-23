@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.form.intercom.IntercomForm;
-import insynctive.support.utils.VictorOpsUtil;
+import insynctive.support.utils.victorops.InsynctiveVictorOpsUtil;
 import support.utils.victorops.VictorOpsIncident;
 import support.utils.victorops.builder.VictorOpsIncidentBuilder;
 
@@ -34,7 +34,7 @@ public class VictorOpsController {
 				.setTimestmp()
 				.build();
 		
-		VictorOpsUtil.createIncident(incident);
+		InsynctiveVictorOpsUtil.createIncident(incident);
 		
 		return "{\"status\" : 200}";
 	}

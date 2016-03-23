@@ -20,6 +20,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import insynctive.support.utils.Property;
+import insynctive.support.utils.slack.InsynctiveSlackUtil;
+import insynctive.support.utils.vs.InsynctiveVisualStudioUtil;
 
 @Configuration
 @PropertySource("classpath:application.properties")
@@ -52,6 +54,16 @@ public class AppConfig {
 
 	@Value("${hibernate.showSQL}")
 	private Boolean showSQL;
+	
+	@Bean
+	public InsynctiveVisualStudioUtil vsUtil(){
+		return new InsynctiveVisualStudioUtil("evaleiras@insynctive.com", properties.isProduction() ? "d5bb3o6xbmecnqgsa3vgequknbu3qyv7zf3shdbtijrwrpmhauwq" : "fkprf37zk6wggdp3syyszndwp4ub6d3nnhkuqpvftsw3wt7jjqxq");
+	}
+	
+	@Bean
+	public InsynctiveSlackUtil slackUtil(){
+		return new InsynctiveSlackUtil("xoxp-2598773363-6987940228-21463692417-b6025bd177");
+	}
 	
 	@Bean
 	public JdbcTemplate jdbcTemplate() throws ConfigurationException {

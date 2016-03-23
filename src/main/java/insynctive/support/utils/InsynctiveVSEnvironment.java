@@ -42,13 +42,13 @@ public enum InsynctiveVSEnvironment {
 		return vsAccount;
 	}
 	
-	public static InsynctiveVSEnvironment findByProperyNumber(Integer number) throws Exception{
+	public static InsynctiveVSEnvironment findByProperyNumber(Integer number) {
 		for(InsynctiveVSEnvironment environment : values()){
 			if(environment.propertyNumber.equals(number)){
 				return environment;
 			}
 		}
-		throw new Exception(number + " is not a valid environment number - Change it in application.properties");
+		return null;
 	}
 	
 }

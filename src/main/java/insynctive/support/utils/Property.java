@@ -14,19 +14,19 @@ public class Property {
 		return environmentNumberHeroku != null ? Integer.valueOf(environmentNumberHeroku) :  environmentNumberInFile;
 	}
 	
-	public InsynctiveVSEnvironment findEnvironment() throws Exception{
+	public InsynctiveVSEnvironment findEnvironment(){
 		 return InsynctiveVSEnvironment.findByProperyNumber(getEnvironmentNumber());
 	}
 	
-	public String getVSAccount() throws Exception{
+	public String getVSAccount(){
 		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironmentNumber()).getVsAccount();
 	}
 
-	public String getVSProject() throws Exception{
+	public String getVSProject(){
 		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironmentNumber()).getVsProject();
 	}
 	
-	public Boolean isProduction() throws Exception{
+	public Boolean isProduction(){
 		return InsynctiveVSEnvironment.findByProperyNumber(getEnvironmentNumber()).equals(InsynctiveVSEnvironment.PRODUCTION);
 	}
 	

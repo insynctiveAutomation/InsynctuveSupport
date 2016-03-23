@@ -15,16 +15,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.dao.RunIDDao;
 import insynctive.support.utils.Property;
+import insynctive.support.utils.vs.InsynctiveVisualStudioUtil;
 
 @Controller
 @Scope("session")
 public class AppController {
 	
 	private final RunIDDao runIDDao;
-	private final Property property;
+	private final Property property;;
 	
 	@Inject
-	public AppController(RunIDDao runIDDao, Property property) {
+	public AppController(RunIDDao runIDDao, Property property, InsynctiveVisualStudioUtil vsUtil) {
 		this.property = property;
 		this.runIDDao = runIDDao;
 	}

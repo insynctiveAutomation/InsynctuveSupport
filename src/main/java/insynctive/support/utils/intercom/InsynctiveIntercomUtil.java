@@ -1,4 +1,4 @@
-package insynctive.support.utils;
+package insynctive.support.utils.intercom;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import io.intercom.api.Conversation;
 import io.intercom.api.Intercom;
 import io.intercom.api.User;
 
-public class IntercomUtil {
+public class InsynctiveIntercomUtil {
 
 	private static final String supportID = "177656";
 	private static final String intercomAppID = "h9ti7xcp";

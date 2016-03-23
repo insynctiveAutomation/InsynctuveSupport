@@ -275,16 +275,25 @@
 			<version>1</version>
 		</dependency>
 
+		<!-- Victor Ops - Eugenio -->
 		<dependency>
 			<groupId>com.github.EugeValeiras</groupId>
 			<artifactId>VictorOpsUtils</artifactId>
 			<version>b4dad8cea63c90a6a385ae74ee37c36c0c09322a</version>
 		</dependency>
 
+		<!-- Visual Studio - Eugenio -->
 		<dependency>
 			<groupId>com.github.EugeValeiras</groupId>
 			<artifactId>VisualStudioUtils</artifactId>
-			<version>816227328f1d1003bacbdd98fc1d54dfaa36a37c</version>
+			<version>9655a4159c093553118034fa524731a9d5939795</version>
+		</dependency>
+		
+		<!-- SlackUtils - Eugenio -->
+		<dependency>
+			<groupId>com.github.EugeValeiras</groupId>
+			<artifactId>SlackUtils</artifactId>
+			<version>8e2baf21e381171246f5fcda7690f0acdaa08dc5</version>
 		</dependency>
 
 	</dependencies>

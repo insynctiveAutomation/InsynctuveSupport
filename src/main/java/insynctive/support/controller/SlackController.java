@@ -2,6 +2,8 @@ package insynctive.support.controller;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import org.json.JSONException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,12 +13,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import insynctive.support.form.slack.SlackForm;
 import insynctive.support.utils.UserDetails;
-import insynctive.support.utils.slack.SlackMessageObject;
-import insynctive.support.utils.slack.SlackUtilInsynctive;
+import insynctive.support.utils.slack.InsynctiveSlackUtil;
+import support.utils.slack.SlackMessageObject;
 
 @Controller
 @RequestMapping("/slack")
 public class SlackController {
+	
+	private final InsynctiveSlackUtil slacUtil;
+	
+	@Inject
+	public SlackController(InsynctiveSlackUtil slacUtil) {
+		this.slacUtil = slacUtil;
+	}
 	
 	@RequestMapping(value = "/send" ,method = RequestMethod.POST)
 	@ResponseBody
@@ -32,7 +41,7 @@ public class SlackController {
 			}
 		}
 		
-		SlackUtilInsynctive.sendMessage(message);
+		slacUtil.sendMessage(message);
 		
 		return "{\"status\" : 200}";
 	}
@@ -41,7 +50,7 @@ public class SlackController {
 	@ResponseBody
 	public String createChannel(@RequestBody SlackForm form) throws JSONException, IOException, IllegalArgumentException, IllegalAccessException{
 		
-		SlackUtilInsynctive.createNewChannel(form.getChannel());
+		slacUtil.createNewChannel(form.getChannel());
 		
 		return "{\"status\" : 200}";
 	}
@@ -50,7 +59,7 @@ public class SlackController {
 	@ResponseBody
 	public String archiveChannel(@RequestBody SlackForm form) throws JSONException, IOException, IllegalArgumentException, IllegalAccessException{
 		
-		SlackUtilInsynctive.createNewChannel(form.getChannel());
+		slacUtil.createNewChannel(form.getChannel());
 		
 		return "{\"status\" : 200}";
 	}

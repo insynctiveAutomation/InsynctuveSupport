@@ -1,4 +1,4 @@
-package insynctive.support.utils;
+package insynctive.support.utils.tp;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -15,9 +15,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import insynctive.support.utils.tp.TargetProcessItem;
-
-public class TargetProcessUtil {
+public class InsynctiveTargetProcessUtil {
 	
 	public static final String targetProcessURL = "https://insynctive.tpondemand.com";
 	public static final String tokenParamTargetProcess = "token=MTU6NTg0ODUxOTk3RDIzMzEyRDExRDEzREFGQTk5RTc4MzU=";

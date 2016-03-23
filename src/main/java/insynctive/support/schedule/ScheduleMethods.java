@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 import insynctive.support.utils.Property;
 import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.slack.SlackMessage;
-import insynctive.support.utils.slack.SlackMessageObject;
-import insynctive.support.utils.slack.SlackUtilInsynctive;
-import insynctive.support.utils.slack.builder.SlackMessageBuilder;
-import support.utils.VisualStudioUtil;
+import insynctive.support.utils.vs.InsynctiveVisualStudioUtil;
+import insynctive.support.utils.slack.InsynctiveSlackUtil;
+import support.utils.slack.SlackMessageObject;
+import support.utils.slack.builder.SlackMessageBuilder;
 
 @Component
 public class ScheduleMethods {
@@ -23,6 +23,12 @@ public class ScheduleMethods {
 	
 	@Autowired
 	private Property property;
+	
+	@Autowired
+	private InsynctiveVisualStudioUtil vsUtil;
+	
+	@Autowired
+	private InsynctiveSlackUtil slackUtil;
 	
 	private List<String> newUniqueList() {
 		return new ArrayList<String>() {
@@ -57,7 +63,7 @@ public class ScheduleMethods {
 		notSendMessages = newUniqueList();
 		for(UserDetails user : listOfUsers){
 			SlackMessageObject message = null;
-			Integer countWorkInProgressCurrentIteration = VisualStudioUtil.countWorkInProgressCurrentIteration(user.name, property.getVSProject(), property.getVSAccount());
+			Integer countWorkInProgressCurrentIteration = vsUtil.countWorkInProgressCurrentIteration(user.name, property.getVSProject(), property.getVSAccount());
 			if (countWorkInProgressCurrentIteration > 1) {
 				message = new SlackMessageBuilder()
 					.setIconEmoji(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.img)
@@ -75,7 +81,7 @@ public class ScheduleMethods {
 					.build();
 				}
 
-			if(message != null && !SlackUtilInsynctive.sendMessageIfOnline(message)){
+			if(message != null && !slackUtil.sendMessageIfOnline(message)){
 				notSendMessages.add(user.email);
 			}
 		}	

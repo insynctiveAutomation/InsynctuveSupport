@@ -1,4 +1,4 @@
-package insynctive.support.utils;
+package insynctive.support.utils.victorops;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
 
 import support.utils.victorops.VictorOpsIncident;
 
-public class VictorOpsUtil {
+public class InsynctiveVictorOpsUtil {
 
 	private static String urlString = "https://alert.victorops.com/integrations/generic/20131114/alert/cfb06721-241f-4df5-8f98-65762681b85d/InsynctiveVO";
 	
