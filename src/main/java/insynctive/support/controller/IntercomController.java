@@ -26,16 +26,17 @@ import insynctive.support.utils.intercom.IntercomNote;
 import io.intercom.api.AdminCollection;
 import io.intercom.api.ConversationPart;
 import io.intercom.api.ConversationPartCollection;
-import support.utils.VisualStudioUtil;
 import support.utils.vs.VisualStudioBugState;
 import support.utils.vs.VisualStudioWorkItem;
 import support.utils.vs.builder.VisualStudioWorkItemBuilder;
+import support.utils.vs.master.VisualStudioUtil;
 
 @Controller
 @RequestMapping("/intercom")
 public class IntercomController {
 
 	private final TargetProcessAndIntercomDao tpDao;
+	private VisualStudioUtil vsUtil = new VisualStudioUtil("evaleiras@insynctive.com", "d5bb3o6xbmecnqgsa3vgequknbu3qyv7zf3shdbtijrwrpmhauwq");
 	
 	@Inject
 	public IntercomController(TargetProcessAndIntercomDao tpDao) {
@@ -114,16 +115,15 @@ public class IntercomController {
 				VisualStudioWorkItem workItem = new VisualStudioWorkItemBuilder()
 				.addTitle("Incident: "+((reportSplit.length > 1) ? reportSplit[1] : htmlConversationSubject.getElementsByTag("p").text()))
 				.addStatus(VisualStudioBugState.NEW.value)
-				.addIteration(VisualStudioUtil.getCurrentIteration(project, account))
-				.addIntercomConversation(form.getConversationUrl())
+				.addIntercomConversation(form.getConversationUrl()) 
 				.addIsIncident(true)
 				.addCreatedBy(createdBy != null ? createdBy.name : "Eugenio Valeiras")
 				.addReproSteps(DescriptionOfBug) 
 				.build();
 				
-				Integer bugId = VisualStudioUtil.createNewBug(workItem, project, account);
+				Integer bugId = vsUtil.createNewBug(workItem, project, account);
 				
-				IntercomUtil.makeANoteInConversation("Bug created "+VisualStudioUtil.getVisualWorkItemUrlEncoded(bugId.toString(), project, account), form.getConversation().getId());
+				IntercomUtil.makeANoteInConversation("Bug created "+vsUtil.getVisualWorkItemUrlEncoded(bugId.toString(), project, account), form.getConversation().getId());
 			}
 		}
 		

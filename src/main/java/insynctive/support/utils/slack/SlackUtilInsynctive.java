@@ -20,7 +20,7 @@ import insynctive.support.utils.slack.builder.SlackMessageBuilder;
 
 public class SlackUtilInsynctive {
 
-	private static final String token =  "xoxp-2598773363-6987940228-21463692417-b6025bd177";
+	private static final String token =  "xoxp-2598773363-6987940228-40584579104-132d858b24";
 	private static final ObjectMapper mapper = new ObjectMapper();
 	
 	public static Boolean sendMessageIfOnline(SlackMessageObject message) throws Exception {
@@ -35,7 +35,7 @@ public class SlackUtilInsynctive {
 		String presenceUrl =  "https://slack.com/api/users.getPresence";
 		
 		String presenceParameters = "?"
-				+ "token=xoxp-2598773363-6987940228-21463692417-b6025bd177"
+				+ "token=xoxp-2598773363-6987940228-40584579104-132d858b24"
 				+ "&user=" + UriUtils.encodeQueryParam(employeeID, "UTF-8")
 				+ "&pretty=1";
 		
@@ -77,7 +77,7 @@ public class SlackUtilInsynctive {
 				"https://slack.com/api/chat.postMessage";
 		
 		String chatMessageParameters = "?"
-						+ "token=xoxp-2598773363-6987940228-21463692417-b6025bd177"
+						+ "token=xoxp-2598773363-6987940228-40584579104-132d858b24"
 						+ "&channel=" + UriUtils.encodeQueryParam(message.getChannel(), "UTF-8")
 						+ "&text=" + UriUtils.encodeQueryParam(message.getText(), "UTF-8")
 						+ "&username=" + UriUtils.encodeQueryParam(message.getUsername(), "UTF-8")

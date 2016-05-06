@@ -14,12 +14,15 @@ import insynctive.support.utils.slack.SlackMessage;
 import insynctive.support.utils.slack.SlackMessageObject;
 import insynctive.support.utils.slack.SlackUtilInsynctive;
 import insynctive.support.utils.slack.builder.SlackMessageBuilder;
-import support.utils.VisualStudioUtil;
+import support.utils.vs.builder.VisualStudioBuildBuilder;
+import support.utils.vs.master.VisualStudioBuildDefinition;
+import support.utils.vs.master.VisualStudioUtil;
 
 @Component
 public class ScheduleMethods {
 
 	private List<String> notSendMessages = newUniqueList();
+	private VisualStudioUtil vsUtil = new VisualStudioUtil("evaleiras@insynctive.com", "d5bb3o6xbmecnqgsa3vgequknbu3qyv7zf3shdbtijrwrpmhauwq");
 	
 	@Autowired
 	private Property property;
@@ -52,12 +55,19 @@ public class ScheduleMethods {
 		for(String email : notSendMessages){ values.add(UserDetails.findByEmail(email)); }
 		CheckIfSendMessageAndSend(values);
 	}
+
+	@Scheduled(cron = "0 0/30 * * * ?")
+	public void runPerformanceTests() throws Exception{
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(22)).setBranch("master").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(25)).setBranch("master").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(26)).setBranch("master").build(), "insynctive", "insynctive");
+	}
 	
 	private void CheckIfSendMessageAndSend(List<UserDetails> listOfUsers) throws Exception {
 		notSendMessages = newUniqueList();
 		for(UserDetails user : listOfUsers){
 			SlackMessageObject message = null;
-			Integer countWorkInProgressCurrentIteration = VisualStudioUtil.countWorkInProgressCurrentIteration(user.name, property.getVSProject(), property.getVSAccount());
+			Integer countWorkInProgressCurrentIteration = vsUtil.countWorkInProgressCurrentIteration(user.name, property.getVSProject(), property.getVSAccount());
 			if (countWorkInProgressCurrentIteration > 1) {
 				message = new SlackMessageBuilder()
 					.setIconEmoji(SlackMessage.HAVE_MORE_THAN_ONE_WORK_IN_PROGRESS.img)
