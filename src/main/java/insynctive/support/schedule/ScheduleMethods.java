@@ -61,6 +61,8 @@ public class ScheduleMethods {
 		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(22)).setBranch("master").build(), "insynctive", "insynctive");
 		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(25)).setBranch("master").build(), "insynctive", "insynctive");
 		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(26)).setBranch("master").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(27)).setBranch("master").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(28)).setBranch("master").build(), "insynctive", "insynctive");
 	}
 	
 	private void CheckIfSendMessageAndSend(List<UserDetails> listOfUsers) throws Exception {
