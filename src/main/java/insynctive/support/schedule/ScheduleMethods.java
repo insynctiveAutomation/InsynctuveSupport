@@ -56,13 +56,14 @@ public class ScheduleMethods {
 		CheckIfSendMessageAndSend(values);
 	}
 
-	@Scheduled(cron = "0 0/30 * * * ?")
+	@Scheduled(cron = "0 0/8 * * * ?")
 	public void runPerformanceTests() throws Exception{
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(22)).setBranch("master").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(25)).setBranch("master").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(26)).setBranch("master").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(27)).setBranch("master").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(28)).setBranch("master").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(31)).setBranch("oldBranch").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(32)).setBranch("oldBranch").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(33)).setBranch("oldBranch").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(34)).setBranch("oldBranch").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(35)).setBranch("oldBranch").build(), "insynctive", "insynctive");
+		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(36)).setBranch("oldBranch").build(), "insynctive", "insynctive");
 	}
 	
 	private void CheckIfSendMessageAndSend(List<UserDetails> listOfUsers) throws Exception {
