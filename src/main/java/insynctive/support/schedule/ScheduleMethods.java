@@ -56,7 +56,7 @@ public class ScheduleMethods {
 		CheckIfSendMessageAndSend(values);
 	}
 
-	@Scheduled(cron = "0 0/8 * * * ?")
+	@Scheduled(cron = "0 0 * * * ?")
 	public void runPerformanceTests() throws Exception{
 		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(31)).setBranch("oldBranch").build(), "insynctive", "insynctive");
 		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(32)).setBranch("oldBranch").build(), "insynctive", "insynctive");
