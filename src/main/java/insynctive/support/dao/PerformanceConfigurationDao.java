@@ -41,7 +41,7 @@ public class PerformanceConfigurationDao {
 	}
 	
 	public PerformanceConfiguration get(){
-		return (PerformanceConfiguration)openSession().get(PerformanceConfiguration.class, 0);
+		return (PerformanceConfiguration)openSession().get(PerformanceConfiguration.class, new Long(0));
 	}
 	
 	public PerformanceConfiguration init(){
@@ -52,14 +52,14 @@ public class PerformanceConfigurationDao {
 	}
 	
 	public PerformanceConfiguration setScheduleEnabled(){
-		PerformanceConfiguration config = (PerformanceConfiguration)openSession().get(PerformanceConfiguration.class, 0);
+		PerformanceConfiguration config = (PerformanceConfiguration)openSession().get(PerformanceConfiguration.class, new Long(0));
 		config.setScheduleEnabled(true);
 		update(config);
 		return config;
 	}
 	
 	public PerformanceConfiguration setScheduleDisabled(){
-		PerformanceConfiguration config = (PerformanceConfiguration)openSession().get(PerformanceConfiguration.class, 0);
+		PerformanceConfiguration config = (PerformanceConfiguration)openSession().get(PerformanceConfiguration.class, new Long(0));
 		config.setScheduleEnabled(false);
 		update(config);
 		return config;
