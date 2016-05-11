@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import insynctive.support.dao.PerformanceConfigurationDao;
+import insynctive.support.model.PerformanceConfiguration;
 import insynctive.support.utils.Property;
 import insynctive.support.utils.UserDetails;
 import insynctive.support.utils.slack.SlackMessage;
@@ -26,6 +28,9 @@ public class ScheduleMethods {
 	
 	@Autowired
 	private Property property;
+	
+	@Autowired
+	private PerformanceConfigurationDao performanceConfiguration;
 	
 	private List<String> newUniqueList() {
 		return new ArrayList<String>() {
@@ -56,14 +61,12 @@ public class ScheduleMethods {
 		CheckIfSendMessageAndSend(values);
 	}
 
-	@Scheduled(cron = "0 0 * * * ?")
+	@Scheduled(cron = "0 0/1 * * * ?")
 	public void runPerformanceTests() throws Exception{
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(31)).setBranch("oldBranch").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(32)).setBranch("oldBranch").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(33)).setBranch("oldBranch").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(34)).setBranch("oldBranch").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(35)).setBranch("oldBranch").build(), "insynctive", "insynctive");
-		vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(36)).setBranch("oldBranch").build(), "insynctive", "insynctive");
+		PerformanceConfiguration config = performanceConfiguration.get();
+		if(config.getScheduleEnabled()){
+			vsUtil.queueABuild(new VisualStudioBuildBuilder().addDefinition(new VisualStudioBuildDefinition(38)).setBranch("onebyone").build(), "insynctive", "insynctive");
+		}
 	}
 	
 	private void CheckIfSendMessageAndSend(List<UserDetails> listOfUsers) throws Exception {

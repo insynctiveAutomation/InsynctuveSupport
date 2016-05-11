@@ -112,7 +112,6 @@ public class SlackUtilInsynctive {
 		System.out.println("Response: \n"+response);
 		
 		return response.getStatusLine().getStatusCode() == 200;
-		
 	}
 	
 	public static Boolean archiveChannel(String channelName) throws ClientProtocolException, IOException{
