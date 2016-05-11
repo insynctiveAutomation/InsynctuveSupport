@@ -61,7 +61,7 @@ public class ScheduleMethods {
 		CheckIfSendMessageAndSend(values);
 	}
 
-	@Scheduled(cron = "0 0/1 * * * ?")
+	@Scheduled(cron = "0 0/35 * * * ?")
 	public void runPerformanceTests() throws Exception{
 		PerformanceConfiguration config = performanceConfiguration.get();
 		if(config.getScheduleEnabled()){
